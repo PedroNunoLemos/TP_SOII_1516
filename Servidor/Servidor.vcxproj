@@ -142,6 +142,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\jogadores.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\labirinto.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\monstros.h" />
+    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\objectos.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
