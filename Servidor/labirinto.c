@@ -10,7 +10,7 @@ void CriaLabirinto(Celula labirinto[MAXTAMX][MAXTAMY], int tamx, int tamy) {
 
 	
 
-
+	//
 }
 
 
