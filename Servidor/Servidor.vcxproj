@@ -19,10 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="jogadores.h" />
     <ClInclude Include="labirinto.h" />
+    <ClInclude Include="jogadores.h" />
+    <ClInclude Include="celula.h" />
     <ClInclude Include="monstros.h" />
     <ClInclude Include="objectos.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="labirinto.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ADF43E2A-6826-4280-ACEE-E4F454B69F2C}</ProjectGuid>
