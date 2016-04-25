@@ -3,7 +3,7 @@
 #include "objectos.h"
 #include "jogadores.h"
 #include "monstros.h"
-//s
+#include "sala.h"
 
 typedef enum tipocelula
 {
@@ -21,6 +21,7 @@ typedef struct celula
 	int posx;
 	int posy;
 
+	Sala salaAssociada;
 	Jogador jogador;
 	Item objecto;
 	TipoCelula tipo;

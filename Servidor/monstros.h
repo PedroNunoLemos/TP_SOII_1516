@@ -7,7 +7,7 @@ typedef enum tipomonstro
 
 }TipoMonstro;
 
-typedef struct monstro
+typedef struct 
 {
 
 	int lentidao;

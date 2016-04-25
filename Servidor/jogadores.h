@@ -2,7 +2,7 @@
 
 #include  "objectos.h"
 
-typedef struct jogador
+typedef struct 
 {
 
 	 int numero;

@@ -27,12 +27,24 @@
     <ClInclude Include="celula.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sala.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="uteis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="labirinto.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="labirinto.c">
+    <ClCompile Include="uteis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapa.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
