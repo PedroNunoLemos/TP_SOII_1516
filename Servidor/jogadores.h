@@ -10,7 +10,7 @@ typedef struct jogador
 	 int lentidao;
 	 int saude;
 
-	 item objectos[99];
+	 Item objectos[99];
 	 
 
 } Jogador;
