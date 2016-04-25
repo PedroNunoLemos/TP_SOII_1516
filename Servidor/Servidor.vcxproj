@@ -18,6 +18,12 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="jogadores.h" />
+    <ClInclude Include="labirinto.h" />
+    <ClInclude Include="monstros.h" />
+    <ClInclude Include="objectos.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ADF43E2A-6826-4280-ACEE-E4F454B69F2C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -141,12 +147,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\jogadores.h" />
-    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\labirinto.h" />
-    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\monstros.h" />
-    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\objectos.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

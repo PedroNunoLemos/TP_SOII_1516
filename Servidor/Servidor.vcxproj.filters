@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\objectos.h">
+    <ClInclude Include="jogadores.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\jogadores.h">
+    <ClInclude Include="labirinto.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\labirinto.h">
+    <ClInclude Include="monstros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Desktop\Nova pasta\monstros.h">
+    <ClInclude Include="objectos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
