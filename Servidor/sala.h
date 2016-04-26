@@ -1,10 +1,10 @@
 #pragma once
+#include "coordenada.h"
 
 typedef struct  {
 
-	int sx;
-	int sy;
-	int lx;
-	int ly;
+Coordenada inicio;
+Coordenada fim;
+
 		
 } Sala;
