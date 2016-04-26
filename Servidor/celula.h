@@ -20,7 +20,7 @@ typedef enum tipocelula
 typedef struct celula
 {
 
-        Coordenada coordenada;
+        Coordenada coordenadas;
 	Jogador jogador;
 	Item objecto;
 	TipoCelula tipo;
