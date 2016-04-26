@@ -3,10 +3,11 @@
 #include "objectos.h"
 #include "jogadores.h"
 #include "monstros.h"
-#include "sala.h"
+#include "coordenada.h"
 
 typedef enum tipocelula
 {
+	VAZIO,
 	PAREDE,
 	PAREDE_PO,
 	PORTA,
@@ -18,10 +19,8 @@ typedef enum tipocelula
 
 typedef struct celula
 {
-	int posx;
-	int posy;
 
-	Sala salaAssociada;
+        Coordenada coordenada;
 	Jogador jogador;
 	Item objecto;
 	TipoCelula tipo;
