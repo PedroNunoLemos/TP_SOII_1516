@@ -1,7 +1,7 @@
 #pragma once
 
 #include "objectos.h"
-#include "jogadores.h"
+#include "jogador.h"
 #include "monstros.h"
 #include "coordenada.h"
 
