@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="jogadores.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="monstros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -25,9 +22,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="celula.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sala.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="uteis.h">
@@ -39,12 +33,21 @@
     <ClInclude Include="labirinto.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="coordenada.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="jogador.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="uteis.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mapa.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="labirinto.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

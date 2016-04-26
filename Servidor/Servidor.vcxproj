@@ -19,16 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="coordenada.h" />
+    <ClInclude Include="jogador.h" />
     <ClInclude Include="labirinto.h" />
     <ClInclude Include="mapa.h" />
-    <ClInclude Include="jogadores.h" />
     <ClInclude Include="celula.h" />
     <ClInclude Include="monstros.h" />
     <ClInclude Include="objectos.h" />
-    <ClInclude Include="sala.h" />
     <ClInclude Include="uteis.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="labirinto.c" />
     <ClCompile Include="mapa.c" />
     <ClCompile Include="uteis.c" />
   </ItemGroup>
