@@ -1,4 +1,6 @@
 
+#include "labirinto.h"
+
 void drawlabirinto(void ){
 
 int x=0;
