@@ -10,12 +10,14 @@ typedef struct
 	int tamx;
 	int tamy;
 
-	 Celula celulas[5][5];
+	 Celula celula[MAXTAMX][MAXTAMY];
 	
 } Labirinto;
 
 
 //metodos do labirinto
 
+//Cria Labirinto
+Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy);
 // cria uma sala no labirinto e devolve o labirinto alterado
 Labirinto  CriaSala(int inix, int iniy, int tamx, int tamy, Labirinto lab);

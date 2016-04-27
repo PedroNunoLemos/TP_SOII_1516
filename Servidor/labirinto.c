@@ -4,6 +4,29 @@
 
 #include "labirinto.h"
 
+Labirinto CriaLabirinto(Labirinto lab,int tamx,int tamy) {
+
+
+	int x = 0;
+	int y = 0;
+
+	Labirinto tmp = lab;
+
+	tmp.tamx = tamx;
+	tmp.tamy = tamy;
+
+
+	for (x = 0; x < tamx; x++)
+	{
+		for (y = 0; y <= tamy; y++)
+		{
+
+			tmp.celula[x][y].tipo = TipoCelula_VAZIO;
+		}
+	}
+
+	return tmp;
+}
 
 Labirinto  CriaSala(int inix, int iniy, int tamx, int tamy, Labirinto lab) {
 
@@ -44,7 +67,7 @@ Labirinto  CriaSala(int inix, int iniy, int tamx, int tamy, Labirinto lab) {
 			}
 
 			// fim definição tipo de celula
-			tmp.celulas[x][y] = novacel;
+			tmp.celula[x][y] = novacel;
 		
 		
 		} // fim for y

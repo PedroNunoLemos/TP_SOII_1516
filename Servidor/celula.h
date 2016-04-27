@@ -40,9 +40,5 @@ typedef enum {
 
 typedef struct
 {
-
-	Jogador jogador;
-	Item objecto;
 	TipoCelula tipo;
-
 } Celula;

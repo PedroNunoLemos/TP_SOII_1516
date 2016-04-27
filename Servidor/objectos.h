@@ -7,5 +7,4 @@ typedef enum tipoitem
 	PEDRA,
 	CAFEINA
 
-
 } Item;

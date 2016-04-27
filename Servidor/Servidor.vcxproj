@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="constantes.h" />
     <ClInclude Include="coordenada.h" />
     <ClInclude Include="jogador.h" />
     <ClInclude Include="labirinto.h" />

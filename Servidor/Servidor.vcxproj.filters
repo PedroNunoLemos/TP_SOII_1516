@@ -33,10 +33,13 @@
     <ClInclude Include="labirinto.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="jogador.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="coordenada.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="jogador.h">
+    <ClInclude Include="constantes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
