@@ -52,3 +52,4 @@ Labirinto  CriaSala(int inix, int iniy, int tamx, int tamy, Labirinto lab) {
 
 	return tmp;
 }
+

@@ -9,7 +9,8 @@ typedef struct
 {
 	int tamx;
 	int tamy;
-	Celula celulas[MAXTAMX][MAXTAMY];
+
+	 Celula celulas[5][5];
 	
 } Labirinto;
 
