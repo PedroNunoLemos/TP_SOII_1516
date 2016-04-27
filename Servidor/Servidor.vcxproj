@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="consola.h" />
     <ClInclude Include="constantes.h" />
     <ClInclude Include="coordenada.h" />
     <ClInclude Include="jogador.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="uteis.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="consola.c" />
     <ClCompile Include="labirinto.c" />
     <ClCompile Include="mapa.c" />
     <ClCompile Include="uteis.c" />

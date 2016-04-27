@@ -42,6 +42,9 @@
     <ClInclude Include="constantes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="consola.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="uteis.c">
@@ -51,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="labirinto.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="consola.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

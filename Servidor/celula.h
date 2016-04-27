@@ -1,8 +1,6 @@
 #pragma once
 
-#include "objectos.h"
-#include "jogador.h"
-#include "monstros.h"
+
 #include "coordenada.h"
 
 typedef enum {
@@ -41,4 +39,6 @@ typedef enum {
 typedef struct
 {
 	TipoCelula tipo;
+	Coordenada ponto;
+
 } Celula;
