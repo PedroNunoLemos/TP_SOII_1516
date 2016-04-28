@@ -32,13 +32,20 @@ Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy) {
 	return tmp;
 }
 
-Labirinto  CriaSala(int inix, int iniy, int tamx, int tamy, Labirinto lab) {
+Labirinto  CriaSala(int inix, int iniy, Labirinto lab,int seed) {
 
 	int x = 0;
 	int y = 0;
-	int j = 0;
+	int tamx = 0;
+	int tamy = 0;
 
 	Labirinto tmp = lab;
+
+
+
+	tamx = aleatorio(10, 16, seed);
+	tamy = aleatorio(4, 6, seed);
+
 
 	for (x = 0; x < tamx; x++)
 	{
@@ -73,7 +80,7 @@ Labirinto  CriaSala(int inix, int iniy, int tamx, int tamy, Labirinto lab) {
 			// fim definição tipo de celula
 
 			//mete no labirinto a nova celula 
-			
+
 			tmp.celula[inix + x][iniy + y] = novacel;
 
 

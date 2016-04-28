@@ -20,4 +20,4 @@ typedef struct
 //Cria Labirinto
 Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy);
 // cria uma sala no labirinto e devolve o labirinto alterado
-Labirinto  CriaSala(int inix, int iniy, int tamx, int tamy, Labirinto lab);
+Labirinto  CriaSala(int inix, int iniy,  Labirinto lab,int seed);

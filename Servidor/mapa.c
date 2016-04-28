@@ -15,7 +15,8 @@ int main() {
 	Labirinto lab;
 	lab = CriaLabirinto(lab, 80, 20);
 
-	lab = CriaSala(20, 5, 10, 10, lab);
+	for (int j = 0; j < 3;j++)
+	lab = CriaSala(10+j*20, j+5,lab,j);
 
 	for (int x = 0; x < lab.tamx; x++) {
 		for (int y = 0; y < lab.tamy; y++) {
