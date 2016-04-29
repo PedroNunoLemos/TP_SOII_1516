@@ -75,17 +75,28 @@ void setForeGroundAndBackGroundColor(int ForeGroundColor, int BackGroundColor)
 	setcolor(color);
 }
 
-void clrbox(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char bkcol)
-{
-	int x, y;
-	setcolor(bkcol);                       //Set to color bkcol
 
-	for (y = y1; y < y2; y++)                    //Fill Y Region Loop
-	{
-		for (x = x1; x < x2; x++)               //Fill X region Loop
-		{
-			GoToXY(x, y); printf(" ");       //Draw Solid space
-		}
-	}
+void clearBox()
+{
+	HANDLE hOut;
+	COORD Position;
+	DWORD Written;
+
+	hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	Position.X = 0;
+	Position.Y = 10;
+
+	FillConsoleOutputCharacter(hOut, ' ', 1000000, Position, &Written);
+
+	SetConsoleCursorPosition(hOut, Position);
 }
 
+void cursorVisible(int st)
+{
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = st;
+	SetConsoleCursorInfo(consoleHandle, &info);
+}

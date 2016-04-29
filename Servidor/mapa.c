@@ -21,7 +21,9 @@ int main() {
 	curx = 15;
 	cury = 15;
 
-		lab = CriaLabirinto(lab, 80, 80);
+	lab = CriaLabirinto(lab, 80, 80);
+
+	cursorVisible(0);
 
 	char ch = getch();
 
@@ -33,8 +35,8 @@ int main() {
 		if (ch == key_UP)cury--;
 		if (ch == key_LEFT)curx--;
 		if (ch == key_RIGHT)curx++;
-		
-		imprimeLabirinto(3, 4, curx, cury, 20, lab);
+
+		imprimeLabirinto(3, 4, curx, cury, 40, 10, lab);
 	}
 
 
