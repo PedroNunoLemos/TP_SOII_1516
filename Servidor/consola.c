@@ -25,31 +25,31 @@ void GoToXY(int column, int line)
 }
 
 
-        //
-        //     colors:
-        //     0 = Black
-        //     1 = Blue
-        //     2 = Green
-        //     3 = Cyan
-        //     4 = Red
-        //     5 = Magenta
-        //     6 = Yellow
-        //     7 = LightGray
-        //     8 = DarkGray
-        //     9 = LightBlue
-        //     10 = LightGreen
-        //     11 = LightCyan
-        //     12 = LightRed
-        //     13 = LightMagenta
-        //     14 = LightYellow
-        //     15 = White
+//
+//     colors:
+//     0 = Black
+//     1 = Blue
+//     2 = Green
+//     3 = Cyan
+//     4 = Red
+//     5 = Magenta
+//     6 = Yellow
+//     7 = LightGray
+//     8 = DarkGray
+//     9 = LightBlue
+//     10 = LightGreen
+//     11 = LightCyan
+//     12 = LightRed
+//     13 = LightMagenta
+//     14 = LightYellow
+//     15 = White
 
 
 void setcolor(WORD color)
- {
-            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color);
-            return;
- }
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+	return;
+}
 
 
 void SetWindow(int Width, int Height)
@@ -69,23 +69,23 @@ void SetWindow(int Width, int Height)
 	SetConsoleWindowInfo(Handle, TRUE, &Rect);            // Set Window Size 
 }
 
-void setForeGroundAndBackGroundColor(int ForeGroundColor,int BackGroundColor)
+void setForeGroundAndBackGroundColor(int ForeGroundColor, int BackGroundColor)
 {
-           int color=16*BackGroundColor+ForeGroundColor;
-           setcolor(color);
+	int color = 16 * BackGroundColor + ForeGroundColor;
+	setcolor(color);
 }
 
-void clrbox(unsigned char x1,unsigned char y1,unsigned char x2,unsigned char y2,unsigned char bkcol)
-        {
-            int x,y;
-            setcolor(bkcol);                       //Set to color bkcol
+void clrbox(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char bkcol)
+{
+	int x, y;
+	setcolor(bkcol);                       //Set to color bkcol
 
-            for (y=y1;y<y2;y++)                    //Fill Y Region Loop
-            {
-                for (x=x1;x<x2;x++)               //Fill X region Loop
-                {
-                  gotoxy(x,y);cprintf(" ");       //Draw Solid space
-                }
-            }
-        }
+	for (y = y1; y < y2; y++)                    //Fill Y Region Loop
+	{
+		for (x = x1; x < x2; x++)               //Fill X region Loop
+		{
+			gotoxy(x, y); cprintf(" ");       //Draw Solid space
+		}
+	}
+}
 
