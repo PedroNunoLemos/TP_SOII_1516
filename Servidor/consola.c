@@ -1,5 +1,5 @@
-#include <Windows.h>
 #include "consola.h"
+#include <stdio.h>
 
 void GoToXY(int column, int line)
 {
@@ -84,7 +84,7 @@ void clrbox(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char 
 	{
 		for (x = x1; x < x2; x++)               //Fill X region Loop
 		{
-			gotoxy(x, y); cprintf(" ");       //Draw Solid space
+			GoToXY(x, y); printf(" ");       //Draw Solid space
 		}
 	}
 }

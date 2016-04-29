@@ -28,12 +28,14 @@
     <ClInclude Include="celula.h" />
     <ClInclude Include="monstros.h" />
     <ClInclude Include="objectos.h" />
+    <ClInclude Include="tui.h" />
     <ClInclude Include="uteis.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="consola.c" />
     <ClCompile Include="labirinto.c" />
     <ClCompile Include="mapa.c" />
+    <ClCompile Include="tui.c" />
     <ClCompile Include="uteis.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

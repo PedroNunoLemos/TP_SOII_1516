@@ -1,5 +1,6 @@
 #pragma once
 
+#include <windows.h>
 
 void SetWindow(int Width, int Height);
 void GoToXY(int column, int line);

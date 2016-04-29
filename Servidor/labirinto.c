@@ -85,20 +85,10 @@ Labirinto  CriaSala(int inix, int iniy, Labirinto lab, int seed) {
 			{
 				if (y == 0) {
 					novacel.tipo = TipoCelula_PAREDE_HZ;
-					int porta = aleatorio(1, 100, x);
-					if (porta < 25 && prt == 0) {
-						novacel.tipo = TipoCelula_PORTA;
-						prt = 1;
-					}
 				}
 				else if (y == tamy)
 				{
 					novacel.tipo = TipoCelula_PAREDE_HZ;
-					int porta = aleatorio(1, 100, y);
-					if (porta < 25 && prt == 0) {
-						novacel.tipo = TipoCelula_VAZIO;
-						prt = 1;
-					}
 				}
 				else
 					novacel.tipo = TipoCelula_CHAO;
