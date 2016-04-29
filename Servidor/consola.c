@@ -25,6 +25,13 @@ void GoToXY(int column, int line)
 }
 
 
+void setcolor(WORD color)
+ {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color);
+            return;
+ }
+
+
 void SetWindow(int Width, int Height)
 {
 	COORD coord;
