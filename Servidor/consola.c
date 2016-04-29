@@ -49,4 +49,23 @@ void SetWindow(int Width, int Height)
 	SetConsoleWindowInfo(Handle, TRUE, &Rect);            // Set Window Size 
 }
 
+void setForeGroundAndBackGroundColor(int ForeGroundColor,int BackGroundColor)
+{
+           int color=16*BackGroundColor+ForeGroundColor;
+           setcolor(color);
+}
+
+void clrbox(unsigned char x1,unsigned char y1,unsigned char x2,unsigned char y2,unsigned char bkcol)
+        {
+            int x,y;
+            setcolor(bkcol);                       //Set to color bkcol
+
+            for (y=y1;y<y2;y++)                    //Fill Y Region Loop
+            {
+                for (x=x1;x<x2;x++)               //Fill X region Loop
+                {
+                  gotoxy(x,y);cprintf(" ");       //Draw Solid space
+                }
+            }
+        }
 
