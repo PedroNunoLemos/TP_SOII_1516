@@ -142,6 +142,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Servidor\consola.c" />
+    <ClCompile Include="..\Servidor\mapa.c" />
+    <ClCompile Include="..\Servidor\tui.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Servidor\consola.h" />
+    <ClInclude Include="..\Servidor\mapa.h" />
+    <ClInclude Include="..\Servidor\tui.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

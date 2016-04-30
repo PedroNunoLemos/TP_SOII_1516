@@ -19,24 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="consola.h" />
+    <ClCompile Include="jogo.c" />
+    <ClCompile Include="labirinto.c" />
+    <ClCompile Include="servico.c" />
+    <ClCompile Include="uteis.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="celula.h" />
     <ClInclude Include="constantes.h" />
     <ClInclude Include="coordenada.h" />
     <ClInclude Include="jogador.h" />
+    <ClInclude Include="jogo.h" />
     <ClInclude Include="labirinto.h" />
-    <ClInclude Include="mapa.h" />
-    <ClInclude Include="celula.h" />
     <ClInclude Include="monstros.h" />
     <ClInclude Include="objectos.h" />
-    <ClInclude Include="tui.h" />
     <ClInclude Include="uteis.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="consola.c" />
-    <ClCompile Include="labirinto.c" />
-    <ClCompile Include="mapa.c" />
-    <ClCompile Include="tui.c" />
-    <ClCompile Include="uteis.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ADF43E2A-6826-4280-ACEE-E4F454B69F2C}</ProjectGuid>

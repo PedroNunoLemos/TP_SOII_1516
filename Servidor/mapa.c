@@ -14,18 +14,19 @@ int main() {
 	int curx = 0;
 	int cury = 0;
 
+
 	//SetWindow(90, 90);
 
-	Labirinto lab;
 
-	curx = 15;
-	cury = 15;
+	//Labirinto lab;
 
-	lab = CriaLabirinto(lab, 80, 80);
+	//curx = 15;
+	//cury = 15;
+	//lab = CriaLabirinto(lab, 80, 80);
 
-	cursorVisible(0);
+	//cursorVisible(0);
 
-	char ch = getch();
+/*	char ch = getch();
 
 	while (ch != key_ESCAPE) {
 
@@ -39,7 +40,7 @@ int main() {
 		imprimeLabirinto(3, 4, curx, cury, 40, 10, lab);
 	}
 
-
+*/
 
 
 	return 0;
