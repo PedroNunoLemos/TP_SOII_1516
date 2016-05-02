@@ -12,6 +12,8 @@ Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy) {
 
 	int x = 0;
 	int y = 0;
+	int j = 0;
+	
 	int constroi = 0;
 
 	Labirinto tmp = lab;
@@ -25,21 +27,54 @@ Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy) {
 	{
 		for (y = 0; y <= tamy; y++)
 		{
+			
 			tmp.celula[x][y].tipo = TipoCelula_VAZIO;
 			tmp.celula[x][y].ponto.x = x;
 			tmp.celula[x][y].ponto.y = y;
+			
 		}
 	}
-
-	for (x = 0; x < tamx; x += 10)
+	
+	for (j = 0; j < 20 ; j++)
 	{
-		for (y = 0; y <= tamy; y += 10)
-		{
-
-			tmp = CriaSala(x, y, tmp, x);
-		}
+		tmp.salas[j].x=-1;
+		tmp.salas[j].y=-1;
+		tmp.salas[j].w=-1;
+		tmp.salas[j].h=-1;
 	}
 
+	return tmp;
+}
+
+Labirinto CriaSalas(Labirinto lab){
+	
+	int room_count = 20;
+        int  min_size = 5;
+        int  max_size = 15;
+
+        Labirinto tmp = lab;
+        
+ for (var i = 0; i < room_count; i++) {
+ 	
+           Sala room;
+
+            room.x = aleatorio(1, this.map_size - max_size - 1,i);
+            room.y = aleatorio(1, this.map_size - max_size - 1,i);
+            room.w = aleatorio(min_size, max_size,i);
+            room.h = aleatorio(min_size, max_size,i);
+
+            if (DoesCollide(room)) {
+                i--;
+                continue;
+            }
+            
+            room.w--;
+            room.h--;
+
+            tmp.salas[i]=room;
+            
+        }
+	
 	return tmp;
 }
 
