@@ -5,6 +5,16 @@
 #define MAXTAMX 100
 #define MAXTAMY 100
 
+typedef struct {
+	
+	int x;
+	int y;
+	int w;
+	int h;
+	
+	
+} Sala;
+
 typedef struct 
 {
 	int tamx;
