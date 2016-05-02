@@ -191,11 +191,11 @@ void WINAPI ServiceMain(DWORD argc, LPTSTR *argv)
 
 	stopServiceEvent = CreateEvent(0, FALSE, FALSE, 0);
 
-	do
+	while(1)
 	{
 		Beep(1000, 100);
 
-	} while (WaitForSingleObject(stopServiceEvent, 5000) == WAIT_TIMEOUT);
+	};
 
 
 }
@@ -220,7 +220,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		
-		SERVICE_TABLE_ENTRY DispatchTable[] = { { MY_SERVICE_NAME, ServiceMain },{ NULL, NULL } };
+		SERVICE_TABLE_ENTRY DispatchTable[] = { { MY_SERVICE_NAME, (LPSERVICE_MAIN_FUNCTION) ServiceMain },{ NULL, NULL } };
 
 
 		if (!StartServiceCtrlDispatcher(DispatchTable)) { SvcReportEvent(TEXT("StartServiceCtrlDispatcher")); }
