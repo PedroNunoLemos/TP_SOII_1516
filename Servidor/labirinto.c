@@ -83,27 +83,32 @@ Labirinto CriaSalas(Labirinto lab){
             Sala roomA = tmp.salas[i];
             Sala roomB = FindClosestRoom(roomA);
 
-            pointA = {
-                x: Helpers.GetRandom(roomA.x, roomA.x + roomA.w),
-                y: Helpers.GetRandom(roomA.y, roomA.y + roomA.h)
+            Coordenada pointA  = {
+                x: aleatorio(roomA.x, roomA.x + roomA.w,1),
+                y: aleatorio(roomA.y, roomA.y + roomA.h,2)
             };
             
-            pointB = {
-                x: Helpers.GetRandom(roomB.x, roomB.x + roomB.w),
-                y: Helpers.GetRandom(roomB.y, roomB.y + roomB.h)
+            Coordenada pointB = {
+                x: aleatorio(roomB.x, roomB.x + roomB.w,3),
+                y: aleatorio(roomB.y, roomB.y + roomB.hm,4)
             };
 
 
             while ((pointB.x != pointA.x) || (pointB.y != pointA.y)) {
+            	
                 if (pointB.x != pointA.x) {
+                	
                     if (pointB.x > pointA.x) pointB.x--;
                     else pointB.x++;
+                    
                 } else if (pointB.y != pointA.y) {
+                	
                     if (pointB.y > pointA.y) pointB.y--;
                     else pointB.y++;
+                    
                 }
 
-                this.map[pointB.x][pointB.y] = 1;
+                tmp.celula[pointB.x][pointB.y] = 1;
             }
         }
 	
