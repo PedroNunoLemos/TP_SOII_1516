@@ -1,7 +1,6 @@
 #pragma once
 
 #include "celula.h"
-#include "sala.h"
 
 #define MAXTAMX 100
 #define MAXTAMY 100
