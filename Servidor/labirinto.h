@@ -1,6 +1,7 @@
 #pragma once
 
 #include "celula.h"
+#include "sala.h"
 
 #define MAXTAMX 100
 #define MAXTAMY 100
@@ -20,7 +21,8 @@ typedef struct
 	int tamx;
 	int tamy;
 
-	 Celula celula[MAXTAMX][MAXTAMY];
+	Celula celula[MAXTAMX][MAXTAMY];
+	Sala salas[20]; 
 	
 } Labirinto;
 
