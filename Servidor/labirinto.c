@@ -51,10 +51,11 @@ Labirinto CriaSalas(Labirinto lab){
 	int room_count = 20;
         int  min_size = 5;
         int  max_size = 15;
+        int i = 0;
 
         Labirinto tmp = lab;
         
- for (var i = 0; i < room_count; i++) {
+ for (i = 0; i < room_count; i++) {
  	
            Sala room;
 
@@ -73,6 +74,37 @@ Labirinto CriaSalas(Labirinto lab){
 
             tmp.salas[i]=room;
             
+        } //fim salas
+        
+        SquashRooms(); //compacta salas
+        
+         for (i = 0; i < room_count; i++) {
+         	
+            Sala roomA = tmp.salas[i];
+            Sala roomB = FindClosestRoom(roomA);
+
+            pointA = {
+                x: Helpers.GetRandom(roomA.x, roomA.x + roomA.w),
+                y: Helpers.GetRandom(roomA.y, roomA.y + roomA.h)
+            };
+            
+            pointB = {
+                x: Helpers.GetRandom(roomB.x, roomB.x + roomB.w),
+                y: Helpers.GetRandom(roomB.y, roomB.y + roomB.h)
+            };
+
+
+            while ((pointB.x != pointA.x) || (pointB.y != pointA.y)) {
+                if (pointB.x != pointA.x) {
+                    if (pointB.x > pointA.x) pointB.x--;
+                    else pointB.x++;
+                } else if (pointB.y != pointA.y) {
+                    if (pointB.y > pointA.y) pointB.y--;
+                    else pointB.y++;
+                }
+
+                this.map[pointB.x][pointB.y] = 1;
+            }
         }
 	
 	return tmp;
