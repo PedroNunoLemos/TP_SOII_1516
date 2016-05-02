@@ -25,6 +25,7 @@ void GoToXY(int column, int line)
 }
 
 
+
 //
 //     colors:
 //     0 = Black
