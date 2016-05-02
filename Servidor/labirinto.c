@@ -108,9 +108,35 @@ Labirinto CriaSalas(Labirinto lab){
                     
                 }
 
-                tmp.celula[pointB.x][pointB.y] = 1;
+                tmp.celula[pointB.x][pointB.y].tipo = TipoCelula_CHAO;
+                
             }
-        }
+        } // Fim Procesamento das  Salas
+        
+        
+        for (i = 0; i < room_count; i++) {
+            Sala room = tmp.salas[i];
+            for (var x = room.x; x < room.x + room.w; x++) {
+                for (var y = room.y; y < room.y + room.h; y++) {
+                    tmp.celula[x][y].tipo = TipoCelula_CHAO;
+                }
+            }
+        } // Fim preenchimento Chao
+        
+        
+        for ( x = 0; x < tmp.tamx; x++) {
+            for ( y = 0; y < tmp.tamy; y++) {
+                if (tmp.celulas[x][y].tipo == TipoCelula_CHAO) {
+                    for (int xx = x - 1; xx <= x + 1; xx++) {
+                        for (int yy = y - 1; yy <= y + 1; yy++) {
+                            if (tmp.celulas[xx][yy].tipo == TipoCelula_VAZIO) tmp.celulas[xx][yy].tipo = TipoCelula_PAREDE;
+                        }
+                    }
+                }
+            }
+        } // Mete Paredes Nas Salas
+        
+        
 	
 	return tmp;
 }
