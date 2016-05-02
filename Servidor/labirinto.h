@@ -4,25 +4,28 @@
 
 #define MAXTAMX 100
 #define MAXTAMY 100
+#define MAXSALAS 40
+
 
 typedef struct {
-	
+
 	int x;
 	int y;
 	int w;
 	int h;
-	
-	
+
+
 } Sala;
 
-typedef struct 
+typedef struct
 {
 	int tamx;
 	int tamy;
+	int tamsalas;
 
 	Celula celula[MAXTAMX][MAXTAMY];
-	Sala salas[20]; 
-	
+	Sala salas[MAXSALAS];
+
 } Labirinto;
 
 
@@ -30,6 +33,5 @@ typedef struct
 
 //Cria Labirinto
 Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy);
-// cria uma sala no labirinto e devolve o labirinto alterado
-Labirinto  CriaSala(int inix, int iniy,  Labirinto lab,int seed);
 
+Labirinto CriaSalas(Labirinto lab);

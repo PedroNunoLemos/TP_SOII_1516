@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "labirinto.h"
+//#include "labirinto.h"
 #include "tui.h"
-#include "constantes.h"
+//#include "constantes.h"
 
 
 
