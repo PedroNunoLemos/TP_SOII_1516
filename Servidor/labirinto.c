@@ -7,6 +7,64 @@
 
 //http://jsfiddle.net/bigbadwaffle/YeazH/
 
+int validaConflitoSala (Sala room, int ign) {
+   	
+   	int i = 0;
+   	
+        for (i = 0; i < 20; i++) {
+        	
+            if (i == ignore) continue;
+            
+            Sala check = tmp.salas[i];
+            
+            if (!((room.x + room.w < check.x) || (room.x > check.x + check.w) || (room.y + room.h < check.y) 
+            || (room.y > check.y + check.h))) 
+            
+            return 1;
+            
+        }
+
+        return 0;
+    }
+    
+    void validaSalas () {
+    	
+    	int i=0;
+    	int j=0;
+    	
+        for ( i = 0; i < 10; i++) {
+        	
+            for ( j = 0; j < this.rooms.length; j++) {
+            	
+                Sala room = tmp.salas[j];
+                
+                while (1) {
+                	
+                    var old_position = {
+                        x: room.x,
+                        y: room.y
+                    };
+                    
+                    if (room.x > 1) room.x--;
+                    if (room.y > 1) room.y--;
+                    
+                    if ((room.x == 1) && (room.y == 1)) break;
+                    
+                    if (validaConflitoSala(room, j)) {
+                    	
+                        room.x = old_position.x;
+                        room.y = old_position.y;
+                        
+                        break;
+                    }
+                    
+                }
+            }
+        }
+    }
+    
+    
+
 Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy) {
 
 
@@ -55,7 +113,8 @@ Labirinto CriaSalas(Labirinto lab){
 
         Labirinto tmp = lab;
         
- for (i = 0; i < room_count; i++) {
+        //Cria Salas Aleatorias e mete no labirinto
+ 	for (i = 0; i < room_count; i++) {
  	
            Sala room;
 
@@ -64,7 +123,7 @@ Labirinto CriaSalas(Labirinto lab){
             room.w = aleatorio(min_size, max_size,i);
             room.h = aleatorio(min_size, max_size,i);
 
-            if (DoesCollide(room)) {
+            if (validaConflitoSala(room,-1)) {
                 i--;
                 continue;
             }
@@ -74,23 +133,28 @@ Labirinto CriaSalas(Labirinto lab){
 
             tmp.salas[i]=room;
             
-        } //fim salas
+        } //fim criação de salas
         
         SquashRooms(); //compacta salas
         
          for (i = 0; i < room_count; i++) {
          	
             Sala roomA = tmp.salas[i];
+            
             Sala roomB = FindClosestRoom(roomA);
 
             Coordenada pointA  = {
+            	
                 x: aleatorio(roomA.x, roomA.x + roomA.w,1),
                 y: aleatorio(roomA.y, roomA.y + roomA.h,2)
+                
             };
             
             Coordenada pointB = {
+            	
                 x: aleatorio(roomB.x, roomB.x + roomB.w,3),
                 y: aleatorio(roomB.y, roomB.y + roomB.hm,4)
+                
             };
 
 
@@ -114,6 +178,7 @@ Labirinto CriaSalas(Labirinto lab){
         } // Fim Procesamento das  Salas
         
         
+        //Por Cada Sala coloca o chao
         for (i = 0; i < room_count; i++) {
             Sala room = tmp.salas[i];
             for (var x = room.x; x < room.x + room.w; x++) {
@@ -121,7 +186,7 @@ Labirinto CriaSalas(Labirinto lab){
                     tmp.celula[x][y].tipo = TipoCelula_CHAO;
                 }
             }
-        } // Fim preenchimento Chao
+        } // Fim preenchimento
         
         
         for ( x = 0; x < tmp.tamx; x++) {
