@@ -18,8 +18,6 @@
         mid.x=room.x + (room.w / 2);
         mid.y=room.y + (room.h / 2);
         
-
-        
         int closest_distance = 1000;
         
         for (i = 0; i < 20; i++) {
