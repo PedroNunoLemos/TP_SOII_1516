@@ -7,6 +7,49 @@
 
 //http://jsfiddle.net/bigbadwaffle/YeazH/
 
+ Sala devolveSalaMaisPerto (Sala room) {
+ 	
+ 	int i = 0;
+ 	int  distance=0;
+ 	
+        Coordenada mid;
+        Sala closest;        
+        
+        mid.x=room.x + (room.w / 2);
+        mid.y=room.y + (room.h / 2);
+        
+
+        
+        int closest_distance = 1000;
+        
+        for (i = 0; i < 20; i++) {
+        	
+            Sala check = tmp.salas[i];
+            
+            if (check == room) continue;
+            
+            Coordenada check_mid;
+            
+            check_mid.x: check.x + (check.w / 2);
+            check_mid.y: check.y + (check.h / 2);
+            
+            
+            distance = Math.min(Math.abs(mid.x - check_mid.x) - (room.w / 2) - (check.w / 2), 
+            Math.abs(mid.y - check_mid.y) - (room.h / 2) - (check.h / 2));
+            
+            if (distance < closest_distance) {
+            	
+                closest_distance = distance;
+                closest = check;
+                
+            }
+            
+        }
+        
+        return closest;
+        
+    }
+
 int validaConflitoSala (Sala room, int ign) {
    	
    	int i = 0;
