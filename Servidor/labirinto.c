@@ -5,6 +5,8 @@
 #include "labirinto.h"
 #include "uteis.h"
 
+//http://jsfiddle.net/bigbadwaffle/YeazH/
+
 Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy) {
 
 
@@ -94,7 +96,7 @@ Labirinto  CriaSala(int inix, int iniy, Labirinto lab, int seed) {
 					novacel.tipo = TipoCelula_CHAO;
 			}
 
-			// fim definição tipo de celula
+			// fim definiÃ§Ã£o tipo de celula
 
 
 			//mete no labirinto a nova celula 
