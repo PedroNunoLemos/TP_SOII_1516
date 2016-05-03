@@ -18,8 +18,6 @@
 #endif
 
 
-EXTERN_C{
-
 typedef enum tipocelula {
 
 	//Celula representa espaço vazio no labirinto
@@ -46,5 +44,3 @@ typedef struct DLL_IMP_API _celula
 } Celula;
 
 
-
-}
