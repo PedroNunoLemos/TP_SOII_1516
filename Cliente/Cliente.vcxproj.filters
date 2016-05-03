@@ -15,25 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Servidor\mapa.c">
+    <ClCompile Include="consola.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Servidor\tui.c">
+    <ClCompile Include="mapa.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Servidor\consola.c">
+    <ClCompile Include="tui.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Servidor\mapa.h">
+    <ClInclude Include="consola.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Servidor\tui.h">
+    <ClInclude Include="mapa.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Servidor\consola.h">
+    <ClInclude Include="tui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Debug\Controlador.lib" />
   </ItemGroup>
 </Project>

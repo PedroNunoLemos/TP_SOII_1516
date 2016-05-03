@@ -1,27 +1,50 @@
 #pragma once
 
 
+#ifdef DLL_EXPORTS
+#define DLL_IMP_API __declspec(dllexport)
+#else
+#define DLL_IMP_API __declspec(dllimport)
+#endif
+
+#ifdef UNICODE
+#define tstring wstring
+#else
+#define tstring string
+#endif
+
+
 #include "coordenada.h"
 
-typedef enum {
+extern	"C" {
 
-	//Celula representa espaço vazio no labirinto
-	TipoCelula_VAZIO,
+	typedef enum tipocelula {
 
-	//Celula representa uma parede no labirinto
-	TipoCelula_PAREDE,
+		//Celula representa espaço vazio no labirinto
+		TipoCelula_VAZIO,
 
-	//Celula repesenta uma porta
-	TipoCelula_PORTA,
+		//Celula representa uma parede no labirinto
+		TipoCelula_PAREDE,
 
-	//Celula representa o chao
-	TipoCelula_CHAO,
+		//Celula repesenta uma porta
+		TipoCelula_PORTA,
 
-} TipoCelula;
+		//Celula representa o chao
+		TipoCelula_CHAO,
 
-typedef struct
-{
-	TipoCelula tipo;
-	Coordenada ponto;
+	} TipoCelula;
 
-} Celula;
+
+
+	typedef struct _celula
+	{
+		TipoCelula tipo;
+		Coordenada ponto;
+
+	}Celula;
+
+	extern DLL_IMP_API _celula Celula;
+
+
+
+}

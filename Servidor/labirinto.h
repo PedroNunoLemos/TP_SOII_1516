@@ -1,6 +1,7 @@
 #pragma once
 
-#include "celula.h"
+
+#include "..\Controlador\celula.h"
 
 #define MAXTAMX 100
 #define MAXTAMY 100

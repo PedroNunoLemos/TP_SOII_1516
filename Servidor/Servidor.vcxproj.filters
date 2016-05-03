@@ -15,45 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="servico.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="labirinto.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="uteis.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="jogo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="celula.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="constantes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="coordenada.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="jogador.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="labirinto.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="monstros.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="objectos.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="uteis.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="jogo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

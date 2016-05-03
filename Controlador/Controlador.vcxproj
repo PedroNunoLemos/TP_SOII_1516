@@ -18,6 +18,22 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="jogo.c" />
+    <ClCompile Include="principal.cpp" />
+    <ClCompile Include="uteis.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="celula.h" />
+    <ClInclude Include="constantes.h" />
+    <ClInclude Include="coordenada.h" />
+    <ClInclude Include="jogador.h" />
+    <ClInclude Include="jogo.h" />
+    <ClInclude Include="monstro.h" />
+    <ClInclude Include="objecto.h" />
+    <ClInclude Include="principal.h" />
+    <ClInclude Include="uteis.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F6D3B8CF-D60E-43C5-B915-C81487EDD560}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
