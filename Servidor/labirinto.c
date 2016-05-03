@@ -6,7 +6,7 @@
 
 
 //Devolve a Sala mais perto 
-Sala devolveSalaMaisPerto(Labirinto lab, Sala sala) {
+Sala devolveSalaMaisPerto(Labirinto *lab, Sala sala) {
 
 	int i = 0;
 	int  distancia = 0;
@@ -19,11 +19,18 @@ Sala devolveSalaMaisPerto(Labirinto lab, Sala sala) {
 
 	int maisPerto_distancia = 1000;
 
-	for (i = 0; i < 20; i++) {
+	for (i = 0; i < lab->tamsalas; i++) {
 
-		Sala salatmp = lab.salas[i];
+		Sala salatmp = lab->salas[i];
 
-		if (&salatmp == &sala) continue;
+		if (
+
+			salatmp.x == sala.x &&
+			salatmp.y == sala.y &&
+			salatmp.w == sala.w &&
+			salatmp.h == sala.h 
+
+			) continue;
 
 		Coordenada salatmp_meio;
 
@@ -48,18 +55,18 @@ Sala devolveSalaMaisPerto(Labirinto lab, Sala sala) {
 }
 
 //Valida Sala sobreposta
-int validaConflitoSala(Labirinto lab, Sala sala, int ign) {
+int validaConflitoSala(Labirinto *lab, Sala *sala, int ign) {
 
 	int i = 0;
 
-	for (i = 0; i < 20; i++) {
+	for (i = 0; i < lab->tamsalas; i++) {
 
 		if (i == ign) continue;
 
-		Sala salatmp = lab.salas[i];
+		Sala salatmp = lab->salas[i];
 
-		if (!((sala.x + sala.w < salatmp.x) || (sala.x > salatmp.x + salatmp.w) || (sala.y + sala.h < salatmp.y)
-			|| (sala.y > salatmp.y + salatmp.h)))
+		if (!((sala->x + sala->w < salatmp.x) || (sala->x > salatmp.x + salatmp.w) || (sala->y + sala->h < salatmp.y)
+			|| (sala->y > salatmp.y + salatmp.h)))
 
 			return 1;
 
@@ -69,18 +76,18 @@ int validaConflitoSala(Labirinto lab, Sala sala, int ign) {
 }
 
 //Corrige as salas e ajusta as posicoes
-Labirinto corrigeSalas(Labirinto lab) {
+Labirinto corrigeSalas(Labirinto *lab) {
 
 	int i = 0;
 	int j = 0;
-	
-	Labirinto tmp=lab;
-	
+
+	Labirinto *tmp = lab;
+
 	for (i = 0; i < 10; i++) {
 
-		for (j = 0; j < tmp.tamsalas; j++) {
+		for (j = 0; j < tmp->tamsalas; j++) {
 
-			Sala sala = tmp.salas[j];
+			Sala sala = tmp->salas[j];
 
 			while (1) {
 
@@ -94,7 +101,7 @@ Labirinto corrigeSalas(Labirinto lab) {
 
 				if ((sala.x == 1) && (sala.y == 1)) break;
 
-				if (validaConflitoSala(tmp, sala, j)) {
+				if (validaConflitoSala(&tmp, &sala, j)) {
 
 					sala.x = posicaoAntiga.x;
 					sala.y = posicaoAntiga.y;
@@ -103,28 +110,29 @@ Labirinto corrigeSalas(Labirinto lab) {
 				}
 
 			}
-			
-			tmp.salas[j]=sala;
+
+			tmp->salas[j] = sala;
 		}
 	}
-	
-	return tmp;
+
+	return *tmp;
 }
 
 
 //Metodo que cria as salas no labirinto
 Labirinto CriaSalas(Labirinto lab) {
 
-	int numSalas = 20;
-	
+	int numSalas = MAXSALAS;
+
 	int  tamMin = 5;
 	int  tamMax = 15;
-	
+
 	int i = 0;
 	int x = 0;
 	int y = 0;
 
 	Labirinto tmp = lab;
+	numSalas = tmp.tamsalas;
 
 	//Cria Salas Aleatorias e mete no labirinto
 	for (i = 0; i < numSalas; i++) {
@@ -137,7 +145,7 @@ Labirinto CriaSalas(Labirinto lab) {
 		sala.w = aleatorio(tamMin, tamMax, i);
 		sala.h = aleatorio(tamMin, tamMax, i);
 
-		if (validaConflitoSala(tmp, sala, -1)) {
+		if (validaConflitoSala(&tmp, &sala, -1) == 1) {
 			i--;
 			continue;
 		}
@@ -149,14 +157,14 @@ Labirinto CriaSalas(Labirinto lab) {
 
 	} //fim criação de salas
 
-	tmp=corrigeSalas(tmp); //corrige a posicao das salas geradas anteriormente
+	tmp = corrigeSalas(&tmp); //corrige a posicao das salas geradas anteriormente
 
 	//Criamos as portas/Passagens
 	for (i = 0; i < numSalas; i++) {
 
 		Sala salaA = tmp.salas[i];
 
-		Sala salaB = devolveSalaMaisPerto(tmp, salaA);
+		Sala salaB = devolveSalaMaisPerto(&tmp, salaA);
 
 		Coordenada pointA;
 
@@ -220,7 +228,7 @@ Labirinto CriaSalas(Labirinto lab) {
 }
 
 //Metodo principal que cria o labrinto de tamanho tamx,tamy
-Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy) {
+Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy,int salas) {
 
 
 	int x = 0;
@@ -234,7 +242,8 @@ Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy) {
 
 	tmp.tamx = tamx;
 	tmp.tamy = tamy;
-	tmp.tamsalas = 20;
+	tmp.tamsalas = salas;
+
 
 	for (x = 0; x < tamx; x++)
 	{

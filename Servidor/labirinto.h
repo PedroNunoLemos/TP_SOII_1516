@@ -6,7 +6,7 @@
 
 #define MAXTAMX 100
 #define MAXTAMY 100
-#define MAXSALAS 40
+#define MAXSALAS 20
 
 
 typedef struct {
@@ -33,7 +33,8 @@ typedef struct
 
 //metodos do labirinto
 
-//Cria Labirinto
-Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy);
 
-Labirinto CriaSalas(Labirinto lab);
+//Cria Labirinto
+Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy, int salas);
+
+
