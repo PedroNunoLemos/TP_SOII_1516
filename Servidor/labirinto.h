@@ -3,6 +3,7 @@
 
 #include "..\Controlador\celula.h"
 
+
 #define MAXTAMX 100
 #define MAXTAMY 100
 #define MAXSALAS 40

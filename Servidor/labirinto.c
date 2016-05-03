@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "labirinto.h"
-#include "uteis.h"
+#include "..\Controlador\uteis.h"
 
 //http://jsfiddle.net/bigbadwaffle/YeazH/
 
