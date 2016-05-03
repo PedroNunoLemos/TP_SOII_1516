@@ -4,12 +4,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cliente", "Cliente\Cliente.vcxproj", "{725EC97B-9538-4957-AB46-69C9FBDD312B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F6D3B8CF-D60E-43C5-B915-C81487EDD560} = {F6D3B8CF-D60E-43C5-B915-C81487EDD560}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Controlador", "Controlador\Controlador.vcxproj", "{F6D3B8CF-D60E-43C5-B915-C81487EDD560}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Servidor", "Servidor\Servidor.vcxproj", "{ADF43E2A-6826-4280-ACEE-E4F454B69F2C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F6D3B8CF-D60E-43C5-B915-C81487EDD560} = {F6D3B8CF-D60E-43C5-B915-C81487EDD560}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monstros", "Monstros\Monstros.vcxproj", "{42F52863-59E2-40A5-9549-5DF50C22A20E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monstro", "Monstros\Monstros.vcxproj", "{42F52863-59E2-40A5-9549-5DF50C22A20E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F6D3B8CF-D60E-43C5-B915-C81487EDD560} = {F6D3B8CF-D60E-43C5-B915-C81487EDD560}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

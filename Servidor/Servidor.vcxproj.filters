@@ -18,6 +18,9 @@
     <ClCompile Include="labirinto.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="servidormain.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="labirinto.h">
