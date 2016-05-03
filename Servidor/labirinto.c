@@ -151,7 +151,7 @@ Labirinto CriaSalas(Labirinto lab) {
 
 	tmp=corrigeSalas(tmp); //corrige a posicao das salas geradas anteriormente
 
-	//preenchemos o chao dentro das salas
+	//Criamos as portas/Passagens
 	for (i = 0; i < numSalas; i++) {
 
 		Sala salaA = tmp.salas[i];
@@ -183,10 +183,10 @@ Labirinto CriaSalas(Labirinto lab) {
 
 			}
 
-			tmp.celula[pointB.x][pointB.y].tipo = TipoCelula_CHAO;
-
+			//tmp.celula[pointB.x][pointB.y].tipo = TipoCelula_CHAO;
+			tmp.celula[pointB.x][pointB.y].tipo = TipoCelula_PORTA;
 		}
-	} // Fim Procesamento das  Salas
+	} // Fim Processamento das portas/passagens Salas
 
 
 	//Por Cada Sala coloca o chao
@@ -197,7 +197,7 @@ Labirinto CriaSalas(Labirinto lab) {
 				tmp.celula[x][y].tipo = TipoCelula_CHAO;
 			}
 		}
-	} // Fim preenchimento
+	} // Fim preenchimento chao das salas
 
 
 	//Colocamos as Paredes nas Salas
