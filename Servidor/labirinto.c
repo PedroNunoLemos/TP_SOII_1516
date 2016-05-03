@@ -65,9 +65,11 @@ int validaConflitoSala(Labirinto *lab, Sala *sala, int ign) {
 
 		Sala salatmp = lab->salas[i];
 
-		if (!((sala->x + sala->w < salatmp.x) || (sala->x > salatmp.x + salatmp.w) || (sala->y + sala->h < salatmp.y)
+		if (!(
+			(sala->x + sala->w < salatmp.x) 
+			|| (sala->x > salatmp.x + salatmp.w) 
+			|| (sala->y + sala->h < salatmp.y)
 			|| (sala->y > salatmp.y + salatmp.h)))
-
 			return 1;
 
 	}
