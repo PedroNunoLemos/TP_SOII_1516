@@ -28,6 +28,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Debug\Controlador.lib" />
+    <Library Include="..\x64\Debug\Controlador.lib" />
   </ItemGroup>
 </Project>

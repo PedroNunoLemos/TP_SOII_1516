@@ -6,40 +6,42 @@
 
 
 //Devolve a Sala mais perto 
-Sala devolveSalaMaisPerto(Labirinto *lab, Sala sala) {
+Sala devolveSalaMaisPerto(Labirinto *lab, Sala *sala) {
 
 	int i = 0;
 	int  distancia = 0;
 
-	Coordenada meio;
-	Sala maisPerto;
+	Labirinto *aux = lab;
 
-	meio.x = sala.x + (sala.w / 2);
-	meio.y = sala.y + (sala.h / 2);
+	Coordenada meio;
+	Sala *maisPerto;
+
+	meio.x = sala->x + (sala->w / 2);
+	meio.y = sala->y + (sala->h / 2);
 
 	int maisPerto_distancia = 1000;
 
-	for (i = 0; i < lab->tamsalas; i++) {
+	for (i = 0; i < aux->tamsalas; i++) {
 
-		Sala salatmp = lab->salas[i];
+		Sala *salatmp = &(aux->salas[i]);
 
 		if (
 
-			salatmp.x == sala.x &&
-			salatmp.y == sala.y &&
-			salatmp.w == sala.w &&
-			salatmp.h == sala.h 
+			salatmp->x == sala->x &&
+			salatmp->y == sala->y &&
+			salatmp->w == sala->w &&
+			salatmp->h == sala->h
 
 			) continue;
 
 		Coordenada salatmp_meio;
 
-		salatmp_meio.x = salatmp.x + (salatmp.w / 2);
-		salatmp_meio.y = salatmp.y + (salatmp.h / 2);
+		salatmp_meio.x = salatmp->x + (salatmp->w / 2);
+		salatmp_meio.y = salatmp->y + (salatmp->h / 2);
 
 
-		distancia = min(abs(meio.x - salatmp_meio.x) - (sala.w / 2) - (salatmp.w / 2),
-			abs(meio.y - salatmp_meio.y) - (sala.h / 2) - (salatmp.h / 2));
+		distancia = min(abs(meio.x - salatmp_meio.x) - (sala->w / 2) - (salatmp->w / 2),
+			abs(meio.y - salatmp_meio.y) - (sala->h / 2) - (salatmp->h / 2));
 
 		if (distancia < maisPerto_distancia) {
 
@@ -50,7 +52,7 @@ Sala devolveSalaMaisPerto(Labirinto *lab, Sala sala) {
 
 	}
 
-	return maisPerto;
+	return *maisPerto;
 
 }
 
@@ -59,18 +61,27 @@ int validaConflitoSala(Labirinto *lab, Sala *sala, int ign) {
 
 	int i = 0;
 
-	for (i = 0; i < lab->tamsalas; i++) {
+	Labirinto *aux = lab;
+
+	for (i = 0; i < aux->tamsalas; i++) {
 
 		if (i == ign) continue;
 
-		Sala salatmp = lab->salas[i];
+		Sala *salatmp = &(aux->salas[i]);
 
 		if (!(
-			(sala->x + sala->w < salatmp.x) 
-			|| (sala->x > salatmp.x + salatmp.w) 
-			|| (sala->y + sala->h < salatmp.y)
-			|| (sala->y > salatmp.y + salatmp.h)))
+			(sala->x + sala->w < salatmp->x)
+			|| (sala->x > salatmp->x + salatmp->w)
+			|| (sala->y + sala->h < salatmp->y)
+			|| (sala->y > salatmp->y + salatmp->h)))
+		{
+
+
+
 			return 1;
+		}
+
+
 
 	}
 
@@ -89,31 +100,31 @@ Labirinto corrigeSalas(Labirinto *lab) {
 
 		for (j = 0; j < tmp->tamsalas; j++) {
 
-			Sala sala = tmp->salas[j];
+			Sala *sala = &(tmp->salas[j]);
 
 			while (1) {
 
 				Coordenada posicaoAntiga;
 
-				posicaoAntiga.x = sala.x;
-				posicaoAntiga.y = sala.y;
+				posicaoAntiga.x = sala->x;
+				posicaoAntiga.y = sala->y;
 
-				if (sala.x > 1) sala.x--;
-				if (sala.y > 1) sala.y--;
+				if (sala->x > 1) sala->x--;
+				if (sala->y > 1) sala->y--;
 
-				if ((sala.x == 1) && (sala.y == 1)) break;
+				if ((sala->x == 1) && (sala->y == 1)) break;
 
 				if (validaConflitoSala(&tmp, &sala, j)) {
 
-					sala.x = posicaoAntiga.x;
-					sala.y = posicaoAntiga.y;
+					sala->x = posicaoAntiga.x;
+					sala->y = posicaoAntiga.y;
 
 					break;
 				}
 
 			}
 
-			tmp->salas[j] = sala;
+			tmp->salas[j] = *sala;
 		}
 	}
 
@@ -139,34 +150,34 @@ Labirinto CriaSalas(Labirinto lab) {
 	//Cria Salas Aleatorias e mete no labirinto
 	for (i = 0; i < numSalas; i++) {
 
-		Sala sala;
+		Sala *sala = malloc(sizeof(Sala));
 
-		sala.x = aleatorio(1, tmp.tamx - tamMax - 1, i);
-		sala.y = aleatorio(1, tmp.tamx - tamMax - 1, i);
+		sala->x = aleatorio(1, tmp.tamx - tamMax - 1, i);
+		sala->y = aleatorio(1, tmp.tamx - tamMax - 1, i);
 
-		sala.w = aleatorio(tamMin, tamMax, i);
-		sala.h = aleatorio(tamMin, tamMax, i);
+		sala->w = aleatorio(tamMin, tamMax, i);
+		sala->h = aleatorio(tamMin, tamMax, i);
 
 		if (validaConflitoSala(&tmp, &sala, -1) == 1) {
 			i--;
 			continue;
 		}
 
-		sala.w--;
-		sala.h--;
+		sala->w--;
+		sala->h--;
 
-		tmp.salas[i] = sala;
+		tmp.salas[i] = *sala;
 
 	} //fim criação de salas
 
-	tmp = corrigeSalas(&tmp); //corrige a posicao das salas geradas anteriormente
+	//tmp = corrigeSalas(&tmp); //corrige a posicao das salas geradas anteriormente
 
 	//Criamos as portas/Passagens
 	for (i = 0; i < numSalas; i++) {
 
 		Sala salaA = tmp.salas[i];
 
-		Sala salaB = devolveSalaMaisPerto(&tmp, salaA);
+		Sala salaB = devolveSalaMaisPerto(&tmp, &salaA);
 
 		Coordenada pointA;
 
@@ -230,7 +241,7 @@ Labirinto CriaSalas(Labirinto lab) {
 }
 
 //Metodo principal que cria o labrinto de tamanho tamx,tamy
-Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy,int salas) {
+Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy, int salas) {
 
 
 	int x = 0;
