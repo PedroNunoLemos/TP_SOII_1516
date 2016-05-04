@@ -6,7 +6,7 @@
 
 
 //Devolve a Sala mais perto 
-Sala devolveSalaMaisPerto(Labirinto *lab, Sala *sala) {
+Sala* devolveSalaMaisPerto(Labirinto *lab, Sala *sala) {
 
 	int i = 0;
 	int  distancia = 0;
@@ -14,7 +14,10 @@ Sala devolveSalaMaisPerto(Labirinto *lab, Sala *sala) {
 	Labirinto *aux = lab;
 
 	Coordenada meio;
-	Sala *maisPerto;
+	Sala *maisPerto = malloc(sizeof(Sala));
+
+	maisPerto = sala;
+
 
 	meio.x = sala->x + (sala->w / 2);
 	meio.y = sala->y + (sala->h / 2);
@@ -52,7 +55,7 @@ Sala devolveSalaMaisPerto(Labirinto *lab, Sala *sala) {
 
 	}
 
-	return *maisPerto;
+	return maisPerto;
 
 }
 
@@ -175,19 +178,19 @@ Labirinto CriaSalas(Labirinto lab) {
 	//Criamos as portas/Passagens
 	for (i = 0; i < numSalas; i++) {
 
-		Sala salaA = tmp.salas[i];
+		Sala *salaA = &(tmp.salas[i]);
 
-		Sala salaB = devolveSalaMaisPerto(&tmp, &salaA);
+		Sala *salaB = devolveSalaMaisPerto(&tmp, salaA);
 
 		Coordenada pointA;
 
-		pointA.x = aleatorio(salaA.x, salaA.x + salaA.w, 1);
-		pointA.y = aleatorio(salaA.y, salaA.y + salaA.h, 2);
+		pointA.x = aleatorio(salaA->x, salaA->x + salaA->w, 1);
+		pointA.y = aleatorio(salaA->y, salaA->y + salaA->h, 2);
 
 		Coordenada pointB;
 
-		pointB.x = aleatorio(salaB.x, salaB.x + salaB.w, 3);
-		pointB.y = aleatorio(salaB.y, salaB.y + salaB.h, 4);
+		pointB.x = aleatorio(salaB->x, salaB->x + salaB->w, 3);
+		pointB.y = aleatorio(salaB->y, salaB->y + salaB->h, 4);
 
 		while ((pointB.x != pointA.x) || (pointB.y != pointA.y)) {
 
@@ -212,9 +215,9 @@ Labirinto CriaSalas(Labirinto lab) {
 
 	//Por Cada Sala coloca o chao
 	for (i = 0; i < numSalas; i++) {
-		Sala sala = tmp.salas[i];
-		for (x = sala.x; x < sala.x + sala.w; x++) {
-			for (y = sala.y; y < sala.y + sala.h; y++) {
+		Sala *sala = &(tmp.salas[i]);
+		for (x = sala->x; x < sala->x + sala->w; x++) {
+			for (y = sala->y; y < sala->y + sala->h; y++) {
 				tmp.celula[x][y].tipo = TipoCelula_CHAO;
 			}
 		}
