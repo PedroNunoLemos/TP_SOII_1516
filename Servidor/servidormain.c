@@ -4,127 +4,138 @@
 
 
 
-#include <windows.h>
 
-LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
+Labirinto lab;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+LRESULT CALLBACK WindProcedure(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+	LPSTR lpCmdLine, int nCmdShow)
 {
-     static TCHAR szAppName[] = TEXT ("AltWind") ;
-     HWND         hwnd ;
-     MSG          msg ;
-     WNDCLASS     wndclass ;
-     
-     wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
-     wndclass.lpfnWndProc   = WndProc ;
-     wndclass.cbClsExtra    = 0 ;
-     wndclass.cbWndExtra    = 0 ;
-     wndclass.hInstance     = hInstance ;
-     wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
-     wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-     wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
-     wndclass.lpszMenuName  = NULL ;
-     wndclass.lpszClassName = szAppName ;
-     
-     if (!RegisterClass (&wndclass))
-     {
-          MessageBox (NULL, TEXT ("Program requires Windows NT!"), 
-                      szAppName, MB_ICONERROR) ;
-          return 0 ;
-     }
-     
-     hwnd = CreateWindow (szAppName, TEXT ("Alternate and Winding Fill Modes"),
-                          WS_OVERLAPPEDWINDOW,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          NULL, NULL, hInstance, NULL) ;
-     
-     ShowWindow (hwnd, iCmdShow) ;
-     UpdateWindow (hwnd) ;
-     
-     while (GetMessage (&msg, NULL, 0, 0))
-     {
-          TranslateMessage (&msg) ;
-          DispatchMessage (&msg) ;
-     }
-     return msg.wParam ;
-}
-
-LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-     static POINT aptFigure [10] = { 10,70, 50,70, 50,10, 90,10, 90,50,
-                                     30,50, 30,90, 70,90, 70,30, 10,30 };
-     static int   cxClient, cyClient ;
-     HDC          hdc ;
-     int          i ;
-     PAINTSTRUCT  ps ;
-     POINT        apt[10] ;
-     
-     switch (message)
-     {
-     case WM_SIZE:
-          cxClient = LOWORD (lParam) ;
-          cyClient = HIWORD (lParam) ;
-          return 0 ;
-
-     case WM_PAINT:
-          hdc = BeginPaint (hwnd, &ps) ;
-
-          SelectObject (hdc, GetStockObject (GRAY_BRUSH)) ;
-
-          for (i = 0 ; i < 10 ; i++)
-          {
-               apt[i].x = cxClient * aptFigure[i].x / 200 ;
-               apt[i].y = cyClient * aptFigure[i].y / 100 ;
-          }
-
-          SetPolyFillMode (hdc, ALTERNATE) ;
-          Polygon (hdc, apt, 10) ;
-
-          for (i = 0 ; i < 10 ; i++)
-          {
-               apt[i].x += cxClient / 2 ;
-          }
-
-          SetPolyFillMode (hdc, WINDING) ;
-          Polygon (hdc, apt, 10) ;
-          
-          EndPaint (hwnd, &ps) ;
-          return 0 ;
-          
-     case WM_DESTROY:
-          PostQuitMessage (0) ;
-          return 0 ;
-     }
-     return DefWindowProc (hwnd, message, wParam, lParam) ;
-}
-
-/*
-int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int nCmdShow)
-{
+	WNDCLASSEX  WndCls;
+	static char szAppName[] = "ExoBrush";
+	MSG         Msg;
 
 
+	lab.tamx = 70;
+	lab.tamy = 70;
 
-	Labirinto lab;
+	lab = CriaLabirinto(lab, 70, 70, 5);
 
-	char buffer[MAXTAMY + 4];
-	int x = 0;
-	int y = 0;
 
-	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
+	WndCls.cbSize = sizeof(WndCls);
+	WndCls.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
+	WndCls.lpfnWndProc = WindProcedure;
+	WndCls.cbClsExtra = 0;
+	WndCls.cbWndExtra = 0;
+	WndCls.hInstance = hInstance;
+	WndCls.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	WndCls.hCursor = LoadCursor(NULL, IDC_ARROW);
+	WndCls.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	WndCls.lpszMenuName = NULL;
+	WndCls.lpszClassName = szAppName;
+	WndCls.hIconSm = LoadIcon(hInstance, IDI_APPLICATION);
 
-	if (GetLastError() == ERROR_ALREADY_EXISTS)
+	RegisterClassEx(&WndCls);
+
+	CreateWindowEx(WS_EX_OVERLAPPEDWINDOW,
+		szAppName, TEXT("GDI Brushes Fundamentals"),
+		WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+		CW_USEDEFAULT, CW_USEDEFAULT, 420, 340,
+		NULL, NULL, hInstance, NULL);
+
+	while (GetMessage(&Msg, NULL, 0, 0))
 	{
-		MessageBox(NULL, TEXT("_"), TEXT("oups"), MB_OK);
-		CloseHandle(hMutex);
-		return -1;
+		TranslateMessage(&Msg);
+		DispatchMessage(&Msg);
 	}
 
-
-	lab = CriaLabirinto(lab, 70, 70, 10);
-
-
-	return 0;
+	return (int)(Msg.wParam);
 }
-*/
+
+LRESULT CALLBACK WindProcedure(HWND hWnd, UINT Msg,
+	WPARAM wParam, LPARAM lParam)
+{
+	HDC         hDC;
+	PAINTSTRUCT Ps;
+	HBRUSH      NewBrush;
+
+
+
+	switch (Msg)
+	{
+	case WM_PAINT:
+		hDC = BeginPaint(hWnd, &Ps);
+
+
+		NewBrush = CreateSolidBrush(RGB(250, 25, 5));
+
+		SelectObject(hDC, NewBrush);
+
+
+		for (int k = 0; k < lab.tamsalas; k++) {
+			
+			Sala sal = lab.salas[k];
+
+			Rectangle(hDC, sal.x, sal.y, sal.x + sal.w, sal.y + sal.h);
+
+		}
+
+		for (int y = 0; y < lab.tamy; y++) {
+			for (int x = 0; x < lab.tamx; x++)
+			{
+
+				/*	Celula tile = lab.celula[x][y];
+
+					if (tile.tipo == TipoCelula_VAZIO) NewBrush = CreateSolidBrush(RGB(250, 25, 5));
+					else if (tile.tipo == TipoCelula_PAREDE) NewBrush = CreateSolidBrush(RGB(250, 25, 5));
+					else NewBrush = CreateSolidBrush(RGB(250, 25, 5));*/
+
+
+		}
+	}
+
+	//Rectangle(hDC, 20, 20, 250, 125);
+	DeleteObject(NewBrush);
+
+	EndPaint(hWnd, &Ps);
+	break;
+	case WM_DESTROY:
+		PostQuitMessage(WM_QUIT);
+		break;
+	default:
+		return DefWindowProc(hWnd, Msg, wParam, lParam);
+}
+return 0;
+}
+
+//
+//int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int nCmdShow)
+//{
+//
+//
+//
+//	Labirinto lab;
+//
+//	int x = 0;
+//	int y = 0;
+//
+//	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
+//
+//	if (GetLastError() == ERROR_ALREADY_EXISTS)
+//	{
+//		MessageBox(NULL, TEXT("_"), TEXT("oups"), MB_OK);
+//		CloseHandle(hMutex);
+//		return -1;
+//	}
+//	else
+//	{
+//		MessageBox(NULL, TEXT("_"), TEXT("OK"), MB_OK);
+//	}
+//
+//
+//	lab = CriaLabirinto(lab, 70, 70, 10);
+//
+//
+//	return 0;
+//}

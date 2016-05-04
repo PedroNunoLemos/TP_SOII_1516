@@ -155,21 +155,16 @@ Labirinto CriaSalas(Labirinto lab) {
 
 		Sala *sala = malloc(sizeof(Sala));
 
-		sala->x = aleatorio(1, tmp.tamx - tamMax - 1, i);
+		sala->x =i+ aleatorio(1, tmp.tamx - tamMax - 1, i);
 		sala->y = aleatorio(1, tmp.tamx - tamMax - 1, i);
 
 		sala->w = aleatorio(tamMin, tamMax, i);
 		sala->h = aleatorio(tamMin, tamMax, i);
-
-		if (validaConflitoSala(&tmp, &sala, -1) == 1) {
-			i--;
-			continue;
-		}
-
+		
 		sala->w--;
 		sala->h--;
 
-		tmp.salas[i] = *sala;
+		tmp.salas[i] = *(sala);
 
 	} //fim criação de salas
 
