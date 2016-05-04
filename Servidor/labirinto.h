@@ -2,6 +2,7 @@
 
 
 #include "..\Controlador\celula.h"
+#include "..\Controlador\uteis.h"
 
 
 #define MAXTAMX 100
