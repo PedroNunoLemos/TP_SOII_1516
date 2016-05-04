@@ -3,7 +3,7 @@
 
 //#include "labirinto.h"
 #include "tui.h"
-//#include "constantes.h"
+#include "..\Controlador\uteis.h"
 
 
 
@@ -14,6 +14,7 @@ int main() {
 	int curx = 0;
 	int cury = 0;
 
+	aleatorio(1, 2, 1);
 
 	//SetWindow(90, 90);
 

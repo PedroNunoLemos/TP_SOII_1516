@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <tchar.h>
 
+
 #ifdef DLL_EXPORTS
 #define DLL_IMP_API __declspec(dllexport)
 #else
@@ -14,12 +15,13 @@
 #define tstring string
 #endif
 
+
 #ifdef __cplusplus
 extern "C" {  // only need to export C interface if
 			  // used by C++ source code
 #endif
 
-	DLL_IMP_API int aleatorio(int min_num, int max_num, int seed);
+	__declspec(dllexport)  int aleatorio(int min_num, int max_num, int seed);
 
 #ifdef __cplusplus
 }
