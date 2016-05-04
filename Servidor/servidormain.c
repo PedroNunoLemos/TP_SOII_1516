@@ -37,10 +37,10 @@ WriteFile(hFile,buffer,sizeof(buffer),&dwWritten,0);
     for (int y = 0; y < lab.tamx; y++) {
             for (int  x = 0; x < lab.tamy ; x++) {
                 Celula tile = tmp.celulas[x][y];
-                if (tile == ) this.ctx.fillStyle = '#351330';
-                else if (tile == 1) this.ctx.fillStyle = '#64908A';
-                else this.ctx.fillStyle = '#424254';
-                this.ctx.fillRect(x * this.scale, y * this.scale, this.scale, this.scale);
+                if (tile == 0) this.ctx.fillStyle = '#351330'; //vazio
+                else if (tile == 1) this.ctx.fillStyle = '#64908A'; // chao
+                else this.ctx.fillStyle = '#424254'; // parede
+
             }
         }
 
