@@ -168,5 +168,28 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
       		lab.celula[salasLigadas[i].y][salasLigadas[i].x] = 2;//corredor
 	}
 
+//Coloca as paredes
+for(var y = 0; y < height; y++){
+    for(var x = 0; x < width; x++){
+        if(map[y][x] == 0){
+            var wall = false;
+            for(var yy = y-2; yy < y+2;yy++){
+                for(var xx = x-2; xx < x+2;xx++){ 
+                    if(xx > 0 && yy > 0 && xx < width && yy < height){
+                        if(map[yy][xx] == 1 || map[yy][xx] == 2){
+                            map[y][x] = 3;
+                            wall = true;
+                        }
+                    }
+                }
+                if(wall){ 
+                    break;
+                }                    
+            }
+        }
+    }        
+    
+} //fim paredes
+
 
 }
