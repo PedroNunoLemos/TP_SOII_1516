@@ -36,6 +36,6 @@ typedef struct
 
 
 //Cria Labirinto
-Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy, int salas);
+void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas);
 
 
