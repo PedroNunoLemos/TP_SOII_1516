@@ -136,6 +136,6 @@ return 0;
 //
 //	lab = CriaLabirinto(lab, 70, 70, 10);
 //
-//
+//	http://jsfiddle.net/loktar/Y9VtP/
 //	return 0;
 //}
