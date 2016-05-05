@@ -161,5 +161,12 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
         		}        
     		}
 	} // fim preechimento salas labirinto
+	
+	// coloca os corredores no labririnto
+	for(i = 0; i < cnt; i++)
+	{
+      		lab.celula[salasLigadas[i].y][salasLigadas[i].x] = 2;//corredor
+	}
+
 
 }
