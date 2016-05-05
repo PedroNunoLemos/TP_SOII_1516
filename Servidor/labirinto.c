@@ -18,6 +18,10 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
 	int x=0;
 	int y=0;
 	
+	int xx=0;
+	int yy=0;
+	
+	
 	
 	Sala *salasLigadas;
 	salasLigadas=malloc(sizeof(Sala));
