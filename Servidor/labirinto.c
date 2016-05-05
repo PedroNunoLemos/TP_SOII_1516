@@ -146,7 +146,17 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
     	
     	
     	
-	} // Fim ligação de Salas
+	} 
+	// Fim ligação das Salas
 
-	
+	// preenche as salas no labirinto
+for(i = 0; i < salas; i++){
+    for(var y = roomList[i].y; y < roomList[i].y + roomList[i].h; y++){
+        for(var x = roomList[i].x; x < roomList[i].x + roomList[i].w; x++){
+            //console.log(y + " : " + x);
+            map[y][x] = 1;
+        }        
+    }
+}
+
 }
