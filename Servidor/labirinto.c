@@ -17,6 +17,7 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
 	int cnt=0;
 	
 	Sala *salasLigadas;
+	salasLigadas=malloc(sizeof(Sala));
 	
 	lab=malloc(sizeof(Labirinto));
 	lab->tamx=tamx;
@@ -79,7 +80,7 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
            		numSala = floor((aleatorio(1,100,i+1)/100)*lab->tamsalas);
        		}
     
-       		Sala *salaB = lab->salas[numSala];
+       		 Sala *salaB = lab->salas[numSala];
     
    	//Aumentar o numero aumenta o corredor
    	//Diminuir o numero encolhe o corredor
@@ -102,7 +103,7 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
 
    	//Algoritimo drunken/lazy walk   
     	
-    	cnt=1;	
+    	cnt=0;	
     	
     	while (pontoB->x !== pontoA->x || pontoB.y !== pontoA.y){
         	
@@ -132,31 +133,31 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
         
         	//preenche ponteiro de salas ligadas
 		if(pontoB->x < tamx && pontoB->y < tamy){
+            	
+            		cnt++;
             		
-            		
-            		salasLigadas=malloc(sizeof(Sala)*cnt);
+            		salasLigadas=realloc(salasLigadas,sizeof(Sala)*cnt);
             		salasLigadas[cnt]->pontoB.x;
             		salasLigadas[cnt]->pontoB.y;
-
-			cnt++;
 			
 		}// fim ponteiro salas ligadas
 		
     	}// fim lazy walk
     	
     	
+    	free(pontoA);
+    	free(pontoB);
     	
-	} 
-	// Fim ligação das Salas
+	} // Fim ligação das Salas (i)
 
 	// preenche as salas no labirinto
-for(i = 0; i < salas; i++){
-    for(var y = roomList[i].y; y < roomList[i].y + roomList[i].h; y++){
-        for(var x = roomList[i].x; x < roomList[i].x + roomList[i].w; x++){
-            //console.log(y + " : " + x);
-            map[y][x] = 1;
-        }        
-    }
-}
+	for(i = 0; i < salas; i++){
+    		for(y = lab->salas[i].y; y < lab->salas[i].y + lab->salas[i].h; y++){
+        		for( x = lab->salas[i].x; x < lab->salas[i].x + lab->salas[i].w; x++){
+            		//console.log(y + " : " + x);
+            			lab->celula[y][x] = 1;
+        		}        
+    		}
+	} // fim preechimento salas labirinto
 
 }
