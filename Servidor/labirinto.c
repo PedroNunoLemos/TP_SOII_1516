@@ -169,27 +169,30 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
 	}
 
 //Coloca as paredes
-for(var y = 0; y < height; y++){
-    for(var x = 0; x < width; x++){
-        if(map[y][x] == 0){
-            var wall = false;
-            for(var yy = y-2; yy < y+2;yy++){
-                for(var xx = x-2; xx < x+2;xx++){ 
-                    if(xx > 0 && yy > 0 && xx < width && yy < height){
-                        if(map[yy][xx] == 1 || map[yy][xx] == 2){
-                            map[y][x] = 3;
-                            wall = true;
-                        }
-                    }
-                }
-                if(wall){ 
-                    break;
-                }                    
-            }
-        }
-    }        
-    
-} //fim paredes
+	for(y = 0; y < tamy; y++){
+	    for(x = 0; x < tamx; x++){
+	    	
+	        if(lab.celula[y][x] == 0){ //compara com vazio
+        	    int wall = 0;
+            		
+            		for(var yy = y-2; yy < y+2;yy++){
+                		for(var xx = x-2; xx < x+2;xx++){ 
+                    			if(xx > 0 && yy > 0 && xx < width && yy < height){
+                        			if(map[yy][xx] == 1 || map[yy][xx] == 2){
+                            				map[y][x] = 3;
+                            				wall = true;
+                        			}
+                    			}
+                		}
+                		
+                		if (wall){ break; }
+            			
+            		}//fim yy
+            		
+        	} // fim percorrer labirinto
+    	} // fim x
+		
+	} //fim  y paredes
 
 
 }
