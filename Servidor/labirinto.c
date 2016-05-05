@@ -157,8 +157,7 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
 	for(i = 0; i < salas; i++){
     		for(y = lab->salas[i].y; y < lab->salas[i].y + lab->salas[i].h; y++){
         		for( x = lab->salas[i].x; x < lab->salas[i].x + lab->salas[i].w; x++){
-            		//console.log(y + " : " + x);
-            			lab->celula[y][x] = 1;
+            			lab->celula[y][x] = 1;//Chao
         		}        
     		}
 	} // fim preechimento salas labirinto
