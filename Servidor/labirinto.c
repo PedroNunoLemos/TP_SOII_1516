@@ -8,7 +8,7 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
 	
 	
 	int tamsalaw=10;
-	int tamsalah=10;
+	int tamsal=10;
 	int i=0;
 	int ok;
 	
@@ -19,14 +19,20 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
 	lab->tamsalas=salas;
 	
 	
-	for (i = 0 ; i < room_count; i++){
+	for (i = 0 ; i < salas; i++){
    		ok= false;
    		
    		while (!ok)
     		{
     			Sala *sala=malloc(sizeof(Sala));
-    			Sala->x=aleatorio(1,tamsalaw,)
-		
+    			
+    			Sala->x=floor((aleatorio(1,100,i)/100)*lab->tamx);
+			Sala->y=floor((aleatorio(1,100,i+1)/100)*lab->tamy);
+			
+			Sala->w=floor((aleatorio(1,tamsalaw,i+2)/100)*5);
+			Sala->h=floor((aleatorio(1,tamsalah,i+3)/100)*5);
+			
+			
 		}
 		
 	
