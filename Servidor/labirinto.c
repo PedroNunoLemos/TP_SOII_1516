@@ -11,7 +11,10 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
 	int tamsal=10;
 	int i=0;
 	int r = 0;
-	int ok;
+	int numSala=0;
+	int ok=0;
+	int  corr_ajustar=10;
+	int cnt=0;
 	
 	Sala *salasLigadas;
 	
@@ -66,59 +69,83 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
 	//liga  as salas com corredores e coloca no labirinto
 	
 	
-	for (i = 0; i < connectionCount; i++)
+	for (i = 0; i < salas; i++)
 	{
-   		var roomA = roomList[i],
-       		roomNum = i;
+   		Sala *salaA = lab->salas[i];
+       		
+       		numSala = i;
     
-       		while(roomNum == i){
-           		roomNum = ~~(Math.random()*roomList.length);
+       		while(numSala == i){
+           		numSala = floor((aleatorio(1,100,i+1)/100)*lab->tamsalas);
        		}
     
-       		roomB = roomList[roomNum];
+       		Sala *salaB = lab->salas[numSala];
     
-   	//Increasing this number will make hallways straighter
-   	//Decreasing this number will make halways skewer
-   	var sidestepChance = 10,
-       		pointA = {x : ~~(Math.random()*roomA.w) + roomA.x,
-                	 y : ~~(Math.random()*roomA.h) + roomA.y},
-                	 
-       		pointB = {x : ~~(Math.random()*roomB.w) + roomB.x,
-       			y : ~~(Math.random()*roomB.h) + roomB.y};
+   	//Aumentar o numero aumenta o corredor
+   	//Diminuir o numero encolhe o corredor
+   	
+   	 corr_ajustar  = 10;
+   	 
+       	Coordenada *pontoA;
+       	
+       	pontoA=malloc(sizeof(Coordenada));
+       	
+       	pontoA->x = floor((aleatorio(1,100,i+1)/100)*salaA->w)+salaA->x;
+       	pontoA->y = floor((aleatorio(1,100,i+1)/100)*salaA->h)+salaA->y;
+       	
+       	Coordenada *pontoB;
+       	
+       	pontoB=malloc(sizeof(Coordenada));
+       	
+       	pontoB->x = floor((aleatorio(1,100,i+1)/100)*salaB->w)+salaB->x;
+       	pontoB->y = floor((aleatorio(1,100,i+1)/100)*salaB->h)+salaB->y;
 
-   	//This is a type of drunken/lazy walk algorithm    
-    		
-    		while (pointB.x !== pointA.x || pointB.y !== pointA.y){
+   	//Algoritimo drunken/lazy walk   
+    	
+    	cnt=1;	
+    	
+    	while (pontoB->x !== pontoA->x || pontoB.y !== pontoA.y){
         	
-        	var num = Math.random()*100;
+        	int num = aleatorio(1,100,i+1));
       
-        	if (num < sidestepChance){
+        	if (num < corr_ajustar){
         		
-            		if (pointB.x !== pointA.x){
+            		if (pontoB->x !== pontoA->x){
             			
-                		if(pointB.x > pointA.x){
-                			pointB.x--;
+                		if(pontoB->x > pontoA->x){
+                			pontoB->x--;
                 		}else{
-                			pointB.x++;
+                			pontoB->x++;
                 		}
             			
             		}
         		
-        	}else if(pointB.y !== pointA.y){
+        	}else if(pontoB->y !== pontoA->y){
         		
-        		if(pointB.y > pointA.y){
-        			pointB.y--;
+        		if(pontoB->y > pontoA->y){
+        			pontoB->y--;
         		}else{
-        			pointB.y++;
+        			pontoB->y++;
         		}
         		
         	}
         
-		if(pointB.x < width && pointB.y < height){
-            		connectedCells.push({x:pointB.x, y:pointB.y});
+        	//preenche ponteiro de salas ligadas
+		if(pontoB->x < tamx && pontoB->y < tamy){
+            		
+            		
+            		salasLigadas=malloc(sizeof(Sala)*cnt);
+            		salasLigadas[cnt]->pontoB.x;
+            		salasLigadas[cnt]->pontoB.y;
+
+			cnt++;
 			
-		}
+		}// fim ponteiro salas ligadas
+		
     	}// fim lazy walk
+    	
+    	
+    	
 	} // Fim ligação de Salas
 
 	
