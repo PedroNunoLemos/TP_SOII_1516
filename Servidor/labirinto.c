@@ -165,27 +165,28 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas){
 	// coloca os corredores no labririnto
 	for(i = 0; i < cnt; i++)
 	{
-      		lab.celula[salasLigadas[i].y][salasLigadas[i].x] = 2;//corredor
+      		lab->celula[salasLigadas[i].y][salasLigadas[i].x] = 2;//corredor
 	}
 
 //Coloca as paredes
 	for(y = 0; y < tamy; y++){
 	    for(x = 0; x < tamx; x++){
 	    	
-	        if(lab.celula[y][x] == 0){ //compara com vazio
-        	    int wall = 0;
+	        if(lab->celula[y][x] == 0){ //compara com vazio
+        	   
+        	    int parede = 0;
             		
-            		for(var yy = y-2; yy < y+2;yy++){
-                		for(var xx = x-2; xx < x+2;xx++){ 
-                    			if(xx > 0 && yy > 0 && xx < width && yy < height){
-                        			if(map[yy][xx] == 1 || map[yy][xx] == 2){
-                            				map[y][x] = 3;
-                            				wall = true;
+            		for(yy = y-2; yy < y+2;yy++){
+                		for(xx = x-2; xx < x+2;xx++){ 
+                    			if(xx > 0 && yy > 0 && xx < tamx && yy < tamy){
+                        			if(lab->celula[yy][xx] == 1 || lab->celula[yy][xx] == 2){
+                            				lab->celula[y][x] = 3;// trocar por parede
+                            				parede = 1;
                         			}
                     			}
                 		}
                 		
-                		if (wall){ break; }
+                		if (parede){ break; }
             			
             		}//fim yy
             		
