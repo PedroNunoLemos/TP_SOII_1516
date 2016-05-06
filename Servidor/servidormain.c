@@ -5,7 +5,7 @@
 
 
 
-Labirinto lab;
+Labirinto *lab;
 
 LRESULT CALLBACK WindProcedure(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
@@ -17,10 +17,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	MSG         Msg;
 
 
-	lab.tamx = 70;
-	lab.tamy = 70;
 
-	lab = CriaLabirinto(lab, 70, 70, 5);
+	lab = CriaLabirinto(&lab, 70, 70, 15);
 
 
 	WndCls.cbSize = sizeof(WndCls);
@@ -41,7 +39,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	CreateWindowEx(WS_EX_OVERLAPPEDWINDOW,
 		szAppName, TEXT("GDI Brushes Fundamentals"),
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-		CW_USEDEFAULT, CW_USEDEFAULT, 420, 340,
+		CW_USEDEFAULT, CW_USEDEFAULT, 740, 440,
 		NULL, NULL, hInstance, NULL);
 
 	while (GetMessage(&Msg, NULL, 0, 0))
@@ -50,6 +48,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		DispatchMessage(&Msg);
 	}
 
+	free(lab);
 	return (int)(Msg.wParam);
 }
 
@@ -71,42 +70,49 @@ LRESULT CALLBACK WindProcedure(HWND hWnd, UINT Msg,
 		NewBrush = CreateSolidBrush(RGB(250, 25, 5));
 
 		SelectObject(hDC, NewBrush);
+		COLORREF color = RGB(255, 0, 0);
 
 
-		for (int k = 0; k < lab.tamsalas; k++) {
-			
-			Sala sal = lab.salas[k];
+		for (int x = 0; x < 10 ; x++) {
 
-			Rectangle(hDC, sal.x, sal.y, sal.x + sal.w, sal.y + sal.h);
+			Sala tile = lab->salas[x];
+
+
+			NewBrush = CreateSolidBrush(RGB(255, 125, 5));
+			SelectObject(hDC, NewBrush);
+
+	
+			Rectangle(hDC, tile.x, tile.y, tile.x+tile.w, tile.h+tile.y);
 
 		}
 
-		for (int y = 0; y < lab.tamy; y++) {
-			for (int x = 0; x < lab.tamx; x++)
+
+		for (int y = 0; y < lab->tamy; y++) {
+			for (int x = 0; x < lab->tamx; x++)
 			{
 
-				/*	Celula tile = lab.celula[x][y];
 
-					if (tile.tipo == TipoCelula_VAZIO) NewBrush = CreateSolidBrush(RGB(250, 25, 5));
-					else if (tile.tipo == TipoCelula_PAREDE) NewBrush = CreateSolidBrush(RGB(250, 25, 5));
-					else NewBrush = CreateSolidBrush(RGB(250, 25, 5));*/
+				/*		if (tile.tipo == TipoCelula_VAZIO) NewBrush = CreateSolidBrush(RGB(0, 0, 5));
+						else if (tile.tipo == TipoCelula_PAREDE) NewBrush = CreateSolidBrush(RGB(5, 25, 5));
+						else if (tile.tipo == TipoCelula_CHAO) NewBrush = CreateSolidBrush(RGB(25, 50, 0));*/
 
 
+
+			}
 		}
-	}
 
-	//Rectangle(hDC, 20, 20, 250, 125);
-	DeleteObject(NewBrush);
+		//Rectangle(hDC, 20, 20, 250, 125);
+		DeleteObject(NewBrush);
 
-	EndPaint(hWnd, &Ps);
-	break;
+		EndPaint(hWnd, &Ps);
+		break;
 	case WM_DESTROY:
 		PostQuitMessage(WM_QUIT);
 		break;
 	default:
 		return DefWindowProc(hWnd, Msg, wParam, lParam);
-}
-return 0;
+	}
+	return 0;
 }
 
 //

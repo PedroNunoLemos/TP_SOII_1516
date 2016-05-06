@@ -4,7 +4,24 @@
 #include "labirinto.h"
 #include "..\Controlador\uteis.h"
 
-void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
+
+int entre_valores(int value, int min, int max)
+{
+	return (value >= min) && (value <= max);
+}
+
+int salaOverlap(Sala *A, Sala* B)
+{
+	int xOverlap = entre_valores(A->x, B->x, B->x + B->w) ||
+		entre_valores(B->x, A->x, A->x + A->w);
+
+	int yOverlap = entre_valores(A->y, B->y, B->y + B->h) ||
+		entre_valores(B->y, A->y, A->y + A->h);
+
+	return xOverlap && yOverlap;
+}
+
+Labirinto* CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 
 
 	int tamsalaw = 10;
@@ -24,7 +41,8 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 
 
 	Coordenada *salasLigadas;
-	salasLigadas = malloc(sizeof(Coordenada));
+	salasLigadas = malloc(sizeof(Coordenada) * tamx * tamy);
+
 
 	lab = malloc(sizeof(Labirinto));
 	lab->tamx = tamx;
@@ -35,51 +53,64 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 	//inicializa labirinto
 	for (y = 0; y < tamy; y++) {
 		for (x = 0; x < tamx; x++) {
+
 			lab->celula[y][x].tipo = TipoCelula_VAZIO;
 			lab->celula[y][x].ponto.x = x;
 			lab->celula[y][x].ponto.y = y;
+
 		}
 	}
 
+	for (xx = 0; xx < salas; xx++) {
+
+		Sala* sala;
+		sala = malloc(sizeof(Sala));
+
+		sala->x = -1;
+		sala->y = -1;
+		sala->w = -1;
+		sala->h = -1;
+
+		lab->salas[xx] = *sala;
+
+	}
+
+
 	// cria salas no labirinto
 	for (i = 0; i < salas; i++) {
+
+		Sala *sala = malloc(sizeof(Sala));
+
 		ok = 0;
 
-		//cria sala aleatoria e procura espaço vazio no labirinto para colocar a sala
-		while (!ok)
+		do
 		{
-			Sala *sala = malloc(sizeof(Sala));
 
-			sala->x = floor((aleatorio(1, 100, i) / 100)*lab->tamx);
-			sala->y = floor((aleatorio(1, 100, i + 1) / 100)*lab->tamy);
+			sala->x = aleatorio(1, tamx - 1, i);
+			sala->y = aleatorio(1, tamx - 1, i);
 
-			sala->w = floor((aleatorio(1, tamsalaw, i + 2) / 100) * 5);
-			sala->h = floor((aleatorio(1, tamsalah, i + 3) / 100) * 5);
+			sala->w = aleatorio(3, 5, 3);
+			sala->h = aleatorio(3, 5, 7);
 
-			// check bounds    
-			if (sala->x + sala->w >= tamx || sala->y + sala->h >= tamy) {
-				continue;
-			}
 
-			// valida outras salas no labirinto
+			// valida confins
+			if (sala->x + sala->w >= tamx || sala->y + sala->h >= tamy)ok = 1;
 
 			for (r = 0; r < salas; r++) {
 
-				if (sala->x > lab->salas[r].x &&
-					sala->x < lab->salas[r].x + sala->w &&
-					sala->y > lab->salas[r].y &&
-					sala->y < lab->salas[r].y + sala->h)
-				{
-					ok = 0;
-					break;
-				}
+				if ((salaOverlap(sala, &lab->salas[r])))
+					ok = 1;
 			}
 
-			ok = 1;
 
-			lab->salas[i] = *sala;
+		} while (sala->x < 0 && sala->y < 0 && !ok);
 
-		} //fim criação e colocação de sala
+
+		// valida outras salas no labirinto
+
+		lab->salas[i] = *sala;
+
+		//fim criação e colocação de sala
 
 
 	} // fim criação de salas	
@@ -93,8 +124,10 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 
 		numSala = i;
 
+		int tn = 0;
 		while (numSala == i) {
-			numSala = floor((aleatorio(1, 100, i + 1) / 100)*lab->tamsalas);
+			numSala = aleatorio(1, lab->tamsalas, tn);
+			tn++;
 		}
 
 		Sala *salaB = &(lab->salas[numSala]);
@@ -108,15 +141,16 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 
 		pontoA = malloc(sizeof(Coordenada));
 
-		pontoA->x = floor((aleatorio(1, 100, i + 1) / 100)*salaA->w) + salaA->x;
-		pontoA->y = floor((aleatorio(1, 100, i + 1) / 100)*salaA->h) + salaA->y;
+
+		pontoA->x = aleatorio(salaA->x, salaA->x + salaA->w, 1);
+		pontoA->y = aleatorio(salaA->y, salaA->y + salaA->h, 2);
 
 		Coordenada *pontoB;
 
 		pontoB = malloc(sizeof(Coordenada));
 
-		pontoB->x = floor((aleatorio(1, 100, i + 1) / 100)*salaB->w) + salaB->x;
-		pontoB->y = floor((aleatorio(1, 100, i + 1) / 100)*salaB->h) + salaB->y;
+		pontoB->x = aleatorio(salaB->x, salaB->x + salaB->w, 3);
+		pontoB->y = aleatorio(salaB->y, salaB->y + salaB->h, 4);
 
 		//Algoritimo drunken/lazy walk   
 
@@ -151,14 +185,14 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 
 			}
 
+
 			//preenche ponteiro de salas ligadas
 			if (pontoB->x < tamx && pontoB->y < tamy) {
 
 				cnt++;
 
-				salasLigadas = realloc(salasLigadas, sizeof(Coordenada)*cnt);
-				salasLigadas[cnt].x = pontoB->x;
-				salasLigadas[cnt].y = pontoB->y;
+				//salasLigadas[cnt].x = pontoA->x;
+				//salasLigadas[cnt].y = pontoB->y;
 
 			}// fim ponteiro salas ligadas
 
@@ -167,8 +201,8 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 
 		free(pontoA);
 		free(pontoB);
-
 	} // Fim ligação das Salas (i)
+
 
 	// preenche as salas no labirinto
 	for (i = 0; i < salas; i++) {
@@ -179,11 +213,19 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 		}
 	} // fim preechimento salas labirinto
 
-	// coloca os corredores no labririnto
-	for (i = 0; i < cnt; i++)
+
+
+	  // coloca os corredores no labririnto
+/*	for (i = 0; i < cnt; i++)
 	{
-		lab->celula[salasLigadas[i].y][salasLigadas[i].x].tipo = TipoCelula_CHAO;//corredor
+		x = salasLigadas[i].x;
+		y = salasLigadas[i].y;
+
+		if (y > 1 && x > 1)
+			lab->celula[y][x].tipo = TipoCelula_CHAO;//corredor
 	}
+
+	*/
 
 	//Coloca as paredes
 	for (y = 0; y < tamy; y++) {
@@ -196,7 +238,7 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 				for (yy = y - 2; yy < y + 2; yy++) {
 					for (xx = x - 2; xx < x + 2; xx++) {
 						if (xx > 0 && yy > 0 && xx < tamx && yy < tamy) {
-							if (lab->celula[yy][xx].tipo == TipoCelula_CHAO ) {
+							if (lab->celula[yy][xx].tipo == TipoCelula_CHAO) {
 								//|| lab->celula[yy][xx] == 2
 
 								lab->celula[y][x].tipo = TipoCelula_PAREDE;// trocar por parede
@@ -214,5 +256,5 @@ void CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 
 	} //fim  y paredes
 
-
+	return lab;
 }
