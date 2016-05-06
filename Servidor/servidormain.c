@@ -77,6 +77,7 @@ LRESULT CALLBACK WindProcedure(HWND hWnd, UINT Msg,
 
 			Sala tile = lab->salas[x];
 
+			 
 
 			NewBrush = CreateSolidBrush(RGB(255, 125, 5));
 			SelectObject(hDC, NewBrush);

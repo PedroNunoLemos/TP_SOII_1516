@@ -204,6 +204,7 @@ Labirinto* CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas) {
 	} // Fim ligação das Salas (i)
 
 
+
 	// preenche as salas no labirinto
 	for (i = 0; i < salas; i++) {
 		for (y = lab->salas[i].y; y < lab->salas[i].y + lab->salas[i].h; y++) {
