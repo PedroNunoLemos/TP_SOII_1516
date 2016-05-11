@@ -18,7 +18,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 
-	lab = CriaLabirinto(&lab, 70, 70, 15);
+	lab = CriaLabirinto(70, 70, 6);
 
 
 	WndCls.cbSize = sizeof(WndCls);
@@ -73,32 +73,21 @@ LRESULT CALLBACK WindProcedure(HWND hWnd, UINT Msg,
 		COLORREF color = RGB(255, 0, 0);
 
 
-		for (int x = 0; x < 10 ; x++) {
-
-			Sala tile = lab->salas[x];
-
-			 
-
-			NewBrush = CreateSolidBrush(RGB(255, 125, 5));
-			SelectObject(hDC, NewBrush);
-
-	
-			Rectangle(hDC, tile.x, tile.y, tile.x+tile.w, tile.h+tile.y);
-
-		}
-
 
 		for (int y = 0; y < lab->tamy; y++) {
 			for (int x = 0; x < lab->tamx; x++)
 			{
 
+				Celula tile = lab->celula[x][y];
 
-				/*		if (tile.tipo == TipoCelula_VAZIO) NewBrush = CreateSolidBrush(RGB(0, 0, 5));
-						else if (tile.tipo == TipoCelula_PAREDE) NewBrush = CreateSolidBrush(RGB(5, 25, 5));
-						else if (tile.tipo == TipoCelula_CHAO) NewBrush = CreateSolidBrush(RGB(25, 50, 0));*/
+				if (tile.tipo == TipoCelula_VAZIO) NewBrush = CreateSolidBrush(RGB(255, 255, 255));
+				else if (tile.tipo == TipoCelula_PAREDE) NewBrush = CreateSolidBrush(RGB(5, 25, 5));
+				else if (tile.tipo == TipoCelula_CHAO) NewBrush = CreateSolidBrush(RGB(25, 50, 0));
+				else if (tile.tipo == TipoCelula_PORTA) NewBrush = CreateSolidBrush(RGB(25, 50, 0));
 
 
-
+				SelectObject(hDC, NewBrush);
+				Rectangle(hDC, x * 16, y * 16, (x * 16) + 2, (y * 16) + 2);
 			}
 		}
 
@@ -143,6 +132,6 @@ LRESULT CALLBACK WindProcedure(HWND hWnd, UINT Msg,
 //
 //	lab = CriaLabirinto(lab, 70, 70, 10);
 //
-//	http://jsfiddle.net/loktar/Y9VtP/
+
 //	return 0;
 //}

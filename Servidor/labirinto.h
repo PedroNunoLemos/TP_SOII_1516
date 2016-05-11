@@ -10,15 +10,19 @@
 #define MAXSALAS 20
 
 
-typedef struct {
+typedef struct _sala {
 
 	int x;
 	int y;
 	int w;
 	int h;
 
+	int salaLigada[4];
+
+	Coordenada porta;
 
 } Sala;
+
 
 typedef struct
 {
@@ -34,8 +38,6 @@ typedef struct
 
 //metodos do labirinto
 
-
 //Cria Labirinto
-Labirinto* CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas);
 
-
+Labirinto *CriaLabirinto(int tamx, int tamy, int salas);
