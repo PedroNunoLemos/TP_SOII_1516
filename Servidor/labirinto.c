@@ -221,7 +221,7 @@ Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
 
 			tmp = criaSalaAdjacente(&(lab->salas[r - 1]), i);
 
-			cnt++;
+			cnt++; 
 
 		} while (!tmp || salaSobreposta(*lab, *tmp) ||
 			tmp->x <= 5 || tmp->y <= 5
