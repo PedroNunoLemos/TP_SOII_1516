@@ -4,7 +4,6 @@
 #include "labirinto.h"
 #include "..\Controlador\uteis.h"
 
-
 int entre_valores(int value, int min, int max)
 {
 	return (value >= min) && (value <= max);
@@ -54,8 +53,8 @@ Sala *criaSalaAdjacente(Sala *sala_ant, int lado) {
 	Sala *sala;
 	sala = malloc(sizeof(Sala));
 
-	sala->porta.x = -1;
-	sala->porta.y = -1;
+	sala->porta.x = -500;
+	sala->porta.y = -500;
 
 
 
@@ -163,7 +162,15 @@ Sala *criaSalaAdjacente(Sala *sala_ant, int lado) {
 	sala->y = ty;
 	sala->w = tw;
 	sala->h = th;
+	
+	
+	sala->id = sala_ant->id + 1;
 
+	if (sala_ant->id == 0)
+	{
+		sala_ant->porta.x = sala->porta.x;
+		sala_ant->porta.y = sala->porta.y;
+	}
 
 	return sala;
 
@@ -199,11 +206,13 @@ Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
 	}
 
 	Sala center;
+
 	center.w = aleatorio(4, 8, 2);
 	center.h = aleatorio(4, 8, 2);
 
 	center.x = (tamx / 2) - (center.w / 2);
 	center.y = (tamy / 2) - (center.h / 2);
+	center.id = 0;
 
 	lab->salas[0] = center;
 
@@ -221,7 +230,7 @@ Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
 
 			tmp = criaSalaAdjacente(&(lab->salas[r - 1]), i);
 
-			cnt++; 
+			cnt++;
 
 		} while (!tmp || salaSobreposta(*lab, *tmp) ||
 			tmp->x <= 5 || tmp->y <= 5
