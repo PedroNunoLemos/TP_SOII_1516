@@ -18,8 +18,10 @@ typedef struct _sala {
 	int h;
 
 	int salaLigada[4];
+	int id;
 
 	Coordenada porta;
+
 
 } Sala;
 
