@@ -19,12 +19,19 @@
 #define tstring string
 #endif
 
-	
-	typedef DLL_IMP_API struct  _jogo
-	{
-		int tam;
-		Jogador jogadores[9];
-		Celula mapaAtual[20][20];
-	} Jogo;
+
+typedef DLL_IMP_API struct  _jogo
+{
+	int tam;
+	Jogador jogadores[9];
+	Celula mapaAtual[20][20];
+
+	int numjogadores;
+
+	HANDLE pipeJogo;
+
+	HANDLE PlayersPipe[9];
+
+} Jogo;
 
 

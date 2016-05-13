@@ -20,10 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="labirinto.c" />
+    <ClCompile Include="pipes.c" />
     <ClCompile Include="servidormain.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="labirinto.h" />
+    <ClInclude Include="pipes.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\x64\Debug\Controlador.lib" />
