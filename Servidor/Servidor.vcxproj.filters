@@ -18,7 +18,10 @@
     <ClCompile Include="labirinto.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="servidormain.c">
+    <ClCompile Include="servidor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="servidortestes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -26,8 +29,11 @@
     <ClInclude Include="labirinto.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="JogoServidor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\x64\Debug\Controlador.lib" />
+    <Library Include="..\Debug\Controlador.lib" />
   </ItemGroup>
 </Project>

@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monstro", "Monstros\Monstro
 		{F6D3B8CF-D60E-43C5-B915-C81487EDD560} = {F6D3B8CF-D60E-43C5-B915-C81487EDD560}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B925257E-5723-419A-9765-BBFD3724ED9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

@@ -1,10 +1,18 @@
 #pragma once
 
-typedef enum tipoitem
+typedef struct _objecto
 {
-	VITAMINAS,
-	ORANGE_BULL,
-	PEDRA,
-	CAFEINA
+
+	int qtdMaxima;
+	int qtdAtual;
+
+	int posseJogador;
+	Coordenada pos;
 
 } Item;
+
+typedef Item Vitamina;
+typedef Item OrangeBull;
+typedef Item Pedra;
+typedef Item Cafeina;
+
