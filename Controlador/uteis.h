@@ -9,6 +9,7 @@
 #define DLL_IMP_API __declspec(dllimport)
 #endif
 
+
 #ifdef UNICODE
 #define tstring wstring
 #else

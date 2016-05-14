@@ -9,6 +9,7 @@ void GoToXY(int column, int line)
 	coord.X = column;
 	coord.Y = line;
 
+
 	// Obtain a handle to the console screen buffer.
 	// (You're just using the standard console, so you can use STD_OUTPUT_HANDLE
 	// in conjunction with the GetStdHandle() to retrieve the handle.)

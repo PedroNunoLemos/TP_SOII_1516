@@ -12,7 +12,7 @@
 #endif
 
 #ifdef UNICODE
-#define tstring wstring
+#define tstring wstring 
 #else
 #define tstring string
 #endif

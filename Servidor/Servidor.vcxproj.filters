@@ -18,10 +18,10 @@
     <ClCompile Include="labirinto.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="servidor.c">
+    <ClCompile Include="servidortestes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="servidortestes.c">
+    <ClCompile Include="servidor.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

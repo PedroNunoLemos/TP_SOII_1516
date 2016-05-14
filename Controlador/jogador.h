@@ -5,7 +5,8 @@
 #include "coordenada.h"
 #include  "objecto.h"
 
-#ifdef DLL_EXPORTS
+#ifdef DLL_EXPORTS  
+
 #define DLL_IMP_API __declspec(dllexport)
 #else
 #define DLL_IMP_API __declspec(dllimport)

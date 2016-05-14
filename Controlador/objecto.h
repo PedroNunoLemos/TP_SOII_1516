@@ -9,6 +9,7 @@ typedef struct _objecto
 	int posseJogador;
 	Coordenada pos;
 
+
 } Item;
 
 typedef Item Vitamina;

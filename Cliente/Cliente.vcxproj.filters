@@ -29,9 +29,6 @@
     <ClInclude Include="consola.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mapa.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="tui.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -56,9 +56,6 @@
     <ClInclude Include="jogo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pipeservidor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="pipes.h">
       <Filter>Header Files</Filter>
     </ClInclude>

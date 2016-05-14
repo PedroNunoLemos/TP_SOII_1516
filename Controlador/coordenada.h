@@ -20,4 +20,5 @@ typedef struct DLL_IMP_API _coordenada {
 int x;
 int y;
 
+
 } Coordenada;

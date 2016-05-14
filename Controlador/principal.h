@@ -9,6 +9,7 @@
 #include <tchar.h>
 #include <string>
 
+
 //Definir uma constante para facilitar a leitura do protótipo da função
 //Este .h deve ser incluído no projecto que o vai usar (modo implícito)
 #define TAM 256

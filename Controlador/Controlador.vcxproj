@@ -33,7 +33,6 @@
     <ClInclude Include="monstro.h" />
     <ClInclude Include="objecto.h" />
     <ClInclude Include="pipes.h" />
-    <ClInclude Include="pipeservidor.h" />
     <ClInclude Include="principal.h" />
     <ClInclude Include="uteis.h" />
   </ItemGroup>

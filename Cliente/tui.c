@@ -1,6 +1,7 @@
 #include "tui.h"
 
 //void imprimeLabirinto(int x, int y, int mx, int my,  Jogo lab) {
+
 //
 //
 //	int ix = 0;
