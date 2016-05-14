@@ -24,6 +24,9 @@
     <ClCompile Include="jogo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pipes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="coordenada.h">
@@ -51,6 +54,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="jogo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pipeservidor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pipes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

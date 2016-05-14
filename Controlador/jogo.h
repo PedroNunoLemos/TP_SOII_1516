@@ -7,6 +7,7 @@
 #include "jogador.h"
 #include "celula.h"
 
+
 #ifdef DLL_EXPORTS
 #define DLL_IMP_API __declspec(dllexport)
 #else
@@ -19,12 +20,23 @@
 #define tstring string
 #endif
 
-	
-	typedef DLL_IMP_API struct  _jogo
-	{
-		int tam;
-		Jogador jogadores[9];
-		Celula mapaAtual[20][20];
-	} Jogo;
+
+
+typedef struct DLL_IMP_API _jogoCliente
+{
+
+	int comando;
+
+	int respostaComando;
+
+	Celula mapa[15][15];
+
+	DWORD pidCliente;
+
+	Jogador jogador;
+
+	TCHAR buf[256];
+
+} JogoCliente;
 
 

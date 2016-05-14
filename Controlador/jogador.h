@@ -23,13 +23,18 @@
 typedef struct DLL_IMP_API _jogador
 {
 
-	 int numero;
+
 	 char nome[256];
-	 int lentidao;
+	 int lentidao;	
 	 int saude;
+
+	 DWORD pidJogador;
+
 	 Coordenada posicao;
 
-	 Item objectos[99];
-	 
+	 Vitamina vitamina;
+	 OrangeBull orange;
+	 Pedra pedra;
+	 Cafeina cafeina;
 
 } Jogador;

@@ -18,10 +18,10 @@
     <ClCompile Include="consola.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mapa.c">
+    <ClCompile Include="tui.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tui.c">
+    <ClCompile Include="cliente.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,8 +35,11 @@
     <ClInclude Include="tui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cliente.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\x64\Debug\Controlador.lib" />
+    <Library Include="..\Debug\Controlador.lib" />
   </ItemGroup>
 </Project>

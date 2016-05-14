@@ -1,5 +1,6 @@
 #pragma once
 
+#define MAXJOGADORES 10 
 
 #define Color_Black 0
 #define Color_Blue 1
@@ -28,3 +29,4 @@
 #define key_ESCAPE 27
 #define key_TAB 9
 #define key_INSERT 82
+
