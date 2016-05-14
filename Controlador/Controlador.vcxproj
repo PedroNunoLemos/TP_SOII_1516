@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jogo.c" />
-    <ClCompile Include="pipes.c" />
     <ClCompile Include="principal.cpp" />
     <ClCompile Include="uteis.c" />
   </ItemGroup>
@@ -32,8 +31,6 @@
     <ClInclude Include="jogo.h" />
     <ClInclude Include="monstro.h" />
     <ClInclude Include="objecto.h" />
-    <ClInclude Include="pipes.h" />
-    <ClInclude Include="pipeservidor.h" />
     <ClInclude Include="principal.h" />
     <ClInclude Include="uteis.h" />
   </ItemGroup>

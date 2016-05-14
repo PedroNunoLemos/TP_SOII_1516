@@ -143,17 +143,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="consola.c" />
-    <ClCompile Include="cliente.c" />
+    <ClCompile Include="mapa.c" />
     <ClCompile Include="tui.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cliente.h" />
     <ClInclude Include="consola.h" />
     <ClInclude Include="mapa.h" />
     <ClInclude Include="tui.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Debug\Controlador.lib" />
+    <Library Include="..\x64\Debug\Controlador.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,26 +1,22 @@
 #pragma once
 
 
-#include "../Controlador/celula.h"
-#include "../Controlador/uteis.h"
+#include "..\Controlador\celula.h"
+#include "..\Controlador\uteis.h"
 
 
-#define MAXTAMX 200
-#define MAXTAMY 200
+#define MAXTAMX 100
+#define MAXTAMY 100
 #define MAXSALAS 20
 
 
-typedef struct _sala{
+typedef struct {
 
 	int x;
 	int y;
 	int w;
 	int h;
 
-	int salaLigada[4];
-	int id;
-
-	Coordenada porta;
 
 } Sala;
 
@@ -38,8 +34,8 @@ typedef struct
 
 //metodos do labirinto
 
-//Cria Labirinto
-Labirinto *CriaLabirinto(int tamx, int tamy, int salas);
 
+//Cria Labirinto
+Labirinto CriaLabirinto(Labirinto lab, int tamx, int tamy, int salas);
 
 

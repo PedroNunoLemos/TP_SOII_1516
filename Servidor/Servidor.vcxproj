@@ -20,15 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="labirinto.c" />
-    <ClCompile Include="servidor.c" />
-    <ClCompile Include="servidortestes.c" />
+    <ClCompile Include="servidormain.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="JogoServidor.h" />
     <ClInclude Include="labirinto.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Debug\Controlador.lib" />
+    <Library Include="..\x64\Debug\Controlador.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ADF43E2A-6826-4280-ACEE-E4F454B69F2C}</ProjectGuid>
@@ -102,7 +100,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
