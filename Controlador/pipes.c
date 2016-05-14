@@ -10,14 +10,12 @@
 TCHAR pipeEnvio[256];
 TCHAR pipeRececao[256];
 
+//------------------------ pipes comunicacao ------------------------------------------------------
 
 HANDLE criaPipeEscutaCliente(TCHAR  servidor[])
 {
 
 	HANDLE hPipe;
-
-
-	//_tcscpy_s(server, 256, TEXT("nenhuma opcao valida"));
 
 	swprintf(pipeEnvio, 256, TEXT("\\\\%s\\pipe\\servidor"), servidor);
 	swprintf(pipeRececao, 256, TEXT("\\\\%s\\pipe\\clientes"), servidor);
@@ -93,6 +91,8 @@ void atualizaJogoCliente(HANDLE hPipe, JogoCliente *jogo) {
 }
 
 
+
+
 //----------------- Pipes Servidor -------------------------------
 
 
@@ -128,6 +128,109 @@ HANDLE criaPipeCliente() {
 
 
 	return Hpipe;
+
+}
+
+
+// -----------------------------------  comandos ----------------------------------------
+
+
+
+int criaJogo(HANDLE hPipe, JogoCliente *jogo) {
+
+	//envia pedido registo
+
+	jogo->comando = 1;
+
+	escrevePipeJogoCliente(hPipe, jogo);
+
+	////Recebe resposta
+
+	lePipeJogoCliente(hPipe, jogo);
+
+	return jogo->respostaComando;
+
+}
+
+int iniciaJogo(HANDLE hPipe, JogoCliente *jogo) {
+
+	//envia pedido registo
+
+	jogo->comando = 2;
+
+	escrevePipeJogoCliente(hPipe, jogo);
+
+	////Recebe resposta
+
+	lePipeJogoCliente(hPipe, jogo);
+
+	return jogo->respostaComando;
+
+}
+
+int juntarJogo(HANDLE hPipe, JogoCliente *jogo) {
+
+	//envia pedido registo
+
+	jogo->comando = 3;
+
+	escrevePipeJogoCliente(hPipe, jogo);
+
+	////Recebe resposta
+
+	lePipeJogoCliente(hPipe, jogo);
+
+	return jogo->respostaComando;
+
+}
+
+
+
+int registarJogador(TCHAR nome[], HANDLE hPipe, JogoCliente *jogo) {
+
+	//envia pedido registo
+
+	jogo->comando = 4;
+
+	escrevePipeJogoCliente(hPipe, jogo);
+
+	////Recebe resposta
+
+	lePipeJogoCliente(hPipe, jogo);
+
+	return jogo->respostaComando;
+
+}
+
+int moverJogador(HANDLE hPipe, JogoCliente *jogo) {
+
+	//envia pedido registo
+
+	jogo->comando = 5;
+
+	escrevePipeJogoCliente(hPipe, jogo);
+
+	////Recebe resposta
+
+	lePipeJogoCliente(hPipe, jogo);
+
+	return jogo->respostaComando;
+
+}
+
+int apanharItem(HANDLE hPipe, JogoCliente *jogo) {
+
+	//envia pedido registo
+
+	jogo->comando = 11;
+
+	escrevePipeJogoCliente(hPipe, jogo);
+
+	////Recebe resposta
+
+	lePipeJogoCliente(hPipe, jogo);
+
+	return jogo->respostaComando;
 
 }
 

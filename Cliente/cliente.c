@@ -47,15 +47,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 		if (_tcscmp(buf, TEXT("1\n")) == 0) {
 
-			jogo->comando = 1;
-
-			escrevePipeJogoCliente(hPipe, jogo);
-
-			////Recebe resposta
-
-			lePipeJogoCliente(hPipe, jogo);
-
-			if (jogo->respostaComando == 1)//ssucesso 
+			if (criaJogo(hPipe, jogo))//ssucesso 
 			{
 				_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Jogo Criado."));
 				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
@@ -65,16 +57,8 @@ int _tmain(int argc, LPTSTR argv[]) {
 		}
 		else if (_tcscmp(buf, TEXT("2\n")) == 0) {
 
-			jogo->comando = 2;
 
-			escrevePipeJogoCliente(hPipe, jogo);
-
-			////Recebe resposta
-
-			lePipeJogoCliente(hPipe, jogo);
-
-
-			if (jogo->respostaComando == 1) //sucesso 
+			if (iniciaJogo(hPipe, jogo)) //sucesso 
 				_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Jogo Iniciado."));
 			else
 				_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Nao pude iniciar o jogo"));
@@ -83,15 +67,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 		else if (_tcscmp(buf, TEXT("3\n")) == 0)
 		{
 
-			jogo->comando = 3;
-
-			escrevePipeJogoCliente(hPipe, jogo);
-
-			////Recebe resposta
-
-			lePipeJogoCliente(hPipe, jogo);
-
-			if (jogo->respostaComando == 1) //ssucesso 
+			if (juntarJogo(hPipe, jogo)) //ssucesso 
 			{
 
 				_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Ligado a jogo existente"));
