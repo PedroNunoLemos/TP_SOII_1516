@@ -20,12 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="labirinto.c" />
+    <ClCompile Include="servidortestes2.c" />
     <ClCompile Include="servidor.c" />
-    <ClCompile Include="servidortestes.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="JogoServidor.h" />
     <ClInclude Include="labirinto.h" />
+    <ClInclude Include="servidor.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\Debug\Controlador.lib" />

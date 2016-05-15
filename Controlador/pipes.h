@@ -31,9 +31,10 @@ extern "C" {  // only need to export C interface if
 
 
 			  // pipes Cliente
-	__declspec(dllexport) HANDLE criaPipeEscutaCliente(TCHAR  servidor[]);
+	__declspec(dllexport) HANDLE ligarServidor(TCHAR  servidor[]);
 	__declspec(dllexport) int escrevePipeJogoCliente(HANDLE hPipe, JogoCliente *jogo);
 	__declspec(dllexport) int lePipeJogoCliente(HANDLE hPipe, JogoCliente *jogo);
+	__declspec(dllexport) int lePipeJogoClienteComRetVal (HANDLE hPipe, JogoCliente *jogo);
 	__declspec(dllexport) void atualizaJogoCliente(HANDLE hPipe, JogoCliente *jogo);
 
 	// pipes servidor 

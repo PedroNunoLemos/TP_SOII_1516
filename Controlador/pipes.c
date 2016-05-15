@@ -12,7 +12,9 @@ TCHAR pipeRececao[256];
 
 //------------------------ pipes comunicacao ------------------------------------------------------
 
-HANDLE criaPipeEscutaCliente(TCHAR  servidor[])
+
+
+HANDLE ligarServidor(TCHAR  servidor[])
 {
 
 	HANDLE hPipe;
@@ -56,14 +58,30 @@ int escrevePipeJogoCliente(HANDLE hPipe, JogoCliente *jogo) {
 int lePipeJogoCliente(HANDLE hPipe, JogoCliente *jogo) {
 
 	BOOL ret;
-	DWORD n;
+	DWORD nlidos;
 
-	ret = ReadFile(hPipe, jogo, sizeof(JogoCliente), &n, NULL);
+	ret = ReadFile(hPipe, jogo, sizeof(JogoCliente), &nlidos, NULL);
 
-	if (n > 0)
+
+	if (nlidos > 0)
+		return 1; else return 0;
+
+
+}
+
+
+int lePipeJogoClienteComRetVal(HANDLE hPipe, JogoCliente *jogo) {
+
+	BOOL ret;
+	DWORD nlidos;
+
+	ret = ReadFile(hPipe, jogo, sizeof(JogoCliente), &nlidos, NULL);
+
+	if (!ret || !nlidos)
 		return 1; else return 0;
 
 }
+
 
 void atualizaJogoCliente(HANDLE hPipe, JogoCliente *jogo) {
 
@@ -71,7 +89,7 @@ void atualizaJogoCliente(HANDLE hPipe, JogoCliente *jogo) {
 	BOOL ret = FALSE;
 
 	if (!WaitNamedPipe(pipeRececao, NMPWAIT_WAIT_FOREVER)) {
-		_tprintf(TEXT("[ERRO] Ligar ao pipe '%s'... (WaitNamedPipe)\n"), pipeRececao);
+		//_tprintf(TEXT("[ERRO] Ligar ao pipe '%s'... (WaitNamedPipe)\n"), pipeRececao);
 		hPipe = INVALID_HANDLE_VALUE;
 	}
 

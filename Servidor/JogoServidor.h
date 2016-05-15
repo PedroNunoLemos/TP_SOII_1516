@@ -14,6 +14,13 @@ typedef struct  _jogoservidor
 	Labirinto mapa;
 	Jogador jogadores[MAXJOGADORES];
 
+	int JogoIniciado;
+	int ClienteLigado;
+
+	HANDLE hPipeA[MAXJOGADORES];
+	HANDLE pipeAtual;
+
+	DWORD totalLigacoes;
 
 	Vitamina vitaminas[20];
 	OrangeBull oranges[15];

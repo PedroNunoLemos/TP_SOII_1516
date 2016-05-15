@@ -36,8 +36,15 @@ int _tmain(int argc, LPTSTR argv[]) {
 	jogo->pidCliente = GetCurrentProcessId();
 
 
-	hPipe = criaPipeEscutaCliente(TEXT("127.0.0.1"));
+	hPipe = ligarServidor(TEXT("127.0.0.1"));
 
+	if (hPipe == INVALID_HANDLE_VALUE)
+	{
+
+		_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Servidor Offline."));
+		char ch = getch();
+		return 0;
+	}
 
 	while (1) {
 
