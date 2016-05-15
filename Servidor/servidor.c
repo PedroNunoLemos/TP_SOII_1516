@@ -24,8 +24,8 @@ JogoServidor *jogo;
 
 
 
-int _tmain(int argc, LPTSTR argv[]) {
-//int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int nCmdShow) {
+//int _tmain(int argc, LPTSTR argv[]) {
+int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int nCmdShow) {
 
 	HANDLE hThread = NULL;
 	BOOL pLigado = FALSE;
@@ -47,7 +47,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	if (GetLastError() == ERROR_ALREADY_EXISTS)
 	{
 		//MessageBox(NULL, TEXT("Dungeon"), TEXT("Servidor já a correr."), MB_OK);
-		_tprintf(TEXT("[SERVIDOR] Ja estou a correr)\n"), PIPE_ENVIO);
+		//_tprintf(TEXT("[SERVIDOR] Ja estou a correr)\n"), PIPE_ENVIO);
 
 		char ch = getchar();
 
@@ -69,11 +69,11 @@ int _tmain(int argc, LPTSTR argv[]) {
 		hPipe = criaPipeEscutaServidor();
 
 		if (hPipe == INVALID_HANDLE_VALUE) {
-			_tprintf(TEXT("CreateNamedPipe falhou, erro=%d\n"), GetLastError());
+			//_tprintf(TEXT("CreateNamedPipe falhou, erro=%d\n"), GetLastError());
 			exit(-1);
 		}
 
-		_tprintf(TEXT("[SERVIDOR] Esperar ligação de um cliente... (ConnectNamedPipe)\n"));
+		//_tprintf(TEXT("[SERVIDOR] Esperar ligação de um cliente... (ConnectNamedPipe)\n"));
 
 		pLigado = ConnectNamedPipe(hPipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
 
@@ -81,7 +81,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 		if (pLigado) {
 
-			_tprintf(TEXT("[SERVIDOR] Um cliente ligou-se...Vou criar uma thread p/ ele\n"));;
+			//_tprintf(TEXT("[SERVIDOR] Um cliente ligou-se...Vou criar uma thread p/ ele\n"));;
 
 			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)hPipe, 0, NULL);
 
@@ -118,7 +118,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 		ret = lePipeJogoClienteComRetVal(cliente, &jog);
 
-		if (ret==1)
+		if (ret == 1)
 			break;
 
 
@@ -148,6 +148,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			else if (jog.comando == 2)
 			{
+
 				if (JOGO_ONLINE == TRUE && JogoCliente_COMECOU == FALSE &&
 					jog.pidCliente == jogo->jogadores[0].pidJogador) {
 
@@ -193,7 +194,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 
-	_tprintf(TEXT("[SERVIDOR] Vou desligar o pipe(DisconnectNamedPipe/CloseHandle)\n"));
+	//_tprintf(TEXT("[SERVIDOR] Vou desligar o pipe(DisconnectNamedPipe/CloseHandle)\n"));
 
 
 	if (!DisconnectNamedPipe(cliente)) {
@@ -202,14 +203,16 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	}
 
 	//Sleep(2000);
-	_tprintf(TEXT("[SERVIDOR] Vou desligar o pipe... (CloseHandle)\n"));
-	
+	//_tprintf(TEXT("[SERVIDOR] Vou desligar o pipe... (CloseHandle)\n"));
+
 	CloseHandle(cliente);
 
+	if (jogo->jogadoresLigados > 0)
+		jogo->jogadoresLigados--;
 
-	if (jogo->JogoIniciado == 1 && jogo->jogadoresLigados == 0)
+	if (JOGO_ONLINE == TRUE && jogo->jogadoresLigados == 0)
 	{
-		_tprintf(TEXT("[SERVIDOR] Vou desligar o pipe... (CloseHandle)\n"));
+		//_tprintf(TEXT("[SERVIDOR] Vou desligar o pipe... (CloseHandle)\n"));
 
 		exit(-1);
 	}
