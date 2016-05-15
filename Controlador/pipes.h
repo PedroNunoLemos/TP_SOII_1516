@@ -44,8 +44,7 @@ extern "C" {  // only need to export C interface if
 	
 	//comandos
 
-	_declspec(dllexport)	int criaJogo(HANDLE hPipe, JogoCliente *jogo);
-	_declspec(dllexport)	int iniciaJogo(HANDLE hPipe, JogoCliente *jogo);
+	_declspec(dllexport)	int criaIniciaJogo(HANDLE hPipe, JogoCliente *jogo);
 	_declspec(dllexport)	int juntarJogo(HANDLE hPipe, JogoCliente *jogo);
 	_declspec(dllexport)	int registarJogador(TCHAR nome[], HANDLE hPipe, JogoCliente *jogo);
 	_declspec(dllexport)	int moverJogador(HANDLE hPipe, JogoCliente *jogo);

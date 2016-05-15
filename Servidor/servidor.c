@@ -128,8 +128,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			if (jog.comando == 1)
 			{
 
-				if (JOGO_ONLINE == FALSE) {
-
+				if (JOGO_ONLINE == FALSE && JogoCliente_COMECOU == FALSE)
+				{
 					hPipeA[total] = criaPipeCliente();
 
 					total++;
@@ -137,9 +137,11 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog.pidCliente;
 
 					jogo->jogadoresLigados++;
-					jog.respostaComando = 1;
-					JOGO_ONLINE = TRUE;
 
+					jog.respostaComando = 1;
+
+					JOGO_ONLINE = TRUE;
+					JogoCliente_COMECOU = 1;
 
 				}
 				else
@@ -149,16 +151,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			else if (jog.comando == 2)
 			{
 
-				if (JOGO_ONLINE == TRUE && JogoCliente_COMECOU == FALSE &&
-					jog.pidCliente == jogo->jogadores[0].pidJogador) {
 
-					jog.respostaComando = 1;
-
-					JogoCliente_COMECOU = TRUE;
-
-				}
-				else
-					jog.respostaComando = 0;
+				jog.respostaComando = 0;
 
 			}
 			else if (jog.comando == 3)

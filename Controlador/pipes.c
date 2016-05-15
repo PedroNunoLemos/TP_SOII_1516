@@ -154,27 +154,11 @@ HANDLE criaPipeCliente() {
 
 
 
-int criaJogo(HANDLE hPipe, JogoCliente *jogo) {
+int criaIniciaJogo(HANDLE hPipe, JogoCliente *jogo) {
 
 	//envia pedido registo
 
 	jogo->comando = 1;
-
-	escrevePipeJogoCliente(hPipe, jogo);
-
-	////Recebe resposta
-
-	lePipeJogoCliente(hPipe, jogo);
-
-	return jogo->respostaComando;
-
-}
-
-int iniciaJogo(HANDLE hPipe, JogoCliente *jogo) {
-
-	//envia pedido registo
-
-	jogo->comando = 2;
 
 	escrevePipeJogoCliente(hPipe, jogo);
 
