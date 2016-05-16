@@ -34,20 +34,13 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 
 	int i;
-	//
-	//#ifdef UNICODE 
-	//	_setmode(_fileno(stdin), _O_WTEXT);
-	//	_setmode(_fileno(stdout), _O_WTEXT);
-	//	_setmode(_fileno(stderr), _O_WTEXT);
-	//#endif
 
 
 	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
 
 	if (GetLastError() == ERROR_ALREADY_EXISTS)
 	{
-		//MessageBox(NULL, TEXT("Dungeon"), TEXT("Servidor já a correr."), MB_OK);
-		//_tprintf(TEXT("[SERVIDOR] Ja estou a correr)\n"), PIPE_ENVIO);
+		
 
 		char ch = getchar();
 
@@ -62,31 +55,23 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	for (i = 0; i < MAXJOGADORES; i++) {
 
-		//Duplo sentido na comunicação
-
-		//_tprintf(TEXT("[SERVIDOR] Vou criar o pipe '%s' de recepcao... (CreateNamedPipe)\n"), PIPE_ENVIO);
-
+	
 		hPipe = criaPipeEscutaServidor();
 
 		if (hPipe == INVALID_HANDLE_VALUE) {
-			//_tprintf(TEXT("CreateNamedPipe falhou, erro=%d\n"), GetLastError());
 			exit(-1);
 		}
 
-		//_tprintf(TEXT("[SERVIDOR] Esperar ligação de um cliente... (ConnectNamedPipe)\n"));
 
 		pLigado = ConnectNamedPipe(hPipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
 
-		//Lancar thread para cada novo cliente (hPipe[i] ou i)
 
 		if (pLigado) {
 
-			//_tprintf(TEXT("[SERVIDOR] Um cliente ligou-se...Vou criar uma thread p/ ele\n"));;
 
 			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)hPipe, 0, NULL);
 
 			if (hThread == NULL) {
-				//_tprintf(TEXT("Erro na criação da thread. Erro=%d. \n"), GetLastError());
 				exit(-1);
 			}
 			else
@@ -188,16 +173,12 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 
-	//_tprintf(TEXT("[SERVIDOR] Vou desligar o pipe(DisconnectNamedPipe/CloseHandle)\n"));
 
 
 	if (!DisconnectNamedPipe(cliente)) {
 		_tperror(TEXT("Erro ao desligar o pipe!"));
 		exit(-1);
 	}
-
-	//Sleep(2000);
-	//_tprintf(TEXT("[SERVIDOR] Vou desligar o pipe... (CloseHandle)\n"));
 
 	CloseHandle(cliente);
 
@@ -206,8 +187,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	if (JOGO_ONLINE == TRUE && jogo->jogadoresLigados == 0)
 	{
-		//_tprintf(TEXT("[SERVIDOR] Vou desligar o pipe... (CloseHandle)\n"));
-
 		exit(-1);
 	}
 
