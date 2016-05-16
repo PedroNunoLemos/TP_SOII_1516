@@ -77,12 +77,12 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 	int ix = 0;
 	int iy = 0;
 
-	for (ix = 0; ix <  15; ix++)
+	for (ix = 0; ix < 15; ix++)
 	{
 		for (iy = 0; iy < 15; iy++) {
 
 
-			GoToXY(x + ix , y + iy );
+			GoToXY(x + ix, y + iy);
 
 
 			if (lab.mapa[ix][iy].tipo == TipoCelula_CHAO
@@ -99,6 +99,10 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 		}
 	}
 
+
+	GoToXY(x + 7, y + 7);
+	setForeGroundAndBackGroundColor(Color_LightCyan, 6);
+	_tprintf("@");
 
 
 }

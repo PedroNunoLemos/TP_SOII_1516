@@ -149,6 +149,8 @@ void jogar() {
 
 	}
 
+	GoToXY(0, 0);
+	setForeGroundAndBackGroundColor(Color_White,Color_Black);
 
 
 	while (1) {

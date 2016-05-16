@@ -41,7 +41,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	if (GetLastError() == ERROR_ALREADY_EXISTS)
 	{
-		
+
 
 		char ch = getchar();
 
@@ -51,12 +51,12 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	jogo = malloc(sizeof(JogoServidor));
 	jogo->jogadoresLigados = 0;
-	
+
 
 
 	for (i = 0; i < MAXJOGADORES; i++) {
 
-	
+
 		hPipe = criaPipeEscutaServidor();
 
 		if (hPipe == INVALID_HANDLE_VALUE) {
@@ -107,6 +107,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		if (ret == 1)
 			break;
 
+		
 
 		if (ret == 0)
 		{
@@ -126,12 +127,13 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					criaJogo(jogo);
 
 					criaJogador(jogo, "", jog->pidCliente);
-	
+
 					atualizaMapaCliente(jogo, jog,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.x,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.y
+						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 15,
+						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 15
 						);
 
+					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
 
 					jogo->jogadoresLigados++;
 

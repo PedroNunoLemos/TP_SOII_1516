@@ -137,10 +137,12 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 
 	for (x = x1; x < x1 + serv->jogoVisivel - 1; x++)
 	{
-		i++;
+		
 		for (y = y1; y < y1 + serv->jogoVisivel - 1; y++)
 		{
-			j++;
+			i = (x1 + serv->jogoVisivel) - x;
+			j = (y1 + serv->jogoVisivel) - y;
+
 			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
 		}
 	}
