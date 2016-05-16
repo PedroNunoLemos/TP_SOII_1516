@@ -50,7 +50,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	jogo = malloc(sizeof(JogoServidor));
 	jogo->jogadoresLigados = 0;
-
+	
 
 
 	for (i = 0; i < MAXJOGADORES; i++) {
@@ -120,8 +120,12 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					total++;
 
 					jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog.pidCliente;
-
+					
 					jogo->jogadoresLigados++;
+					
+					Labirinto *lab=CriaLabirinto(200,200,10);
+					
+					jogo->mapa=&lab;
 
 					jog.respostaComando = 1;
 
