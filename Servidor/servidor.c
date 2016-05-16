@@ -126,6 +126,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					Labirinto *lab=CriaLabirinto(200,200,10);
 					
 					jogo->mapa=&lab;
+					
+					
 
 					jog.respostaComando = 1;
 
