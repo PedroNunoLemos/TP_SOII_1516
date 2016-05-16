@@ -21,8 +21,8 @@ TCHAR servnome[256];
 int _tmain(int argc, LPTSTR argv[]) {
 
 
-	char opcao;
-	char ch;
+	TCHAR opcao;
+	TCHAR ch;
 
 #ifdef UNICODE 
 	_setmode(_fileno(stdin), _O_WTEXT);
@@ -75,9 +75,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
-	DWORD n;
 	JogoCliente jogo;
-	BOOL ret = FALSE;
 
 	//_tprintf(TEXT("Actualizando JogoCliente\n"));
 
@@ -91,9 +89,7 @@ void jogar() {
 
 	TCHAR buf[256];
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
-	BOOL ret;
-	DWORD n;
-
+	
 	JogoCliente *jogo;
 
 
@@ -128,9 +124,9 @@ void jogar() {
 
 		_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Servidor Offline."));
 
-		char ch = getch();
+		TCHAR ch = _gettch();
 
-		return 0;
+		return;
 
 	}
 

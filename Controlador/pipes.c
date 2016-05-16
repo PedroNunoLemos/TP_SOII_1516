@@ -44,7 +44,7 @@ HANDLE ligarServidor(TCHAR  servidor[])
 
 int escrevePipeJogoCliente(HANDLE hPipe, JogoCliente *jogo) {
 
-	BOOL ret;
+
 	DWORD n;
 
 

@@ -90,7 +90,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
-	DWORD nlidos, nescritos, i;
+	DWORD i;
 	BOOL ret = FALSE;
 
 	JogoCliente *jog;
@@ -126,7 +126,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 					criaJogo(jogo);
 
-					criaJogador(jogo, "", jog->pidCliente);
+					criaJogador(jogo, TEXT(""), jog->pidCliente);
 
 					atualizaMapaCliente(jogo, jog,
 						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 15,

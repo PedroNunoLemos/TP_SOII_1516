@@ -14,6 +14,7 @@ int aleatorio(int min_num, int max_num, int seed)
 		hi_num = min_num;
 	}
 	srand(time(NULL) * seed);
+
 	result = (rand() % (hi_num - low_num)) + low_num;
 	return result;
 }

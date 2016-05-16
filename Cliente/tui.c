@@ -15,7 +15,7 @@ void caixa(int x, int y, int x2, int y2, int back, int fore)
 	for (i = x; i < x2; i++)
 	{
 		GoToXY(i, y);
-		_tprintf("*");
+		_tprintf(TEXT("*"));
 	}
 
 
@@ -23,7 +23,7 @@ void caixa(int x, int y, int x2, int y2, int back, int fore)
 	for (i = y; i < y2; i++)
 	{
 		GoToXY(x2, i);
-		_tprintf("*");
+		_tprintf(TEXT("*"));
 	}
 
 
@@ -31,14 +31,14 @@ void caixa(int x, int y, int x2, int y2, int back, int fore)
 	for (i = x2; i > x; i--)
 	{
 		GoToXY(i, y2);
-		_tprintf("*");
+		_tprintf(TEXT("*"));
 	}
 
 
 	for (i = y2; i > y; i--)
 	{
 		GoToXY(x, i);
-		_tprintf("*");
+		_tprintf(TEXT("*"));
 	}
 
 	for (i = x + 1; i < x2 - 1; i++)
@@ -46,7 +46,7 @@ void caixa(int x, int y, int x2, int y2, int back, int fore)
 		for (j = y + 1; j < y2 - 1; j++)
 		{
 			GoToXY(i, j);
-			_tprintf(" ");
+			_tprintf(TEXT(" "));
 		}
 	}
 
@@ -64,7 +64,7 @@ void limpaArea(int x, int y, int x2, int y2) {
 		for (j = y; j < y2 + 1; j++)
 		{
 			GoToXY(i, j);
-			_tprintf(" ");
+			_tprintf(TEXT(" "));
 		}
 	}
 
@@ -88,12 +88,12 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 			if (lab.mapa[ix][iy].tipo == TipoCelula_CHAO
 				|| lab.mapa[ix][iy].tipo == TipoCelula_PORTA)
 			{
-				setForeGroundAndBackGroundColor(0, 6); _tprintf(".");
+				setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT("."));
 			}
 
-			else if (lab.mapa[ix][iy].tipo == TipoCelula_PAREDE) { setcolor(Color_White); _tprintf("*"); }
-			else if (lab.mapa[ix][iy].tipo == TipoCelula_VAZIO) { setcolor(Color_Gray); _tprintf(","); }
-			else { setcolor(Color_Black); _tprintf(" "); }
+			else if (lab.mapa[ix][iy].tipo == TipoCelula_PAREDE) { setcolor(Color_White); _tprintf(TEXT("*")); }
+			else if (lab.mapa[ix][iy].tipo == TipoCelula_VAZIO) { setcolor(Color_Gray); _tprintf(TEXT(",")); }
+			else { setcolor(Color_Black); _tprintf(TEXT(" ")); }
 
 
 		}
@@ -102,7 +102,7 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 
 	GoToXY(x + 7, y + 7);
 	setForeGroundAndBackGroundColor(Color_LightCyan, 6);
-	_tprintf("@");
+	_tprintf(TEXT("@"));
 
 
 }
