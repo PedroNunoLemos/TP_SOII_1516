@@ -25,7 +25,7 @@ typedef struct DLL_IMP_API _jogador
 {
 
 
-	 char nome[256];
+	 TCHAR nome[256];
 	 int lentidao;	
 	 int saude;
 
