@@ -31,6 +31,7 @@ typedef struct DLL_IMP_API _jogador
 	 int saude;
 
 	 Coordenada posicao;
+	 DWORD pidJogador;
 
 	 Vitamina vitamina;
 	 OrangeBull orange;
