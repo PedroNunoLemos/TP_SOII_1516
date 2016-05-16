@@ -26,10 +26,9 @@ typedef struct DLL_IMP_API _jogador
 
 
 	 TCHAR nome[256];
+	 
 	 int lentidao;	
 	 int saude;
-
-	 DWORD pidJogador;
 
 	 Coordenada posicao;
 
