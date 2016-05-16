@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-
+#include "../Controlador/constantes.h"
 
 void caixa(int x, int y, int x2, int y2, int back, int fore)
 {
@@ -72,10 +72,33 @@ void limpaArea(int x, int y, int x2, int y2) {
 
 }
 
-//void imprimeLabirinto(int x, int y, int mx, int my,  Jogo lab) {
-//
-//
-//
-//
-//
-//}
+void imprimeLabirinto(int x, int y, JogoCliente lab) {
+
+	int ix = 0;
+	int iy = 0;
+
+	for (ix = 0; ix <  15; ix++)
+	{
+		for (iy = 0; iy < 15; iy++) {
+
+
+			GoToXY(x + ix , y + iy );
+
+
+			if (lab.mapa[ix][iy].tipo == TipoCelula_CHAO
+				|| lab.mapa[ix][iy].tipo == TipoCelula_PORTA)
+			{
+				setForeGroundAndBackGroundColor(0, 6); _tprintf(".");
+			}
+
+			else if (lab.mapa[ix][iy].tipo == TipoCelula_PAREDE) { setcolor(Color_White); _tprintf("*"); }
+			else if (lab.mapa[ix][iy].tipo == TipoCelula_VAZIO) { setcolor(Color_Gray); _tprintf(","); }
+			else { setcolor(Color_Black); _tprintf(" "); }
+
+
+		}
+	}
+
+
+
+}

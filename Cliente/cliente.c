@@ -79,7 +79,7 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 	JogoCliente jogo;
 	BOOL ret = FALSE;
 
-	_tprintf(TEXT("Actualizando JogoCliente\n"));
+	//_tprintf(TEXT("Actualizando JogoCliente\n"));
 
 	atualizaJogoCliente(hPipe, &jogo);
 
@@ -136,7 +136,6 @@ void jogar() {
 
 
 
-
 	jogo = malloc(sizeof(JogoCliente));
 	jogo->pidCliente = GetCurrentProcessId();
 
@@ -144,6 +143,9 @@ void jogar() {
 	{
 
 		_tprintf(TEXT("1 Cliente Jogo Criado ... \n"));
+
+
+		imprimeLabirinto(25, 5, *jogo);
 
 	}
 

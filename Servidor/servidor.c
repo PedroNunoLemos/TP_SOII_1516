@@ -9,6 +9,7 @@
 #include "..\Controlador\constantes.h"
 
 #include "JogoServidor.h"
+#include "motorjogo.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -92,8 +93,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	DWORD nlidos, nescritos, i;
 	BOOL ret = FALSE;
 
-	JogoCliente jog;
-
+	JogoCliente *jog;
+	jog = malloc(sizeof(JogoCliente));
 
 	//trabalhar somente com 1 cliente especifico
 	HANDLE cliente = (HANDLE)param;
@@ -101,7 +102,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	do {
 
 
-		ret = lePipeJogoClienteComRetVal(cliente, &jog);
+		ret = lePipeJogoClienteComRetVal(cliente, jog);
 
 		if (ret == 1)
 			break;
@@ -110,7 +111,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		if (ret == 0)
 		{
 
-			if (jog.comando == 1)
+			if (jog->comando == 1)
 			{
 
 				if (JOGO_ONLINE == FALSE && JogoCliente_COMECOU == FALSE)
@@ -119,59 +120,65 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 					total++;
 
-					jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog.pidCliente;
-					
-					jogo->jogadoresLigados++;
-					
-					Labirinto *lab=CriaLabirinto(200,200,10);
-					
-					jogo->mapa=&lab;
-					
-					
 
-					jog.respostaComando = 1;
+					jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog->pidCliente;
+
+					criaJogo(jogo);
+
+					criaJogador(jogo, "", jog->pidCliente);
+	
+					atualizaMapaCliente(jogo, jog,
+						jogo->jogadores[jogo->jogadoresLigados].posicao.x,
+						jogo->jogadores[jogo->jogadoresLigados].posicao.y
+						);
+
+
+					jogo->jogadoresLigados++;
+
+					jog->respostaComando = 1;
 
 					JOGO_ONLINE = TRUE;
 					JogoCliente_COMECOU = 1;
 
 				}
 				else
-					jog.respostaComando = 0;
+					jog->respostaComando = 0;
 			}
 
-			else if (jog.comando == 2)
+			else if (jog->comando == 2)
 			{
 
 
-				jog.respostaComando = 0;
+				jog->respostaComando = 0;
 
 			}
-			else if (jog.comando == 3)
+			else if (jog->comando == 3)
 			{
 				if (JOGO_ONLINE == TRUE && JogoCliente_COMECOU == 1) {
 
 					hPipeA[total] = criaPipeCliente();
 
 					total++;
-					jog.respostaComando = 1;
 
-					jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog.pidCliente;
+					jog->respostaComando = 1;
+
+					jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog->pidCliente;
 
 					jogo->jogadoresLigados++;
 
 				}
 
 				else
-					jog.respostaComando = 0;
+					jog->respostaComando = 0;
 			}
 			else
-				_tcscpy_s(jog.buf, 30, TEXT("nenhuma opcao valida"));
+				_tcscpy_s(jog->mensagem, 30, TEXT("nenhuma opcao valida"));
 
 
-			escrevePipeJogoCliente(cliente, &jog);
+			escrevePipeJogoCliente(cliente, jog);
 
 			for (i = 0; i < total; i++)
-				escrevePipeJogoCliente(hPipeA[i], &jog);
+				escrevePipeJogoCliente(hPipeA[i], jog);
 
 		}
 
@@ -193,6 +200,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	if (JOGO_ONLINE == TRUE && jogo->jogadoresLigados == 0)
 	{
+		free(jog);
 		exit(-1);
 	}
 

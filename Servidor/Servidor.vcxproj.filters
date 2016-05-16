@@ -24,6 +24,9 @@
     <ClCompile Include="servidor.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="motorjogo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="labirinto.h">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="servidor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="motorjogo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,14 @@
 #pragma once
 
+
+
+
 #define MAXJOGADORES 10 
+
+#define MAXVITAMINAS 20 
+#define MAXORANGES 15
+#define MAXPEDRAS 50 
+#define MAXCAFEINAS 8 
 
 #define Color_Black 0
 #define Color_Blue 1

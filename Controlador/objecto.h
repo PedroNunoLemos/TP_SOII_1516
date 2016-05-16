@@ -3,6 +3,7 @@
 typedef struct _objecto
 {
 
+	int tipo;
 	int qtdMaxima;
 	int qtdAtual;
 

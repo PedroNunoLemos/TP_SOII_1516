@@ -16,16 +16,17 @@ typedef struct  _jogoservidor
 
 	int JogoIniciado;
 	int ClienteLigado;
+	int jogoVisivel;
 
 	HANDLE hPipeA[MAXJOGADORES];
 	HANDLE pipeAtual;
 
 	DWORD totalLigacoes;
 
-	Vitamina vitaminas[20];
-	OrangeBull oranges[15];
-	Pedra pedras[50];
-	Cafeina cafeinas[8];
+	Vitamina vitaminas[MAXVITAMINAS];
+	OrangeBull oranges[MAXORANGES];
+	Pedra pedras[MAXPEDRAS];
+	Cafeina cafeinas[MAXCAFEINAS];
 
 } JogoServidor;
 

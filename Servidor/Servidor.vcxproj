@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="labirinto.c" />
+    <ClCompile Include="motorjogo.c" />
     <ClCompile Include="servidortestes2.c" />
     <ClCompile Include="servidor.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="JogoServidor.h" />
     <ClInclude Include="labirinto.h" />
+    <ClInclude Include="motorjogo.h" />
     <ClInclude Include="servidor.h" />
   </ItemGroup>
   <ItemGroup>
