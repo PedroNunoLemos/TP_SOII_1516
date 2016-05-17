@@ -33,6 +33,9 @@ typedef struct DLL_IMP_API _jogoCliente
 
 	DWORD pidCliente;
 
+
+	int moveuDirecao;
+
 	Jogador jogador;
 
 	TCHAR mensagem[256];

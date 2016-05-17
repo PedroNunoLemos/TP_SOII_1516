@@ -30,6 +30,9 @@ int _tmain(int argc, LPTSTR argv[]) {
 	_setmode(_fileno(stderr), _O_WTEXT);
 #endif
 
+
+	cursorVisible(0);
+
 	caixa(25, 5, 60, 15, 0, 0);
 	GoToXY(38, 8);
 	_tprintf(TEXT("DUNGEON RPG SO"));
@@ -61,25 +64,13 @@ int _tmain(int argc, LPTSTR argv[]) {
 			//historico();
 			break;
 		case '3':
-			//sair();
+			ExitProcess(0);
 			break;
 		}
 
 	} while (opcao < '1' || opcao > '3');
 
-
-	return 0;
-
-}
-
-DWORD WINAPI AtualizaCliente(LPVOID param) {
-
-	HANDLE hPipe = INVALID_HANDLE_VALUE;
-	JogoCliente jogo;
-
-	//_tprintf(TEXT("Actualizando JogoCliente\n"));
-
-	atualizaJogoCliente(hPipe, &jogo);
+	cursorVisible(1);
 
 	return 0;
 
@@ -87,10 +78,13 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 void jogar() {
 
-	TCHAR buf[256];
+	TCHAR message[256];
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
-	
+
+	TCHAR ch;
+
 	JogoCliente *jogo;
+
 
 
 	limpaArea(5, 5, 40, 15);
@@ -98,10 +92,14 @@ void jogar() {
 	caixa(20, 7, 70, 10, 0, 0);
 
 	GoToXY(22, 8);
-	_tprintf(TEXT("Introduza o ip servidor enter para localhost."));
+	_tprintf(TEXT("Introduza o ip servidor [ENTER] para localhost."));
 	GoToXY(22, 9);
 
+	cursorVisible(1);
+
 	_fgetts(servnome, 256, stdin);
+
+	cursorVisible(0);
 
 	if (_tcscmp(servnome, TEXT("\n")) == 0) {
 		_tcscpy_s(servnome, 256, TEXT("127.0.0.1"));
@@ -110,7 +108,7 @@ void jogar() {
 	limpaArea(0, 0, 70, 20);
 	GoToXY(0, 1);
 
-	
+
 	hPipe = ligarServidor(servnome);
 
 	if (hPipe == INVALID_HANDLE_VALUE)
@@ -119,14 +117,14 @@ void jogar() {
 
 
 		limpaArea(0, 0, 70, 20);
-		
+
 		caixa(20, 7, 60, 9, 0, 0);
 
 		GoToXY(26, 8);
 
 		_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Servidor Offline."));
 
-		TCHAR ch = _gettch();
+		ch = _gettch();
 
 		return;
 
@@ -143,58 +141,84 @@ void jogar() {
 		limpaArea(0, 0, 70, 20);
 		GoToXY(0, 3);
 
-		_tprintf(TEXT("1 Cliente Jogo Criado ... \n"));
-
-
-		imprimeLabirinto(25, 5, *jogo);
+		mostraJogo(jogo);
 
 	}
+	else if (juntarJogo(hPipe, jogo)) //ssucesso 
+	{
+
+
+		_tcscpy_s(message, 256, TEXT("Ligando a jogo existente"));
+
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
+
+		mostraJogo(jogo);
+
+	}
+	else
+	{
+
+		_tcscpy_s(message, 256, TEXT("Não me consegui ligar a um jogo."));
+
+		free(jogo);
+
+		CloseHandle(hPipe);
+
+		return;
+
+	}
+
+	limpaArea(0, 0, 70, 20);
+
+	caixa(20, 7, 60, 9, 0, 0);
+
+	GoToXY(26, 8);
+
+	_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Servidor Offline."));
+
+
+	limpaArea(0, 0, 70, 20);
 
 	GoToXY(0, 1);
-	setForeGroundAndBackGroundColor(Color_White,Color_Black);
+	setForeGroundAndBackGroundColor(Color_White, Color_Black);
 
-
-	while (1) {
-
-		_tprintf(TEXT("digite uma opção \n"));
-		_fgetts(buf, 256, stdin);
-
-
-		//if (_tcscmp(buf, TEXT("1\n")) == 0) {
-
-		//	if (criaIniciaJogo(hPipe, jogo))//ssucesso 
-		//	{
-		//		_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Jogo Criado."));
-		//		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
-		//	}
-		//	else
-		//		_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Não consegui criar o jogo"));
-		//}
-		//else
-		if (_tcscmp(buf, TEXT("2\n")) == 0) {
-
-
-		}
-		else if (_tcscmp(buf, TEXT("3\n")) == 0)
-		{
-
-			if (juntarJogo(hPipe, jogo)) //ssucesso 
-			{
-
-				_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Ligado a jogo existente"));
-
-				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
-
-			}
-			else
-				_tprintf(TEXT("[CLIENTE] %s\n"), TEXT("Não me consegui ligar a um jogo."));
-		}
-		else
-			jogo->respostaComando = 0;
-
-	}
-
+	free(jogo);
 
 	CloseHandle(hPipe);
 
 }
+
+void mostraJogo(JogoCliente *jogo) {
+
+	TCHAR ch=TEXT("");
+
+	limpaArea(0, 0, 70, 25);
+	caixa(5, 1, 26, 19, 0, 0);
+	caixa(28, 1, 65, 19, 0, 0);
+	caixa(5, 20, 65, 25, 0, 0);
+
+	/*while (ch != key_ESCAPE)
+	{*/
+		
+
+		imprimeLabirinto(33, 3, *jogo);
+
+		ch = _gettch();
+
+
+	/*}*/
+
+	
+}
+
+DWORD WINAPI AtualizaCliente(LPVOID param) {
+
+	HANDLE hPipe = INVALID_HANDLE_VALUE;
+	JogoCliente jogo;
+
+	atualizaJogoCliente(hPipe, &jogo);
+
+	return 0;
+
+}
+
