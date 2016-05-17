@@ -156,10 +156,10 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				x = jog->jogador.posicao.x;
 				y = jog->jogador.posicao.y;
 
-				if (jog->moveuDirecao == 1) if (validaMovimentoBase(jogo->mapa, x, y + 1)) y++; //Mover Para Baixo
-				if (jog->moveuDirecao == 2) if (validaMovimentoBase(jogo->mapa, x, y - 1)) y--; //Mover Para Cima
-				if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para Esquerda
-				if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x + 1, y + 1))  x++; //Mover Para Direita
+				if (jog->moveuDirecao == 1) if (validaMovimentoBase(jogo->mapa, x, y - 1)) y--; //Mover Para Cima
+				if (jog->moveuDirecao == 2) if (validaMovimentoBase(jogo->mapa, x, y + 1)) y++; //Mover Para Baixo
+				if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
+				if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
 
 				jog->jogador.posicao.x = x;
 				jog->jogador.posicao.y = y;
