@@ -151,36 +151,36 @@ void jogar() {
 		return;
 
 	}
-	else if (juntarJogo(hPipe, jogo)) //ssucesso 
-	{
-
-
-		_tcscpy_s(message, 256, TEXT("Ligando a jogo existente"));
-
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
-
-		mostraJogo(hPipe, jogo);
-
-
-		free(jogo);
-
-		CloseHandle(hPipe);
-
-		return;
-
-	}
 	else
 	{
 
-		_tcscpy_s(message, 256, TEXT("Não me consegui ligar a um jogo."));
+		if (juntarJogo(hPipe, jogo)) {
+			_tcscpy_s(message, 256, TEXT("Ligando a jogo existente"));
 
-		free(jogo);
+			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 
-		CloseHandle(hPipe);
+			mostraJogo(hPipe, jogo);
 
-		return;
+
+			free(jogo);
+
+			CloseHandle(hPipe);
+		}
+		else
+		{
+
+			_tcscpy_s(message, 256, TEXT("Não me consegui ligar a um jogo."));
+
+			free(jogo);
+
+			CloseHandle(hPipe);
+
+			return;
+
+		}
 
 	}
+
 
 	limpaArea(0, 0, 70, 20);
 

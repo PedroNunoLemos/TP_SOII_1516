@@ -11,6 +11,7 @@ typedef struct _objecto
 	Coordenada pos;
 
 
+
 } Item;
 
 typedef Item Vitamina;

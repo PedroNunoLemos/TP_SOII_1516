@@ -19,7 +19,7 @@ void atualizaJogadorServidor(JogoServidor *jog, JogoCliente jogcl) {
 	{
 		if (jog->jogadores[i].pidJogador == jogcl.pidCliente) {
 
-			jog->jogadores[i] = jogcl.jogador;
+			jog->jogadores[i] = jogcl.jogadorAtual;
 
 			return;
 
@@ -28,6 +28,7 @@ void atualizaJogadorServidor(JogoServidor *jog, JogoCliente jogcl) {
 
 	return;
 }
+
 
 int existeJogadorNaPosicao(JogoServidor jogo, int  x, int y) {
 
@@ -152,6 +153,7 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 	int y = 0;
 	int i = -1;
 	int j = -1;
+	int k = 0;
 
 	for (x = x1; x < x1 + serv->jogoVisivel; x++)
 	{
@@ -162,6 +164,23 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 			j = (y1 + serv->jogoVisivel - 1) - y;
 
 			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
+
+			for (k = 0; k < serv->jogadoresLigados; k++)
+			{
+				if (serv->jogadores[k].posicao.x == x && serv->jogadores[k].posicao.y == y)
+				{
+					jogcl->mapa[i][j].ponto.x = i;
+					jogcl->mapa[i][j].ponto.y = j;
+					jogcl->mapaJogadores[i][j] = serv->jogadores[k];
+				}
+				else
+				{
+					jogcl->mapaJogadores[i][j].posicao.x = -1;
+					jogcl->mapaJogadores[i][j].posicao.y = -1;
+				}
+			}
+
+
 		}
 	}
 
@@ -177,7 +196,7 @@ void criaJogo(JogoServidor *jog)
 
 	jog->jogoVisivel = 15;
 
-	Labirinto *lab = CriaLabirinto(200, 200, 10);
+	Labirinto *lab = CriaLabirinto(200, 200, 5);
 
 	jog->mapa = *lab;
 

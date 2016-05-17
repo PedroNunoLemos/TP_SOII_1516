@@ -104,6 +104,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 		ret = lePipeJogoClienteComRetVal(cliente, jog);
 
+
 		if (ret == 1)
 			break;
 
@@ -117,6 +118,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				if (JOGO_ONLINE == FALSE && JogoCliente_COMECOU == FALSE)
 				{
+
+
 					hPipeA[total] = criaPipeCliente();
 
 					total++;
@@ -133,7 +136,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
 					);
 
-					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
+					jog->jogadorAtual = jogo->jogadores[jogo->jogadoresLigados];
 
 					jogo->jogadoresLigados++;
 
@@ -153,19 +156,19 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				int x = 0;
 				int y = 0;
 
-				x = jog->jogador.posicao.x;
-				y = jog->jogador.posicao.y;
+				x = jog->jogadorAtual.posicao.x;
+				y = jog->jogadorAtual.posicao.y;
 
-				if (jog->moveuDirecao == 1) if (validaMovimentoBase(jogo->mapa, x, y - 1)) y--; //Mover Para Cima
-				if (jog->moveuDirecao == 2) if (validaMovimentoBase(jogo->mapa, x, y + 1)) y++; //Mover Para Baixo
-				if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
-				if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
+				if (jog->jogadorAtual.moveuDirecao == 1) if (validaMovimentoBase(jogo->mapa, x, y - 1)) y--; //Mover Para Cima
+				if (jog->jogadorAtual.moveuDirecao == 2) if (validaMovimentoBase(jogo->mapa, x, y + 1)) y++; //Mover Para Baixo
+				if (jog->jogadorAtual.moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
+				if (jog->jogadorAtual.moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
 
-				jog->jogador.posicao.x = x;
-				jog->jogador.posicao.y = y;
+				jog->jogadorAtual.posicao.x = x;
+				jog->jogadorAtual.posicao.y = y;
 
 				atualizaJogadorServidor(jogo, *jog);
-
+				
 				atualizaMapaCliente(jogo, jog, x - 7, y - 7);
 
 				jog->respostaComando = 1;
@@ -188,7 +191,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
 					);
 
-					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
+					jog->jogadorAtual = jogo->jogadores[jogo->jogadoresLigados];
 
 					jogo->jogadoresLigados++;
 
@@ -232,6 +235,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		exit(-1);
 	}
 
+
+	free(jog);
 
 
 	return 0;

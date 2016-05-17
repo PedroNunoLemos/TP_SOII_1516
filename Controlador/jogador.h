@@ -30,6 +30,8 @@ typedef struct DLL_IMP_API _jogador
 	 int lentidao;	
 	 int saude;
 
+	 int moveuDirecao;
+
 	 Coordenada posicao;
 	 DWORD pidJogador;
 

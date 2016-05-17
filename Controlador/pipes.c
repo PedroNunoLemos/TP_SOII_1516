@@ -209,7 +209,7 @@ int moverJogador(HANDLE hPipe, JogoCliente *jogo, int dir) {
 	//envia pedido registo
 
 	jogo->comando = 5;
-	jogo->moveuDirecao=dir;
+	jogo->jogadorAtual.moveuDirecao=dir;
 
 	escrevePipeJogoCliente(hPipe, jogo);
 
