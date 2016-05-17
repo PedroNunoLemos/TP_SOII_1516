@@ -114,8 +114,34 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 			if (lab.jogadores[ix][iy].posicaoOcupada == 1) {
 
 				setForeGroundAndBackGroundColor(Color_White, 6);
-				_tprintf(TEXT("P"));
+				_tprintf(TEXT("0"));
 
+			}
+
+
+			if (lab.mapa[ix][iy].tipo == TipoCelula_CHAO)
+			{
+
+				if (lab.mapa[ix][iy].tipoObjecto < 60) { setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT(" ")); }
+				if (lab.mapa[ix][iy].tipoObjecto > 65 && lab.mapa[ix][iy].tipoObjecto < 70)
+				{
+					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("V"));
+				}
+
+				if (lab.mapa[ix][iy].tipoObjecto > 85 && lab.mapa[ix][iy].tipoObjecto < 90)
+				{
+					setForeGroundAndBackGroundColor(Color_LightGreen, 6);  _tprintf(TEXT("O"));
+				}
+
+				if (lab.mapa[ix][iy].tipoObjecto > 90 && lab.mapa[ix][iy].tipoObjecto < 95)
+				{
+					setForeGroundAndBackGroundColor(Color_LightRed, 6);  _tprintf(TEXT("C"));
+				}
+
+				if (lab.mapa[ix][iy].tipoObjecto > 70 && lab.mapa[ix][iy].tipoObjecto < 75)
+				{
+					setForeGroundAndBackGroundColor(Color_LightMagenta, 6);  _tprintf(TEXT("P"));
+				}
 			}
 
 		}

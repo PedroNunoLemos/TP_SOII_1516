@@ -41,7 +41,8 @@ typedef struct DLL_IMP_API _celula
 {
 	TipoCelula tipo;
 	Coordenada ponto;
-
+	
+	int tipoObjecto;
 
 
 } Celula;

@@ -212,6 +212,43 @@ void atualizaJogadoresMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1
 }
 
 
+void criaObjectosMapa(JogoServidor *serv) {
+
+	int xx = 0;
+	int yy = 0;
+
+	int tipo = 0;
+
+	int sx = 0;
+	int sy = 0;
+
+	int r = 0;
+
+	for (r = 0; r < serv->mapa.tamsalas; r++) {
+
+		Sala sala = serv->mapa.salas[r];
+
+		for (xx = sala.x + 1; xx < sala.x + sala.w - 1; xx++) {
+			for (yy = sala.y + 1; yy < sala.y + sala.h - 1; yy++) {
+
+				tipo = aleatorio(0, 100, yy);
+
+
+
+				sx = aleatorio(sala.x + 1, sala.x + sala.w - 1, xx);
+				sy = aleatorio(sala.y + 1, sala.y + sala.h - 1, yy);
+
+				serv->mapa.celula[sx][sy].tipoObjecto = tipo;
+
+			}
+		}
+
+	}
+
+}
+
+
+
 void criaJogo(JogoServidor *jog)
 {
 
@@ -224,6 +261,7 @@ void criaJogo(JogoServidor *jog)
 
 	jog->mapa = *lab;
 
+	criaObjectosMapa(jog);
 
 }
 
