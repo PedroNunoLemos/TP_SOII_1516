@@ -3,7 +3,8 @@
 #include <tchar.h>
 
 #include "coordenada.h"
-
+#include "jogador.h"
+#include "objecto.h"
 
 #ifdef DLL_EXPORTS
 #define DLL_IMP_API __declspec(dllexport)
@@ -36,11 +37,15 @@ typedef enum tipocelula {
 } TipoCelula;
 
 
-
 typedef struct DLL_IMP_API _celula  
 {
 	TipoCelula tipo;
 	Coordenada ponto;
+
+	DWORD pidJogador;
+
+	int IdObjecto;
+
 
 } Celula;
 
