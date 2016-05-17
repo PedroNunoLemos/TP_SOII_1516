@@ -6,6 +6,7 @@
 #include "coordenada.h"
 #include "jogador.h"
 #include "celula.h"
+#include "constantes.h"
 
 
 #ifdef DLL_EXPORTS
@@ -21,6 +22,13 @@
 #endif
 
 
+typedef struct DLL_IMP_API _posicao_JogadorMapa
+{
+	DWORD cor;
+	DWORD pidCliente;
+	int posicaoOcupada;
+
+}PosicaoJogadorMapa;
 
 typedef struct DLL_IMP_API _jogoCliente
 {
@@ -28,13 +36,15 @@ typedef struct DLL_IMP_API _jogoCliente
 	int comando;
 
 	int respostaComando;
+	int moveuDirecao;
+
 
 	Celula mapa[15][15];
 
+	
+	PosicaoJogadorMapa jogadores[15][15];
+
 	DWORD pidCliente;
-
-
-	int moveuDirecao;
 
 	Jogador jogador;
 

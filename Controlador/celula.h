@@ -42,9 +42,6 @@ typedef struct DLL_IMP_API _celula
 	TipoCelula tipo;
 	Coordenada ponto;
 
-	DWORD pidJogador;
-
-	int IdObjecto;
 
 
 } Celula;

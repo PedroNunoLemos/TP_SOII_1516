@@ -100,17 +100,30 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 			else if (lab.mapa[ix][iy].tipo == TipoCelula_VAZIO) { setcolor(Color_Gray); _tprintf(TEXT(" ")); }
 			else { setcolor(Color_Black); _tprintf(TEXT(" ")); }
 
-
-
 		}
 	}
 
 
+	for (ix = 0; ix < 15; ix++)
+	{
+		for (iy = 0; iy < 15; iy++) {
+
+
+			GoToXY(x + ix, y + iy);
+
+			if (lab.jogadores[ix][iy].posicaoOcupada == 1) {
+
+				setForeGroundAndBackGroundColor(Color_White, 6);
+				_tprintf(TEXT("P"));
+
+			}
+
+		}
+	}
+
 	GoToXY(x + 7, y + 7);
 	setForeGroundAndBackGroundColor(Color_Blue, 6);
 	_tprintf(TEXT("@"));
-
-
 
 
 }
