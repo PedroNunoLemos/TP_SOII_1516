@@ -4,4 +4,4 @@
 
 DWORD WINAPI AtualizaCliente(LPVOID param);
 void jogar();
-void mostraJogo(JogoCliente *jogo);
+void mostraJogo(HANDLE Hpipe, JogoCliente *jogo);

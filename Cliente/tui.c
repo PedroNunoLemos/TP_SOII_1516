@@ -88,7 +88,7 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 			if (lab.mapa[ix][iy].tipo == TipoCelula_CHAO
 				|| lab.mapa[ix][iy].tipo == TipoCelula_PORTA)
 			{
-				setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT("."));
+				setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT(" "));
 			}
 
 			else if (lab.mapa[ix][iy].tipo == TipoCelula_PAREDE) {

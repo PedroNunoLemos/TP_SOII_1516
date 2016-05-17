@@ -11,6 +11,24 @@
 #include "JogoServidor.h"
 #include "motorjogo.h"
 
+void atualizaJogadorServidor(JogoServidor *jog, JogoCliente jogcl) {
+
+	int i = 0;
+
+	for (i = 0; i < jog->jogadoresLigados; i++)
+	{
+		if (jog->jogadores[i].pidJogador == jogcl.pidCliente) {
+
+			jog->jogadores[i] = jogcl.jogador;
+
+			return;
+
+		}
+	}
+
+	return;
+}
+
 int existeJogadorNaPosicao(JogoServidor jogo, int  x, int y) {
 
 

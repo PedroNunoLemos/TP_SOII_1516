@@ -4,6 +4,20 @@
 #include "labirinto.h"
 #include "../Controlador/uteis.h"
 
+int validaMovimentoBase(Labirinto lab, int x, int y) {
+
+
+
+
+	if ((
+		lab.celula[x][y].tipo == TipoCelula_CHAO ||
+		lab.celula[x][y].tipo == TipoCelula_PORTA))
+		return 1; else return 0;
+
+
+}
+
+
 
 int entre_valores(int value, int min, int max)
 {

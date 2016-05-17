@@ -33,15 +33,15 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	cursorVisible(0);
 
-	caixa(25, 5, 60, 15, 0, 0);
+	caixa(25, 5, 63, 15, 0, 0);
 	GoToXY(38, 8);
 	_tprintf(TEXT("DUNGEON RPG SO"));
-	GoToXY(27, 10);
+	GoToXY(28, 10);
 	_tprintf(TEXT("Pressione QQ Tecla Para Continuar."));
 
 	ch = _gettch();
 
-	limpaArea(25, 5, 60, 15);
+	limpaArea(25, 5, 63, 15);
 
 	caixa(5, 5, 40, 15, 0, 0);
 
@@ -141,7 +141,14 @@ void jogar() {
 		limpaArea(0, 0, 70, 20);
 		GoToXY(0, 3);
 
-		mostraJogo(jogo);
+		mostraJogo(hPipe, jogo);
+
+
+		free(jogo);
+
+		CloseHandle(hPipe);
+
+		return;
 
 	}
 	else if (juntarJogo(hPipe, jogo)) //ssucesso 
@@ -152,7 +159,14 @@ void jogar() {
 
 		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 
-		mostraJogo(jogo);
+		mostraJogo(hPipe, jogo);
+
+
+		free(jogo);
+
+		CloseHandle(hPipe);
+
+		return;
 
 	}
 	else
@@ -188,27 +202,45 @@ void jogar() {
 
 }
 
-void mostraJogo(JogoCliente *jogo) {
+void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
-	TCHAR ch=TEXT("");
+	TCHAR ch = TEXT("");
 
 	limpaArea(0, 0, 70, 25);
 	caixa(5, 1, 26, 19, 0, 0);
 	caixa(28, 1, 65, 19, 0, 0);
 	caixa(5, 20, 65, 25, 0, 0);
 
-	/*while (ch != key_ESCAPE)
-	{*/
-		
+	while (ch != key_ESCAPE)
+	{
 
-		imprimeLabirinto(33, 3, *jogo);
+
+		imprimeLabirinto(38, 3, *jogo);
 
 		ch = _gettch();
 
 
-	/*}*/
+		if (ch == key_DOWN) moverJogador(Hpipe, jogo, 1); //Dir 1
+		if (ch == key_UP) moverJogador(Hpipe, jogo, 2); //Dir 2 
+		if (ch == key_LEFT) moverJogador(Hpipe, jogo, 3); //Dir 3
+		if (ch == key_RIGHT) moverJogador(Hpipe, jogo, 4); //Dir 4
 
-	
+	}
+
+	setForeGroundAndBackGroundColor(Color_White, Color_Black);
+
+	limpaArea(0, 0, 70, 25);
+
+	caixa(20, 7, 60, 9, 0, 0);
+
+	GoToXY(31, 8);
+
+	_tprintf(TEXT("Jogo Terminado."));
+
+	GoToXY(0, 1);
+
+
+	ch = _gettch();
 }
 
 DWORD WINAPI AtualizaCliente(LPVOID param) {

@@ -107,7 +107,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		if (ret == 1)
 			break;
 
-		
+
 
 		if (ret == 0)
 		{
@@ -131,7 +131,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					atualizaMapaCliente(jogo, jog,
 						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
 						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
-						);
+					);
 
 					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
 
@@ -147,11 +147,28 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					jog->respostaComando = 0;
 			}
 
-			else if (jog->comando == 2)
+			else if (jog->comando == 5)
 			{
 
+				int x = 0;
+				int y = 0;
 
-				jog->respostaComando = 0;
+				x = jog->jogador.posicao.x;
+				y = jog->jogador.posicao.y;
+
+				if (jog->moveuDirecao == 1) if (validaMovimentoBase(jogo->mapa, x, y + 1)) y++; //Mover Para Baixo
+				if (jog->moveuDirecao == 2) if (validaMovimentoBase(jogo->mapa, x, y - 1)) y--; //Mover Para Cima
+				if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para Esquerda
+				if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x + 1, y + 1))  x++; //Mover Para Direita
+
+				jog->jogador.posicao.x = x;
+				jog->jogador.posicao.y = y;
+
+				atualizaJogadorServidor(jogo, *jog);
+
+				atualizaMapaCliente(jogo, jog, x - 7, y - 7);
+
+				jog->respostaComando = 1;
 
 			}
 			else if (jog->comando == 3)
@@ -210,3 +227,5 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	return 0;
 }
+
+
