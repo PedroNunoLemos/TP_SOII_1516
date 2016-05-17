@@ -100,9 +100,7 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 			else if (lab.mapa[ix][iy].tipo == TipoCelula_VAZIO) { setcolor(Color_Gray); _tprintf(TEXT(" ")); }
 			else { setcolor(Color_Black); _tprintf(TEXT(" ")); }
 
-			if (lab.mapaJogadores[ix][iy].pidJogador > 0) {
-				{ setcolor(Color_Red); _tprintf(TEXT("9")); }
-			}
+
 
 		}
 	}

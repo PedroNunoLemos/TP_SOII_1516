@@ -6,7 +6,6 @@
 #include "coordenada.h"
 #include "jogador.h"
 #include "celula.h"
-#include "constantes.h"
 
 
 #ifdef DLL_EXPORTS
@@ -34,9 +33,10 @@ typedef struct DLL_IMP_API _jogoCliente
 
 	DWORD pidCliente;
 
-	Jogador mapaJogadores[15][15];
 
-	Jogador jogadorAtual;
+	int moveuDirecao;
+
+	Jogador jogador;
 
 	TCHAR mensagem[256];
 
