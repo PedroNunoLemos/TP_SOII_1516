@@ -129,8 +129,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					criaJogador(jogo, TEXT(""), jog->pidCliente);
 
 					atualizaMapaCliente(jogo, jog,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 15,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 15
+						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
+						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
 						);
 
 					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];

@@ -108,16 +108,18 @@ void jogar() {
 	}
 
 	limpaArea(0, 0, 70, 20);
-	GoToXY(0, 0);
+	GoToXY(0, 1);
 
-
+	
 	hPipe = ligarServidor(servnome);
 
 	if (hPipe == INVALID_HANDLE_VALUE)
 	{
 
-		limpaArea(5, 5, 40, 15);
 
+
+		limpaArea(0, 0, 70, 20);
+		
 		caixa(20, 7, 60, 9, 0, 0);
 
 		GoToXY(26, 8);
@@ -138,6 +140,9 @@ void jogar() {
 	if (criaIniciaJogo(hPipe, jogo))//ssucesso 
 	{
 
+		limpaArea(0, 0, 70, 20);
+		GoToXY(0, 3);
+
 		_tprintf(TEXT("1 Cliente Jogo Criado ... \n"));
 
 
@@ -145,7 +150,7 @@ void jogar() {
 
 	}
 
-	GoToXY(0, 0);
+	GoToXY(0, 1);
 	setForeGroundAndBackGroundColor(Color_White,Color_Black);
 
 
