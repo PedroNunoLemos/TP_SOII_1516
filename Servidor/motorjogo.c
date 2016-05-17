@@ -168,7 +168,7 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 
 }
 
-void atualizaJogadoresMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1,DWORD pid) {
+void atualizaJogadoresMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1, DWORD pid) {
 
 	int x = 0;
 	int y = 0;
@@ -188,7 +188,7 @@ void atualizaJogadoresMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1
 
 				if (
 					serv->jogadores[cntjog].posicao.x == x && serv->jogadores[cntjog].posicao.y == y
-					&& serv->jogadores[cntjog].pidJogador!=pid
+					&& serv->jogadores[cntjog].pidJogador != pid
 					)
 				{
 					jogcl->jogadores[i][j].pidCliente = serv->jogadores[cntjog].pidJogador;
@@ -204,7 +204,7 @@ void atualizaJogadoresMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1
 
 			}
 
-			
+
 
 		}
 	}
@@ -265,8 +265,8 @@ void criaJogador(JogoServidor *jogo, TCHAR nome[], DWORD pid) {
 	jogo->jogadores[jogo->jogadoresLigados].pedra.qtdMaxima = 0;
 	jogo->jogadores[jogo->jogadoresLigados].pedra.tipo = 4;
 
-	jogo->jogadores[jogo->jogadoresLigados].lentidao = 0;
-	jogo->jogadores[jogo->jogadoresLigados].saude = 0;
+	jogo->jogadores[jogo->jogadoresLigados].lentidao = 5;
+	jogo->jogadores[jogo->jogadoresLigados].saude = 10;
 
 	Coordenada pos = PosicaoIniJog(jogo);
 
@@ -274,7 +274,9 @@ void criaJogador(JogoServidor *jogo, TCHAR nome[], DWORD pid) {
 	jogo->jogadores[jogo->jogadoresLigados].posicao.y = pos.y;
 
 
-	_tcscpy_s(jogo->jogadores[jogo->jogadoresLigados].nome, 30, nome);
+	swprintf(jogo->jogadores[jogo->jogadoresLigados].nome, 256, TEXT("Jogador %d"), jogo->jogadoresLigados + 1);
+
+
 
 
 }

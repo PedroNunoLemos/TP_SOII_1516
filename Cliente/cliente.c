@@ -211,8 +211,44 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 	caixa(28, 1, 65, 19, 0, 0);
 	caixa(5, 20, 65, 25, 0, 0);
 
+
+	setcolor(Color_BrightWhite);
+
+	GoToXY(8, 21);
+	_tprintf(TEXT("Pressione as teclas de direção se movimentar"));
+
+	GoToXY(8, 23);
+	_tprintf(TEXT("Pressione ESC para sair"));
+
+
+
 	while (ch != key_ESCAPE)
 	{
+		setcolor(Color_BrightWhite);
+
+		GoToXY(8, 2);
+		_tprintf(jogo->jogador.nome);
+
+		GoToXY(8, 4);
+		_tprintf(TEXT("Saude : %d"), jogo->jogador.saude);
+
+		GoToXY(8, 6);
+		_tprintf(TEXT("Lentidao : %d"), jogo->jogador.lentidao);
+
+		GoToXY(8, 8);
+		_tprintf(TEXT("Vitaminas : %d"), jogo->jogador.vitamina.qtdAtual);
+
+
+		GoToXY(8, 9);
+		_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.orange.qtdAtual);
+
+
+		GoToXY(8, 10);
+		_tprintf(TEXT("Cafeina : %d"), jogo->jogador.cafeina.qtdAtual);
+
+		GoToXY(8, 11);
+		_tprintf(TEXT("Pedras : %d"), jogo->jogador.pedra.qtdAtual);
+
 
 
 		imprimeLabirinto(38, 3, *jogo);
