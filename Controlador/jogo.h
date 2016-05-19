@@ -41,8 +41,8 @@ typedef struct DLL_IMP_API _jogoCliente
 
 	Celula mapa[15][15];
 
-	
 	PosicaoJogadorMapa jogadores[15][15];
+	ObjectoMapa objectos[15][15];
 
 	DWORD pidCliente;
 

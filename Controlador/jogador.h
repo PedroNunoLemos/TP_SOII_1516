@@ -4,6 +4,7 @@
 
 #include "coordenada.h"
 #include  "objecto.h"
+#include "constantes.h"
 
 #ifdef DLL_EXPORTS  
 
@@ -33,9 +34,9 @@ typedef struct DLL_IMP_API _jogador
 	Coordenada posicao;
 	DWORD pidJogador;
 
-	Vitamina vitamina;
-	OrangeBull orange;
-	Pedra pedra;
-	Cafeina cafeina;
+	int qtdVitaminas;
+	int qtdOranges;
+	int qtdPedras;
+	int qtdCafeinas;
 
 } Jogador;

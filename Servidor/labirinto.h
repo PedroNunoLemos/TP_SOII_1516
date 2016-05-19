@@ -31,6 +31,7 @@ typedef struct
 	int tamsalas;
 
 	Celula celula[MAXTAMX][MAXTAMY];
+	ObjectoMapa objectos[MAXTAMX][MAXTAMY];
 	Sala salas[MAXSALAS];
 
 } Labirinto;

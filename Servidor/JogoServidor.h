@@ -12,7 +12,9 @@ typedef struct  _jogoservidor
 	int jogadoresLigados;
 
 	Labirinto mapa;
+
 	Jogador jogadores[MAXJOGADORES];
+
 
 	int JogoIniciado;
 	int ClienteLigado;
@@ -23,10 +25,6 @@ typedef struct  _jogoservidor
 
 	DWORD totalLigacoes;
 
-	Vitamina vitaminas[MAXVITAMINAS];
-	OrangeBull oranges[MAXORANGES];
-	Pedra pedras[MAXPEDRAS];
-	Cafeina cafeinas[MAXCAFEINAS];
 
 } JogoServidor;
 

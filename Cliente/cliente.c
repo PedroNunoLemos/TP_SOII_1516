@@ -236,18 +236,18 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 		_tprintf(TEXT("Lentidao : %d"), jogo->jogador.lentidao);
 
 		GoToXY(8, 8);
-		_tprintf(TEXT("Vitaminas : %d"), jogo->jogador.vitamina.qtdAtual);
+		_tprintf(TEXT("Vitaminas : %d"), jogo->jogador.qtdVitaminas);
 
 
 		GoToXY(8, 9);
-		_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.orange.qtdAtual);
+		_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.qtdOranges);
 
 
 		GoToXY(8, 10);
-		_tprintf(TEXT("Cafeina : %d"), jogo->jogador.cafeina.qtdAtual);
+		_tprintf(TEXT("Cafeina : %d"), jogo->jogador.qtdCafeinas);
 
 		GoToXY(8, 11);
-		_tprintf(TEXT("Pedras : %d"), jogo->jogador.pedra.qtdAtual);
+		_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
 
 
 

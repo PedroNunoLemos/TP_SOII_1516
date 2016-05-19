@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 #include "../Controlador/constantes.h"
+#include "../Controlador/jogo.h"
 
 void caixa(int x, int y, int x2, int y2, int back, int fore)
 {
@@ -119,30 +120,24 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 			}
 
 
-			if (lab.mapa[ix][iy].tipo == TipoCelula_CHAO)
-			{
+			for (k = 0; k < 5; k++) {
 
-				if (lab.mapa[ix][iy].tipoObjecto < 60) { setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT(" ")); }
-				if (lab.mapa[ix][iy].tipoObjecto > 65 && lab.mapa[ix][iy].tipoObjecto < 70)
-				{
+				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Vitamina)
 					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("V"));
-				}
 
-				if (lab.mapa[ix][iy].tipoObjecto > 85 && lab.mapa[ix][iy].tipoObjecto < 90)
-				{
-					setForeGroundAndBackGroundColor(Color_LightGreen, 6);  _tprintf(TEXT("O"));
-				}
+				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Cafeina)
+					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("C"));
 
-				if (lab.mapa[ix][iy].tipoObjecto > 90 && lab.mapa[ix][iy].tipoObjecto < 95)
-				{
-					setForeGroundAndBackGroundColor(Color_LightRed, 6);  _tprintf(TEXT("C"));
-				}
+				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_OrangeBull)
+					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("O"));
 
-				if (lab.mapa[ix][iy].tipoObjecto > 70 && lab.mapa[ix][iy].tipoObjecto < 75)
-				{
-					setForeGroundAndBackGroundColor(Color_LightMagenta, 6);  _tprintf(TEXT("P"));
-				}
+				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Pedra)
+					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("P"));
+
+
+
 			}
+
 
 		}
 	}

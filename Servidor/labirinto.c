@@ -216,7 +216,7 @@ Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
 			lab->celula[x][y].tipo = TipoCelula_VAZIO;
 			lab->celula[x][y].ponto.x = x;
 			lab->celula[x][y].ponto.y = y;
-			lab->celula[x][y].tipoObjecto = 0;
+			
 
 		}
 	}
