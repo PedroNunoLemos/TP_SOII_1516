@@ -240,6 +240,7 @@ Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
 
 		do {
 
+			if (tmp)
 			free(tmp);
 
 			i = aleatorio(1, 4, cnt);
@@ -248,7 +249,8 @@ Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
 
 			cnt++;
 
-		} while (!tmp || salaSobreposta(*lab, *tmp) ||
+		} while (!tmp || 
+			salaSobreposta(*lab, *tmp) ||
 			tmp->x <= 5 || tmp->y <= 5
 			|| tmp->x + tmp->w >= lab->tamx - 5
 			|| tmp->y + tmp->h >= lab->tamy - 5);

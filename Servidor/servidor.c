@@ -128,6 +128,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 					jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog->pidCliente;
 
+
 					criaJogo(jogo);
 
 					criaJogador(jogo, TEXT(""), jog->pidCliente);
@@ -255,6 +256,13 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		jogo->jogadores[jogo->jogadoresLigados].posicao.y = -1;
 		jogo->jogadores[jogo->jogadoresLigados].saude = 10;
 		jogo->jogadores[jogo->jogadoresLigados].lentidao = 5;
+
+		jogo->jogadores[jogo->jogadoresLigados].qtdOranges = 0;
+		jogo->jogadores[jogo->jogadoresLigados].qtdCafeinas = 0;
+		jogo->jogadores[jogo->jogadoresLigados].qtdPedras = 0;
+		jogo->jogadores[jogo->jogadoresLigados].qtdVitaminas = 0;
+
+
 		jogo->jogadoresLigados--;
 
 	}

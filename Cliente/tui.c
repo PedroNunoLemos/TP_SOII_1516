@@ -120,23 +120,23 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 			}
 
 
-			for (k = 0; k < 5; k++) {
+			//for (k = 0; k < 5; k++) {
 
-				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Vitamina)
-					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("V"));
+			//	if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Vitamina)
+			//		setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("V"));
 
-				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Cafeina)
-					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("C"));
+			//	if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Cafeina)
+			//		setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("C"));
 
-				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_OrangeBull)
-					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("O"));
+			//	if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_OrangeBull)
+			//		setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("O"));
 
-				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Pedra)
-					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("P"));
+			//	if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Pedra)
+			//		setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("P"));
 
 
 
-			}
+			//}
 
 
 		}

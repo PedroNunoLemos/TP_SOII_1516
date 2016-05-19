@@ -29,14 +29,14 @@ void atualizaJogadorServidor(JogoServidor *jog, JogoCliente jogcl) {
 	return;
 }
 
-int existeJogadorNaPosicao(JogoServidor jogo, int  x, int y) {
+int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 
 
 	int i = 0;
 
-	for (i = 0; i < jogo.jogadoresLigados; i++) {
+	for (i = 0; i < jogo->jogadoresLigados; i++) {
 
-		if (jogo.jogadores[i].posicao.x == x && jogo.jogadores[i].posicao.y == y)
+		if (jogo->jogadores[i].posicao.x == x && jogo->jogadores[i].posicao.y == y)
 			return 1;
 	}
 
@@ -50,7 +50,7 @@ Item *devolveObjectoNaPosicao(JogoServidor jogo, int  x, int y) {
 
 	int i = 0;
 
-	return jogo.mapa.objectos[x][y].objecto;
+	return jogo.objectos[x][y].objecto;
 
 }
 
@@ -65,11 +65,11 @@ void inicializaObjectos(JogoServidor *jog) {
 	for (x = 0; x < jog->mapa.tamx; x++)
 	{
 
-		for (y = 0; y < jog->mapa.tamy; x++)
+		for (y = 0; y < jog->mapa.tamy; y++)
 		{
 			for (r = 0; r < 5; r++)
 			{
-				jog->mapa.objectos[x][y].objecto[r].tipo = 0;
+				jog->objectos[x][y].objecto[r].tipo = 0;
 			}
 
 
@@ -99,7 +99,7 @@ Coordenada PosicaoIniJog(JogoServidor *jog) {
 		x = jog->mapa.salas[r].porta.x;
 		y = jog->mapa.salas[r].porta.y;
 
-		if (!existeJogadorNaPosicao(*jog, x, y))
+		if (!existeJogadorNaPosicao(jog, x, y))
 		{
 			res.x = x;
 			res.y = y;
@@ -205,7 +205,8 @@ void criaObjectosMapa(JogoServidor *serv) {
 				sx = aleatorio(sala.x + 1, sala.x + sala.w - 1, xx);
 				sy = aleatorio(sala.y + 1, sala.y + sala.h - 1, yy);
 
-				serv->mapa.objectos[sx][sy].objecto[0].tipo = tipo / 100;
+
+				serv->objectos[sx][sy].objecto[0].tipo = tipo;
 
 			}
 		}
@@ -219,16 +220,16 @@ void criaObjectosMapa(JogoServidor *serv) {
 void criaJogo(JogoServidor *jog)
 {
 
-
-	inicializaObjectos(jog);
-
 	jog->jogoVisivel = 15;
 
 	Labirinto *lab = CriaLabirinto(200, 200, 10);
 
 	jog->mapa = *lab;
 
+
+	inicializaObjectos(jog);
 	criaObjectosMapa(jog);
+
 
 }
 
