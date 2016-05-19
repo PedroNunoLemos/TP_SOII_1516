@@ -13,11 +13,14 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+#define MOVE_MUTEX TEXT("moveMutex")
+
 DWORD WINAPI AtendeCliente(LPVOID param);
 
 BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
 HANDLE hPipeA[MAXJOGADORES];
+HANDLE moveMutex;
 
 DWORD total = 0;
 
@@ -32,7 +35,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	BOOL pLigado = FALSE;
 	DWORD dwThreadID = 0;
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
-
 
 	int i;
 
@@ -82,6 +84,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 			CloseHandle(hPipe);
 
 	}
+
+	WaitForSingleObject(hThread, INFINITE);
 
 	free(jogo);
 	return 0;
@@ -156,6 +160,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			else if (jog->comando == 5)
 			{
 
+				WaitForSingleObject(moveMutex, INFINITE);
+
 				int x = 0;
 				int y = 0;
 
@@ -178,6 +184,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 				jog->respostaComando = 1;
+
+				ReleaseMutex(moveMutex);
 
 			}
 			else if (jog->comando == 3)
