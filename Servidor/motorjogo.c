@@ -129,7 +129,7 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 			j = (y1 + serv->jogoVisivel - 1) - y;
 
 			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
-
+			jogcl->objectos[i][j] = serv->objectos[x][y];
 		}
 	}
 
@@ -198,7 +198,7 @@ void criaObjectosMapa(JogoServidor *serv) {
 		for (xx = sala.x + 1; xx < sala.x + sala.w - 1; xx++) {
 			for (yy = sala.y + 1; yy < sala.y + sala.h - 1; yy++) {
 
-				tipo = aleatorio(0, 400, yy);
+				tipo = aleatorio(0, 4, yy);
 
 
 
