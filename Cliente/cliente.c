@@ -206,7 +206,7 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
 	TCHAR ch = TEXT("");
 
-	limpaArea(0, 0, 70, 25);
+	limpaArea(0, 0, 75, 25);
 	caixa(5, 1, 26, 19, 0, 0);
 	caixa(28, 1, 65, 19, 0, 0);
 	caixa(5, 20, 65, 25, 0, 0);
@@ -261,11 +261,12 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 		if (ch == key_LEFT) moverJogador(Hpipe, jogo, 3); //Dir 3
 		if (ch == key_RIGHT) moverJogador(Hpipe, jogo, 4); //Dir 4
 
+
 	}
 
 	setForeGroundAndBackGroundColor(Color_White, Color_Black);
 
-	limpaArea(0, 0, 70, 25);
+	limpaArea(0, 0, 75, 25);
 
 	caixa(20, 7, 60, 9, 0, 0);
 

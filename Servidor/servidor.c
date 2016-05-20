@@ -138,11 +138,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
 						);
 
-					atualizaJogadoresMapaCliente(jogo, jog,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7,
-						jog->pidCliente
-						);
+			
 
 					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
 
@@ -177,12 +173,11 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				jog->jogador.posicao.x = x;
 				jog->jogador.posicao.y = y;
 
+
+
 				atualizaJogadorServidor(jogo, *jog);
 
 				atualizaMapaCliente(jogo, jog, x - 7, y - 7);
-
-				atualizaJogadoresMapaCliente(jogo, jog, x - 7, y - 7, jog->pidCliente);
-
 
 				jog->respostaComando = 1;
 
@@ -201,20 +196,16 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 					criaJogador(jogo, TEXT(""), jog->pidCliente);
 
+					atualizaJogadorServidor(jogo, *jog);
+
+					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
+
 					atualizaMapaCliente(jogo, jog,
 						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
 						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
 						);
 
-					atualizaJogadoresMapaCliente(jogo, jog,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7,
-						jog->pidCliente
-						);
 
-					atualizaJogadorServidor(jogo, *jog);
-
-					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
 
 					jogo->jogadoresLigados++;
 

@@ -87,38 +87,15 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 
 			GoToXY(x + ix, y + iy);
 
-
-			if (lab.mapa[ix][iy].tipo == TipoCelula_CHAO
-				|| lab.mapa[ix][iy].tipo == TipoCelula_PORTA)
-			{
-				setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT(" "));
-			}
-
-			else if (lab.mapa[ix][iy].tipo == TipoCelula_PAREDE) {
-				setForeGroundAndBackGroundColor(7, 3);
-				_tprintf(TEXT(" "));
-			}
-			else if (lab.mapa[ix][iy].tipo == TipoCelula_VAZIO) { setcolor(Color_Gray); _tprintf(TEXT(" ")); }
-			else { setcolor(Color_Black); _tprintf(TEXT(" ")); }
-
-		}
-	}
-
-
-	for (ix = 0; ix < 15; ix++)
-	{
-		for (iy = 0; iy < 15; iy++) {
-
-
-			GoToXY(x + ix, y + iy);
+			
 
 			if (lab.jogadores[ix][iy].posicaoOcupada == 1) {
 
-				setForeGroundAndBackGroundColor(Color_White, 6);
-				_tprintf(TEXT("0"));
-
+				if (lab.jogadores[ix][iy].pidCliente != lab.jogador.pidJogador) {
+					setForeGroundAndBackGroundColor(Color_White, 6);
+					_tprintf(TEXT("0"));
+				}
 			}
-
 
 			for (k = 0; k < 5; k++) {
 
@@ -145,9 +122,39 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 
 			}
 
+			if (lab.mapa[ix][iy].tipo == TipoCelula_CHAO
+				|| lab.mapa[ix][iy].tipo == TipoCelula_PORTA)
+			{
+				setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT(" "));
+			}
+
+			else if (lab.mapa[ix][iy].tipo == TipoCelula_PAREDE) {
+				setForeGroundAndBackGroundColor(7, 3);
+				_tprintf(TEXT(" "));
+			}
+			else if (lab.mapa[ix][iy].tipo == TipoCelula_VAZIO)
+			{ setForeGroundAndBackGroundColor(Color_Black, Color_Black); _tprintf(TEXT(" ")); }
+			else { setForeGroundAndBackGroundColor(Color_Black, Color_Black); _tprintf(TEXT(" ")); }
+
+
 
 		}
 	}
+
+
+	//for (ix = 0; ix < 15; ix++)
+	//{
+	//	for (iy = 0; iy < 15; iy++) {
+
+
+	//		GoToXY(x + ix, y + iy);
+
+
+
+
+
+	//	}
+	//}
 
 	GoToXY(x + 7, y + 7);
 	setForeGroundAndBackGroundColor(Color_Blue, 6);

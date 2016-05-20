@@ -119,6 +119,8 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 	int y = 0;
 	int i = -1;
 	int j = -1;
+	int cntjog = 0;
+
 
 	for (x = x1; x < x1 + serv->jogoVisivel; x++)
 	{
@@ -130,32 +132,12 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 
 			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
 			jogcl->objectos[i][j] = serv->objectos[x][y];
-		}
-	}
 
-}
-
-void atualizaJogadoresMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1, DWORD pid) {
-
-	int x = 0;
-	int y = 0;
-	int i = -1;
-	int j = -1;
-	int cntjog = 0;
-
-	for (x = x1; x < x1 + serv->jogoVisivel; x++)
-	{
-
-		for (y = y1; y < y1 + serv->jogoVisivel; y++)
-		{
-			i = (x1 + serv->jogoVisivel - 1) - x;
-			j = (y1 + serv->jogoVisivel - 1) - y;
-
-			for (cntjog = 0; cntjog < serv->jogadoresLigados; cntjog++) {
+			for (cntjog = 0; cntjog < serv->jogadoresLigados ; cntjog++) {
 
 				if (
 					serv->jogadores[cntjog].posicao.x == x && serv->jogadores[cntjog].posicao.y == y
-					&& serv->jogadores[cntjog].pidJogador != pid
+					&& serv->jogadores[cntjog].pidJogador != jogcl->jogador.pidJogador
 					)
 				{
 					jogcl->jogadores[i][j].pidCliente = serv->jogadores[cntjog].pidJogador;
@@ -164,19 +146,20 @@ void atualizaJogadoresMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1
 				}
 				else
 				{
-					jogcl->jogadores[i][j].pidCliente = 0;
+					jogcl->jogadores[i][j].pidCliente = jogcl->jogador.pidJogador;
 					jogcl->jogadores[i][j].cor = Color_Black;
-					jogcl->jogadores[i][j].posicaoOcupada = 0;
+					jogcl->jogadores[i][j].posicaoOcupada = 1;
 				}
 
 			}
-
 
 
 		}
 	}
 
 }
+
+
 
 
 void criaObjectosMapa(JogoServidor *serv) {
