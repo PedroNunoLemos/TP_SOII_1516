@@ -83,7 +83,7 @@ int lePipeJogoClienteComRetVal(HANDLE hPipe, JogoCliente *jogo) {
 }
 
 
-void atualizaJogoCliente(HANDLE hPipe, JogoCliente *jogo) {
+void atualizaJogoCliente(HANDLE hPipe, JogoCliente *jogo, int *res) {
 
 	DWORD n;
 	BOOL ret = FALSE;
@@ -95,6 +95,8 @@ void atualizaJogoCliente(HANDLE hPipe, JogoCliente *jogo) {
 
 	hPipe = CreateFile(pipeRececao, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
+
+
 	while (1) {
 
 		ret = ReadFile(hPipe, jogo, sizeof(JogoCliente), &n, NULL);
@@ -103,9 +105,10 @@ void atualizaJogoCliente(HANDLE hPipe, JogoCliente *jogo) {
 			break;
 
 		//se chegar ate aqui enviou 
-
+		res = 1;
 	}
 
+	res = 0;
 }
 
 
@@ -209,7 +212,7 @@ int moverJogador(HANDLE hPipe, JogoCliente *jogo, int dir) {
 	//envia pedido registo
 
 	jogo->comando = 5;
-	jogo->moveuDirecao=dir;
+	jogo->moveuDirecao = dir;
 
 	escrevePipeJogoCliente(hPipe, jogo);
 

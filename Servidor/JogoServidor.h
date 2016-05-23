@@ -15,14 +15,15 @@ typedef struct  _jogoservidor
 
 	Jogador jogadores[MAXJOGADORES];
 	ObjectoMapa objectos[MAXTAMX][MAXTAMY];
+	PosicaoJogadorMapa jogadoresMapa[MAXTAMX][MAXTAMX];
 
+	JogoCliente clientes[MAXJOGADORES];
 
 	int JogoIniciado;
 	int ClienteLigado;
 	int jogoVisivel;
 
-	HANDLE hPipeA[MAXJOGADORES];
-	HANDLE pipeAtual;
+
 
 	DWORD totalLigacoes;
 

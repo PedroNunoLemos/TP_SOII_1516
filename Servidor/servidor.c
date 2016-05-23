@@ -133,6 +133,9 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 					criaJogador(jogo, TEXT(""), jog->pidCliente);
 
+					atualizaMapaServidor(jogo, jog, jogo->jogadores[jogo->jogadoresLigados].posicao.x,
+						jogo->jogadores[jogo->jogadoresLigados].posicao.y);
+
 					atualizaMapaCliente(jogo, jog,
 						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
 						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
@@ -141,6 +144,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			
 
 					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
+
+					jogo->clientes[jogo->jogadoresLigados] = *jog;
 
 					jogo->jogadoresLigados++;
 
@@ -159,21 +164,34 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				WaitForSingleObject(moveMutex, INFINITE);
 
+
+
 				int x = 0;
 				int y = 0;
+				int r = 0;
+
+				int ox = 0;
+				int oy = 0;
+
 
 				x = jog->jogador.posicao.x;
 				y = jog->jogador.posicao.y;
+
+				ox = x;
+				oy = y;
 
 				if (jog->moveuDirecao == 1) if (validaMovimentoBase(jogo->mapa, x, y - 1)) y--; //Mover Para Cima
 				if (jog->moveuDirecao == 2) if (validaMovimentoBase(jogo->mapa, x, y + 1)) y++; //Mover Para Baixo
 				if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
 				if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
 
+				
+
 				jog->jogador.posicao.x = x;
 				jog->jogador.posicao.y = y;
 
 
+				atualizaMapaServidor(jogo, jog, ox, oy);
 
 				atualizaJogadorServidor(jogo, *jog);
 
@@ -200,12 +218,18 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
 
+					atualizaMapaServidor(jogo, jog, 
+						jogo->jogadores[jogo->jogadoresLigados].posicao.x,
+						jogo->jogadores[jogo->jogadoresLigados].posicao.y);
+
 					atualizaMapaCliente(jogo, jog,
 						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
 						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
 						);
 
 
+
+					jogo->clientes[jogo->jogadoresLigados] = *jog;
 
 					jogo->jogadoresLigados++;
 
@@ -220,10 +244,12 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				_tcscpy_s(jog->mensagem, 30, TEXT("nenhuma opcao valida"));
 
 
+			
+
 			escrevePipeJogoCliente(cliente, jog);
 
-			for (i = 0; i < total; i++)
-				escrevePipeJogoCliente(hPipeA[i], jog);
+			//for (i = 0; i < jogo->jogadoresLigados; i++)
+			//	escrevePipeJogoCliente(hPipeA[i],jog);
 
 		}
 

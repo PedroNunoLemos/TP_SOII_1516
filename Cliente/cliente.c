@@ -17,6 +17,8 @@
 TCHAR servnome[256];
 
 
+JogoCliente *jogo;
+
 
 int _tmain(int argc, LPTSTR argv[]) {
 
@@ -29,6 +31,10 @@ int _tmain(int argc, LPTSTR argv[]) {
 	_setmode(_fileno(stdout), _O_WTEXT);
 	_setmode(_fileno(stderr), _O_WTEXT);
 #endif
+
+
+	jogo = malloc(sizeof(JogoCliente));
+	jogo->pidCliente = GetCurrentProcessId();
 
 
 	cursorVisible(0);
@@ -72,6 +78,9 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	cursorVisible(1);
 
+	free(jogo);
+
+
 	return 0;
 
 }
@@ -79,13 +88,9 @@ int _tmain(int argc, LPTSTR argv[]) {
 void jogar() {
 
 	TCHAR message[256];
-	HANDLE hPipe = INVALID_HANDLE_VALUE;
-
 	TCHAR ch;
 
-	JogoCliente *jogo;
-
-
+	HANDLE hPipe = INVALID_HANDLE_VALUE;
 
 	limpaArea(5, 5, 40, 15);
 
@@ -132,8 +137,7 @@ void jogar() {
 
 
 
-	jogo = malloc(sizeof(JogoCliente));
-	jogo->pidCliente = GetCurrentProcessId();
+
 
 	if (criaIniciaJogo(hPipe, jogo))//ssucesso 
 	{
@@ -141,12 +145,10 @@ void jogar() {
 		limpaArea(0, 0, 70, 20);
 		GoToXY(0, 3);
 
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, (LPVOID)hPipe, 0, NULL);
+
 		mostraJogo(hPipe, jogo);
 
-
-		free(jogo);
-
-		CloseHandle(hPipe);
 
 		return;
 
@@ -157,24 +159,20 @@ void jogar() {
 		if (juntarJogo(hPipe, jogo)) {
 			_tcscpy_s(message, 256, TEXT("Ligando a jogo existente"));
 
-			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
+			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, (LPVOID)hPipe, 0, NULL);
 
 			mostraJogo(hPipe, jogo);
 
-
-			free(jogo);
-
 			CloseHandle(hPipe);
+
+			return;
 		}
 		else
 		{
 
 			_tcscpy_s(message, 256, TEXT("Não me consegui ligar a um jogo."));
 
-			free(jogo);
-
 			CloseHandle(hPipe);
-
 			return;
 
 		}
@@ -195,8 +193,6 @@ void jogar() {
 
 	GoToXY(0, 1);
 	setForeGroundAndBackGroundColor(Color_White, Color_Black);
-
-	free(jogo);
 
 	CloseHandle(hPipe);
 
@@ -256,6 +252,8 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 		ch = _gettch();
 
 
+		jogo->respostaComando = 0;
+
 		if (ch == key_DOWN) moverJogador(Hpipe, jogo, 1); //Dir 1
 		if (ch == key_UP) moverJogador(Hpipe, jogo, 2); //Dir 2 
 		if (ch == key_LEFT) moverJogador(Hpipe, jogo, 3); //Dir 3
@@ -282,10 +280,17 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
 DWORD WINAPI AtualizaCliente(LPVOID param) {
 
-	HANDLE hPipe = INVALID_HANDLE_VALUE;
-	JogoCliente jogo;
+	int res = 0;
 
-	atualizaJogoCliente(hPipe, &jogo);
+
+	HANDLE Hpipe = (HANDLE)param;
+	JogoCliente *tmp;
+
+	tmp = malloc(sizeof(JogoCliente));
+
+	atualizaJogoCliente(Hpipe, tmp, &res);
+
+	if (tmp->respostaComando == 1) { jogo = tmp; }
 
 	return 0;
 

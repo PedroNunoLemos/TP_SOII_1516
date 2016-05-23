@@ -24,6 +24,17 @@ void atualizaJogadorServidor(JogoServidor *jog, JogoCliente jogcl) {
 			return;
 
 		}
+
+		if (jog->clientes[i].pidCliente == jogcl.pidCliente) {
+
+			jog->clientes[i] = jogcl;
+
+			return;
+
+		}
+
+		
+
 	}
 
 	return;
@@ -132,25 +143,43 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 
 			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
 			jogcl->objectos[i][j] = serv->objectos[x][y];
+			jogcl->jogadores[i][j] = serv->jogadoresMapa[x][y];
 
-			for (cntjog = 0; cntjog < serv->jogadoresLigados ; cntjog++) {
+		}
+	}
 
-				if (
-					serv->jogadores[cntjog].posicao.x == x && serv->jogadores[cntjog].posicao.y == y
-					&& serv->jogadores[cntjog].pidJogador != jogcl->jogador.pidJogador
-					)
-				{
-					jogcl->jogadores[i][j].pidCliente = serv->jogadores[cntjog].pidJogador;
-					jogcl->jogadores[i][j].cor = Color_White;
-					jogcl->jogadores[i][j].posicaoOcupada = 1;
-				}
-				else
-				{
-					jogcl->jogadores[i][j].pidCliente = jogcl->jogador.pidJogador;
-					jogcl->jogadores[i][j].cor = Color_Black;
-					jogcl->jogadores[i][j].posicaoOcupada = 1;
-				}
+}
 
+
+
+void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl,int oldx,int oldy) {
+
+	int x = 0;
+	int y = 0;
+	int i = -1;
+	int j = -1;
+	int r = 0;
+
+
+	for (x = 0; x < serv->mapa.tamx; x++)
+	{
+
+		for (y = 0; y < serv->mapa.tamy; y++)
+		{
+			/*i = (x + serv->jogoVisivel - 1) - x;
+			j = (y + serv->jogoVisivel - 1) - y;*/
+
+		
+			if (x == oldx && y == oldy)
+			{
+				serv->jogadoresMapa[x][y].posicaoOcupada = 0;
+				serv->jogadoresMapa[x][y].pidCliente = 0;
+			}
+
+			if (x == jogcl->jogador.posicao.x && y == jogcl->jogador.posicao.y)
+			{
+				serv->jogadoresMapa[x][y].posicaoOcupada = 1;
+				serv->jogadoresMapa[x][y].pidCliente = jogcl->pidCliente;
 			}
 
 
@@ -158,7 +187,6 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 	}
 
 }
-
 
 
 

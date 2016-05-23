@@ -45,7 +45,6 @@ typedef struct DLL_IMP_API _jogoCliente
 	ObjectoMapa objectos[15][15];
 
 	DWORD pidCliente;
-
 	Jogador jogador;
 
 	TCHAR mensagem[256];
