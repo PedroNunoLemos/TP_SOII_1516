@@ -88,12 +88,13 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 			GoToXY(x + ix, y + iy);
 
 			
+			for (k = 0; k < MAXJOGADORES; k++) {
+				if (lab.jogadores[ix][iy].posicaoOcupada[k] != 0) {
 
-			if (lab.jogadores[ix][iy].posicaoOcupada == 1) {
-
-				if (lab.jogadores[ix][iy].pidCliente != lab.jogador.pidJogador) {
-					setForeGroundAndBackGroundColor(Color_White, 6);
-					_tprintf(TEXT("0"));
+					if (lab.jogadores[ix][iy].posicaoOcupada[k] != lab.jogador.pidJogador) {
+						setForeGroundAndBackGroundColor(Color_White, 6);
+						_tprintf(TEXT("0"));
+					}
 				}
 			}
 

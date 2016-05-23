@@ -249,7 +249,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			escrevePipeJogoCliente(cliente, jog);
 
 			//for (i = 0; i < jogo->jogadoresLigados; i++)
-			//	escrevePipeJogoCliente(hPipeA[i],jog);
+			//	lePipeJogoCliente(hPipeA[i],jog);
 
 		}
 

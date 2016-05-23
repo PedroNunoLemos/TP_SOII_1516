@@ -33,7 +33,7 @@ void atualizaJogadorServidor(JogoServidor *jog, JogoCliente jogcl) {
 
 		}
 
-		
+
 
 	}
 
@@ -83,14 +83,19 @@ void inicializaObjectos(JogoServidor *jog) {
 				jog->objectos[x][y].objecto[r].tipo = 0;
 			}
 
+			for (r = 0; r < MAXJOGADORES; r++) {
 
+				jog->jogadoresMapa[x][y].posicaoOcupada[r] = 0;
+				jog->jogadoresMapa[x][y].pidCliente = 0;
+
+			}
 		}
+
+
 	}
-
-
-
-
 }
+
+
 
 Coordenada PosicaoIniJog(JogoServidor *jog) {
 
@@ -152,7 +157,7 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 
 
 
-void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl,int oldx,int oldy) {
+void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int oldy) {
 
 	int x = 0;
 	int y = 0;
@@ -169,17 +174,26 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl,int oldx,int ol
 			/*i = (x + serv->jogoVisivel - 1) - x;
 			j = (y + serv->jogoVisivel - 1) - y;*/
 
-		
+
 			if (x == oldx && y == oldy)
 			{
-				serv->jogadoresMapa[x][y].posicaoOcupada = 0;
-				serv->jogadoresMapa[x][y].pidCliente = 0;
+				for (r = 0; r < MAXJOGADORES; r++) {
+					if (serv->jogadoresMapa[x][y].posicaoOcupada[r] == jogcl->pidCliente) {
+						serv->jogadoresMapa[x][y].posicaoOcupada[r] = 0;
+						serv->jogadoresMapa[x][y].pidCliente = 0;
+					}
+				}
 			}
 
 			if (x == jogcl->jogador.posicao.x && y == jogcl->jogador.posicao.y)
 			{
-				serv->jogadoresMapa[x][y].posicaoOcupada = 1;
-				serv->jogadoresMapa[x][y].pidCliente = jogcl->pidCliente;
+				for (r = 0; r < MAXJOGADORES; r++) {
+					if (serv->jogadoresMapa[x][y].posicaoOcupada[r] == 0) {
+						serv->jogadoresMapa[x][y].posicaoOcupada[r] = jogcl->pidCliente;
+						serv->jogadoresMapa[x][y].pidCliente = jogcl->pidCliente;
+						break;
+					}
+				}
 			}
 
 
