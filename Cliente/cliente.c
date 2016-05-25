@@ -212,9 +212,6 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 	GoToXY(8, 23);
 	_tprintf(TEXT("Pressione ESC para sair"));
 
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
-
-
 	while (ch != key_ESCAPE)
 	{
 
@@ -258,6 +255,9 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 		if (ch == key_LEFT) moverJogador(Hpipe, jogo, 3); //Dir 3
 		if (ch == key_RIGHT) moverJogador(Hpipe, jogo, 4); //Dir 4
 
+
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, (LPVOID)Hpipe, 0, NULL);
+
 	}
 
 	setForeGroundAndBackGroundColor(Color_White, Color_Black);
@@ -280,12 +280,13 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 	int res = 0;
 
-	HANDLE hPipe = INVALID_HANDLE_VALUE;
+	//HANDLE hPipe = INVALID_HANDLE_VALUE;
+	HANDLE hPipe = param;
 	DWORD n;
 	JogoCliente m;
 	BOOL ret = FALSE;
 
-	hPipe = pipeRececaoCliente();
+	//hPipe = pipeRececaoCliente();
 
 	if (hPipe != INVALID_HANDLE_VALUE) {
 
@@ -297,7 +298,14 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 				break;
 
 			if (m.pidCliente == jogo->pidCliente)
+			{
 				jogo = &m;
+
+			}
+
+
+			GoToXY(8, 10);
+			_tprintf(TEXT("Atualizado !!"));
 
 		}
 
