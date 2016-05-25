@@ -138,14 +138,11 @@ void jogar() {
 
 
 
-
 	if (criaIniciaJogo(hPipe, jogo))//ssucesso 
 	{
 
 		limpaArea(0, 0, 70, 20);
 		GoToXY(0, 3);
-
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, (LPVOID)hPipe, 0, NULL);
 
 		mostraJogo(hPipe, jogo);
 
@@ -159,7 +156,6 @@ void jogar() {
 		if (juntarJogo(hPipe, jogo)) {
 			_tcscpy_s(message, 256, TEXT("Ligando a jogo existente"));
 
-			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, (LPVOID)hPipe, 0, NULL);
 
 			mostraJogo(hPipe, jogo);
 
@@ -218,8 +214,12 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
 
 
+
 	while (ch != key_ESCAPE)
 	{
+
+
+
 		setcolor(Color_BrightWhite);
 
 		GoToXY(8, 2);
@@ -246,7 +246,6 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 		_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
 
 
-
 		imprimeLabirinto(38, 3, *jogo);
 
 		ch = _gettch();
@@ -259,6 +258,9 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 		if (ch == key_LEFT) moverJogador(Hpipe, jogo, 3); //Dir 3
 		if (ch == key_RIGHT) moverJogador(Hpipe, jogo, 4); //Dir 4
 
+		HANDLE Htr = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
+
+		WaitForSingleObject(Htr, INFINITE);
 
 	}
 
@@ -283,14 +285,18 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 	int res = 0;
 
 
-	HANDLE Hpipe = (HANDLE)param;
-	JogoCliente *tmp;
+	HANDLE hPipeReadFromServer = NULL; 
+	//JogoCliente *tmp;
 
-	tmp = malloc(sizeof(JogoCliente));
+	//tmp = malloc(sizeof(JogoCliente));
 
-	atualizaJogoCliente(Hpipe, tmp, &res);
+	hPipeReadFromServer = pipeRececaoCliente(jogo);
 
-	if (tmp->respostaComando == 1) { jogo = tmp; }
+	//	res = lePipeJogoClienteComRetVal(hPipeReadFromServer, tmp);
+
+	lePipeJogoClienteComRetVal()
+
+
 
 	return 0;
 

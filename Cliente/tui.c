@@ -143,20 +143,6 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 	}
 
 
-	//for (ix = 0; ix < 15; ix++)
-	//{
-	//	for (iy = 0; iy < 15; iy++) {
-
-
-	//		GoToXY(x + ix, y + iy);
-
-
-
-
-
-	//	}
-	//}
-
 	GoToXY(x + 7, y + 7);
 	setForeGroundAndBackGroundColor(Color_Blue, 6);
 	_tprintf(TEXT("@"));

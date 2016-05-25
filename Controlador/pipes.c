@@ -83,8 +83,9 @@ int lePipeJogoClienteComRetVal(HANDLE hPipe, JogoCliente *jogo) {
 }
 
 
-void atualizaJogoCliente(HANDLE hPipe, JogoCliente *jogo, int *res) {
 
+HANDLE pipeRececaoCliente(JogoCliente *jogo) {
+	HANDLE hPipe;
 	DWORD n;
 	BOOL ret = FALSE;
 
@@ -95,62 +96,11 @@ void atualizaJogoCliente(HANDLE hPipe, JogoCliente *jogo, int *res) {
 
 	hPipe = CreateFile(pipeRececao, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-
-
-	while (1) {
-
-		ret = ReadFile(hPipe, jogo, sizeof(JogoCliente), &n, NULL);
-
-		if (!ret || !n)
-			break;
-
-		//se chegar ate aqui enviou 
-		res = 1;
-	}
-
-	res = 0;
-}
-
-
-
-
-//----------------- Pipes Servidor -------------------------------
-
-
-HANDLE criaPipeEscutaServidor() {
-
-	HANDLE hPipe;
-
-	//_tprintf(TEXT("[SERVIDOR] Vou criar o pipe '%s' de recepcao... (CreateNamedPipe)\n"), PIPE_ENVIO);
-
-	hPipe = CreateNamedPipe(PIPE_ENVIO, PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED, PIPE_WAIT | PIPE_TYPE_MESSAGE
-		| PIPE_READMODE_MESSAGE, MAXJOGADORES, sizeof(JogoCliente), sizeof(JogoCliente),
-		1000, NULL);
-
-	if (hPipe == INVALID_HANDLE_VALUE) {
-		//_tprintf(TEXT("CreateNamedPipe falhou, erro=%d\n"), GetLastError());
-		return INVALID_HANDLE_VALUE;
-	}
-
-	/*hPipeA[i] = CreateNamedPipe(PIPE_RECECAO, PIPE_ACCESS_OUTBOUND|FILE_FLAG_OVERLAPPED, PIPE_WAIT | PIPE_TYPE_MESSAGE
-	| PIPE_READMODE_MESSAGE, N, sizeof(JogoCliente), 0,1000,NULL);
-	total++;*/
-
 	return hPipe;
-
 }
 
-HANDLE criaPipeCliente() {
-
-	HANDLE Hpipe;
-
-	Hpipe = CreateNamedPipe(PIPE_RECECAO, PIPE_ACCESS_OUTBOUND | FILE_FLAG_OVERLAPPED, PIPE_WAIT | PIPE_TYPE_MESSAGE
-		| PIPE_READMODE_MESSAGE, MAXJOGADORES, sizeof(JogoCliente), 0, 1000, NULL);
 
 
-	return Hpipe;
-
-}
 
 
 // -----------------------------------  comandos ----------------------------------------
