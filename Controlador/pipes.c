@@ -84,7 +84,7 @@ int lePipeJogoClienteComRetVal(HANDLE hPipe, JogoCliente *jogo) {
 
 
 
-HANDLE pipeRececaoCliente(JogoCliente *jogo) {
+HANDLE pipeRececaoCliente() {
 	HANDLE hPipe;
 	DWORD n;
 	BOOL ret = FALSE;

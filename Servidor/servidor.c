@@ -116,15 +116,13 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 		
-		ret = ReadFile(cliente, jogo, sizeof(JogoCliente), &nlidos, NULL);
+		ret = ReadFile(cliente, jog, sizeof(JogoCliente), &nlidos, NULL);
 
 		if (!ret || !nlidos)
 			break;
 
 
 
-		if (ret == 0)
-		{
 
 			if (jog->comando == 1)
 			{
@@ -253,8 +251,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 			escrevePipeJogoCliente(cliente, jog);
-
-		}
 
 	} while (1);
 
