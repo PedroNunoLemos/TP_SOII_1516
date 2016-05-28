@@ -14,8 +14,8 @@
 //sharedMemory* pBuf;
 //
 //Monstro me;
-//int nRows;
-//int nColumns;
+//int tamx;
+//int tamy;
 //int nSpaces;
 //TCHAR processName[kBufferSize]; //Monster Process
 //STARTUPINFO si;
@@ -62,7 +62,7 @@
 //	}
 //}
 //
-//int checkPlayerAround() {
+//int validaJogadorposicao() {
 //
 //	Coordenada center;
 //
@@ -73,9 +73,9 @@
 //		for (int j = 0; j < MONSTER_VISION_RANGE; j++) {
 //			if ((pBuf->map[center.y + i][center.x + j] == 1 ||
 //				pBuf->map[center.y + i][center.x + j] == 4 || 
-//				pBuf->map[center.y + i][center.x + j] == kMonsterDistractedAndPlayer ||
-//				pBuf->map[center.y + i][center.x + j] == kMonsterBullyAndPlayer)
-//				&& center.y + i < nRows && center.x + j < nColumns) 
+//				pBuf->map[center.y + i][center.x + j] == kMonsterDistractedAndJogador ||
+//				pBuf->map[center.y + i][center.x + j] == kMonsterBullyAndJogador)
+//				&& center.y + i < tamx && center.x + j < tamy) 
 //			{
 //				if (center.x + j < me.coord.x) {
 //					return 1; //go left 
@@ -96,24 +96,24 @@
 //	return 0;
 //}
 //
-//void startBully() { //the same as distracted but if it sees he goes after the player
+//void startBully() { //the same as distracted but if it sees he goes after the Jogador
 //
 //
 //	int r = rand() % 100;
 //	int before = 0;
-//	int playerAround;
+//	int Jogadorposicao;
 //
 //	while (1) {
 //
-//		playerAround = checkPlayerAround();
+//		Jogadorposicao = validaJogadorposicao();
 //
-//		if (playerAround > 0) {
+//		if (Jogadorposicao > 0) {
 //
-//			if (playerAround == 1) { // go left
+//			if (Jogadorposicao == 1) { // go left
 //				pBuf->map[me.coord.y][me.coord.x] = before;
 //				before = pBuf->map[me.coord.y][me.coord.x - 1];
-//				if (before == kPlayer) { //player
-//					pBuf->map[me.coord.y][me.coord.x - 1] = kMonsterBullyAndPlayer;
+//				if (before == kJogador) { //Jogador
+//					pBuf->map[me.coord.y][me.coord.x - 1] = kMonsterBullyAndJogador;
 //				}
 //				else {
 //					if (me.type == 0) {
@@ -127,11 +127,11 @@
 //				pBuf->monsters[me.monster_id].coord.x--;
 //				me.coord.x--;
 //			}
-//			else if (playerAround == 2) { //go up
+//			else if (Jogadorposicao == 2) { //go up
 //				pBuf->map[me.coord.y][me.coord.x] = before;
 //				before = pBuf->map[me.coord.y - 1][me.coord.x];
-//				if (before == 4) { //player
-//					pBuf->map[me.coord.y - 1][me.coord.x] = kMonsterBullyAndPlayer;
+//				if (before == 4) { //Jogador
+//					pBuf->map[me.coord.y - 1][me.coord.x] = kMonsterBullyAndJogador;
 //				}
 //				else {
 //					if (me.type == 0) {
@@ -145,11 +145,11 @@
 //				pBuf->monsters[me.monster_id].coord.y--;
 //				me.coord.y--;
 //			}
-//			else if (playerAround == 3) { //go rigth
+//			else if (Jogadorposicao == 3) { //go rigth
 //				pBuf->map[me.coord.y][me.coord.x] = before;
 //				before = pBuf->map[me.coord.y][me.coord.x + 1];
-//				if (before == 4) { //player
-//					pBuf->map[me.coord.y][me.coord.x + 1] = kMonsterBullyAndPlayer;
+//				if (before == 4) { //Jogador
+//					pBuf->map[me.coord.y][me.coord.x + 1] = kMonsterBullyAndJogador;
 //				}
 //				else {
 //					if (me.type == 0) {
@@ -163,11 +163,11 @@
 //				pBuf->monsters[me.monster_id].coord.x++;
 //				me.coord.x++;
 //			}
-//			else if (playerAround == 4) { // do down
+//			else if (Jogadorposicao == 4) { // do down
 //				pBuf->map[me.coord.y][me.coord.x] = before;
 //				before = pBuf->map[me.coord.y + 1][me.coord.x];
-//				if (before == 4) { //player
-//					pBuf->map[me.coord.y + 1][me.coord.x] = kMonsterBullyAndPlayer;
+//				if (before == 4) { //Jogador
+//					pBuf->map[me.coord.y + 1][me.coord.x] = kMonsterBullyAndJogador;
 //				}
 //				else {
 //					if (me.type == 0) {
@@ -192,11 +192,11 @@
 //			for (int i = 0; i < N; i++) {
 //				WaitForSingleObject(moveMutex, INFINITE);
 //				if (r < 25) {
-//					if (pBuf->map[me.coord.y][me.coord.x - 1] != 1 && pBuf->map[me.coord.y][me.coord.x - 1] != 2 && me.coord.y >= 0 && me.coord.x - 1 >= 0 && me.coord.y < nRows && me.coord.x - 1 < nColumns) { //left
+//					if (pBuf->map[me.coord.y][me.coord.x - 1] != 1 && pBuf->map[me.coord.y][me.coord.x - 1] != 2 && me.coord.y >= 0 && me.coord.x - 1 >= 0 && me.coord.y < tamx && me.coord.x - 1 < tamy) { //left
 //						pBuf->map[me.coord.y][me.coord.x] = before;
 //						before = pBuf->map[me.coord.y][me.coord.x - 1];
-//						if (before == 4) { //player
-//							pBuf->map[me.coord.y][me.coord.x - 1] = kMonsterDistractedAndPlayer;
+//						if (before == 4) { //Jogador
+//							pBuf->map[me.coord.y][me.coord.x - 1] = kMonsterDistractedAndJogador;
 //						}
 //						else {
 //							pBuf->map[me.coord.y][me.coord.x - 1] = 5; // 5 - Monster //falta colocar os 7
@@ -207,11 +207,11 @@
 //					}
 //				}
 //				else if (r >= 25 && r < 50) {
-//					if (pBuf->map[me.coord.y - 1][me.coord.x] != 1 && pBuf->map[me.coord.y - 1][me.coord.x] != 2 && me.coord.y - 1 >= 0 && me.coord.x >= 0 && me.coord.y - 1 < nRows && me.coord.x < nColumns) { //up
+//					if (pBuf->map[me.coord.y - 1][me.coord.x] != 1 && pBuf->map[me.coord.y - 1][me.coord.x] != 2 && me.coord.y - 1 >= 0 && me.coord.x >= 0 && me.coord.y - 1 < tamx && me.coord.x < tamy) { //up
 //						pBuf->map[me.coord.y][me.coord.x] = before;
 //						before = pBuf->map[me.coord.y - 1][me.coord.x];
-//						if (before == 4) { //player
-//							pBuf->map[me.coord.y - 1][me.coord.x] = kMonsterDistractedAndPlayer;
+//						if (before == 4) { //Jogador
+//							pBuf->map[me.coord.y - 1][me.coord.x] = kMonsterDistractedAndJogador;
 //						}
 //						else {
 //							pBuf->map[me.coord.y - 1][me.coord.x] = 5; // 5 - Monster //falta colocar os 7
@@ -222,11 +222,11 @@
 //					}
 //				}
 //				else if (r >= 50 && r < 75) {
-//					if (pBuf->map[me.coord.y][me.coord.x + 1] != 1 && pBuf->map[me.coord.y][me.coord.x + 1] != 2 && me.coord.y >= 0 && me.coord.x + 1 >= 0 && me.coord.y < nRows && me.coord.x + 1 < nColumns) { //rigth
+//					if (pBuf->map[me.coord.y][me.coord.x + 1] != 1 && pBuf->map[me.coord.y][me.coord.x + 1] != 2 && me.coord.y >= 0 && me.coord.x + 1 >= 0 && me.coord.y < tamx && me.coord.x + 1 < tamy) { //rigth
 //						pBuf->map[me.coord.y][me.coord.x] = before;
 //						before = pBuf->map[me.coord.y][me.coord.x + 1];
-//						if (before == 4) { //player
-//							pBuf->map[me.coord.y][me.coord.x + 1] = kMonsterDistractedAndPlayer;
+//						if (before == 4) { //Jogador
+//							pBuf->map[me.coord.y][me.coord.x + 1] = kMonsterDistractedAndJogador;
 //						}
 //						else {
 //							pBuf->map[me.coord.y][me.coord.x + 1] = 5; // 5 - Monster //falta colocar os 7
@@ -237,11 +237,11 @@
 //					}
 //				}
 //				else {
-//					if (pBuf->map[me.coord.y + 1][me.coord.x] != 1 && pBuf->map[me.coord.y + 1][me.coord.x] != 2 && me.coord.y + 1 >= 0 && me.coord.x >= 0 && me.coord.y + 1 < nRows && me.coord.x < nColumns) { //down
+//					if (pBuf->map[me.coord.y + 1][me.coord.x] != 1 && pBuf->map[me.coord.y + 1][me.coord.x] != 2 && me.coord.y + 1 >= 0 && me.coord.x >= 0 && me.coord.y + 1 < tamx && me.coord.x < tamy) { //down
 //						pBuf->map[me.coord.y][me.coord.x] = before;
 //						before = pBuf->map[me.coord.y + 1][me.coord.x];
-//						if (before == 4) { //player
-//							pBuf->map[me.coord.y + 1][me.coord.x] = kMonsterDistractedAndPlayer;
+//						if (before == 4) { //Jogador
+//							pBuf->map[me.coord.y + 1][me.coord.x] = kMonsterDistractedAndJogador;
 //						}
 //						else {
 //							pBuf->map[me.coord.y + 1][me.coord.x] = 5; // 5 - Monster //falta colocar os 7
@@ -275,11 +275,11 @@
 //		for (int i = 0; i < N; i++) {
 //			WaitForSingleObject(moveMutex, INFINITE);
 //			if (r < 25) {
-//				if (pBuf->map[me.coord.y][me.coord.x - 1] != 1 && pBuf->map[me.coord.y][me.coord.x - 1] != 2 && me.coord.y >= 0 && me.coord.x - 1 >= 0 && me.coord.y < nRows && me.coord.x - 1 < nColumns) { //left
+//				if (pBuf->map[me.coord.y][me.coord.x - 1] != 1 && pBuf->map[me.coord.y][me.coord.x - 1] != 2 && me.coord.y >= 0 && me.coord.x - 1 >= 0 && me.coord.y < tamx && me.coord.x - 1 < tamy) { //left
 //					pBuf->map[me.coord.y][me.coord.x] = before;
 //					before = pBuf->map[me.coord.y][me.coord.x - 1];
-//					if (before == 4) { //player
-//						pBuf->map[me.coord.y][me.coord.x - 1] = kMonsterDistractedAndPlayer;
+//					if (before == 4) { //Jogador
+//						pBuf->map[me.coord.y][me.coord.x - 1] = kMonsterDistractedAndJogador;
 //					}
 //					else {
 //						pBuf->map[me.coord.y][me.coord.x - 1] = 5; // 5 - Monster //falta colocar os 7
@@ -290,11 +290,11 @@
 //				}
 //			}
 //			else if (r >= 25 && r < 50) {
-//				if (pBuf->map[me.coord.y - 1][me.coord.x] != 1 && pBuf->map[me.coord.y - 1][me.coord.x] != 2 && me.coord.y - 1 >= 0 && me.coord.x >= 0 && me.coord.y - 1 < nRows && me.coord.x < nColumns) { //up
+//				if (pBuf->map[me.coord.y - 1][me.coord.x] != 1 && pBuf->map[me.coord.y - 1][me.coord.x] != 2 && me.coord.y - 1 >= 0 && me.coord.x >= 0 && me.coord.y - 1 < tamx && me.coord.x < tamy) { //up
 //					pBuf->map[me.coord.y][me.coord.x] = before;
 //					before = pBuf->map[me.coord.y - 1][me.coord.x];
-//					if (before == 4) { //player
-//						pBuf->map[me.coord.y - 1][me.coord.x] = kMonsterDistractedAndPlayer;
+//					if (before == 4) { //Jogador
+//						pBuf->map[me.coord.y - 1][me.coord.x] = kMonsterDistractedAndJogador;
 //					}
 //					else {
 //						pBuf->map[me.coord.y - 1][me.coord.x] = 5; // 5 - Monster //falta colocar os 7
@@ -305,11 +305,11 @@
 //				}
 //			}
 //			else if (r >= 50 && r < 75) {
-//				if (pBuf->map[me.coord.y][me.coord.x + 1] != 1 && pBuf->map[me.coord.y][me.coord.x + 1] != 2 && me.coord.y >= 0 && me.coord.x + 1 >= 0 && me.coord.y < nRows && me.coord.x + 1 < nColumns) { //rigth
+//				if (pBuf->map[me.coord.y][me.coord.x + 1] != 1 && pBuf->map[me.coord.y][me.coord.x + 1] != 2 && me.coord.y >= 0 && me.coord.x + 1 >= 0 && me.coord.y < tamx && me.coord.x + 1 < tamy) { //rigth
 //					pBuf->map[me.coord.y][me.coord.x] = before;
 //					before = pBuf->map[me.coord.y][me.coord.x + 1];
-//					if (before == 4) { //player
-//						pBuf->map[me.coord.y][me.coord.x + 1] = kMonsterDistractedAndPlayer;
+//					if (before == 4) { //Jogador
+//						pBuf->map[me.coord.y][me.coord.x + 1] = kMonsterDistractedAndJogador;
 //					}
 //					else {
 //						pBuf->map[me.coord.y][me.coord.x + 1] = 5; // 5 - Monster //falta colocar os 7
@@ -320,11 +320,11 @@
 //				}
 //			}
 //			else {
-//				if (pBuf->map[me.coord.y + 1][me.coord.x] != 1 && pBuf->map[me.coord.y + 1][me.coord.x] != 2 && me.coord.y + 1 >= 0 && me.coord.x >= 0 && me.coord.y + 1 < nRows && me.coord.x < nColumns) { //down
+//				if (pBuf->map[me.coord.y + 1][me.coord.x] != 1 && pBuf->map[me.coord.y + 1][me.coord.x] != 2 && me.coord.y + 1 >= 0 && me.coord.x >= 0 && me.coord.y + 1 < tamx && me.coord.x < tamy) { //down
 //					pBuf->map[me.coord.y][me.coord.x] = before;
 //					before = pBuf->map[me.coord.y + 1][me.coord.x];
-//					if (before == 4) { //player
-//						pBuf->map[me.coord.y + 1][me.coord.x] = kMonsterDistractedAndPlayer;
+//					if (before == 4) { //Jogador
+//						pBuf->map[me.coord.y + 1][me.coord.x] = kMonsterDistractedAndJogador;
 //					}
 //					else {
 //						pBuf->map[me.coord.y + 1][me.coord.x] = 5; // 5 - Monster //falta colocar os 7
@@ -342,14 +342,14 @@
 //
 //}
 //
-//DWORD WINAPI checkPosition(LPVOID param)
+//DWORD WINAPI validaPosition(LPVOID param)
 //{
-//	Player* sch;
+//	Jogador* sch;
 //	Coordenada newMonster;
 //	while (1) {
-//		if (pBuf->map[me.coord.y][me.coord.x] == kMonsterBullyAndPlayer) {
-//			sch = pBuf->players;
-//			for (; sch != &pBuf->players[kMaximumPlayers + 1];) {
+//		if (pBuf->map[me.coord.y][me.coord.x] == kMonsterBullyAndJogador) {
+//			sch = pBuf->Jogadors;
+//			for (; sch != &pBuf->Jogadors[kMaximumJogadors + 1];) {
 //				if (sch->coord.y == me.coord.y && sch->coord.x == me.coord.x) {
 //					sch->health--;
 //				}
@@ -396,7 +396,7 @@
 //
 //}
 //
-////Method of use: Monster typeofMonster nROWS nCOLUMS --- (1-Distraido / 2-Bully)
+////Method of use: Monster typeofMonster tamx nCOLUMS --- (1-Distraido / 2-Bully)
 //int _tmain(int argc, LPTSTR argv[]) {
 //
 //
@@ -407,8 +407,8 @@
 //	srand(time(NULL));
 //
 //	me.type = _ttoi(argv[1]);
-//	nRows = _ttoi(argv[2]);
-//	nColumns = _ttoi(argv[3]);
+//	tamx = _ttoi(argv[2]);
+//	tamy = _ttoi(argv[3]);
 //	me.coord.y = _ttoi(argv[4]);
 //	me.coord.x = _ttoi(argv[5]);
 //	me.monster_id = _ttoi(argv[6]);
@@ -443,7 +443,7 @@
 //		return -1;
 //	}
 //
-//	//hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)checkPosition, (LPVOID)NULL, 0, NULL);
+//	//hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)validaPosition, (LPVOID)NULL, 0, NULL);
 //	if (me.type == 0) {
 //		startDistracted();
 //	}
