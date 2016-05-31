@@ -289,28 +289,19 @@ void atualizaClientesMapas(JogoServidor *jogo, JogoCliente *jogclt) {
 
 	int i = 0;
 
-	JogoCliente *jog;
-	jog = malloc(sizeof(JogoCliente));
 
 	for (i = 0; i < jogo->jogadoresLigados; i++)
 	{
 
-		if (jogclt->jogador.posicao.x >= jogo->jogoClientes[i].jogador.posicao.x - 7
-			&& jogclt->jogador.posicao.y >= jogo->jogoClientes[i].jogador.posicao.y - 7
-			&& jogclt->jogador.posicao.x <= jogo->jogoClientes[i].jogador.posicao.x + 7
-			&& jogclt->jogador.posicao.y <= jogo->jogoClientes[i].jogador.posicao.y + 7)
-		{
-
+	
 			if (jogo->jogoClientes[i].jogador.pidJogador == jogclt->pidCliente)
 			{
 				jogo->jogoClientes[i].jogador = jogclt->jogador;
 			}
 
 
-		}
+		
 	}
-
-	//free(jog);
 
 
 }
