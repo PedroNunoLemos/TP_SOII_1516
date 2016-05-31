@@ -87,17 +87,14 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 
 			GoToXY(x + ix, y + iy);
 
-			
-			for (k = 0; k < MAXJOGADORES; k++) {
-				if (lab->jogadores[ix][iy].posicaoOcupada[k] != 0) {
+				if (lab->jogadores[ix][iy].posicaoOcupada != 0) {
 
-					if (lab->jogadores[ix][iy].posicaoOcupada[k] != lab->jogador.pidJogador) {
+					if (lab->jogadores[ix][iy].posicaoOcupada != lab->jogador.pidJogador) {
 						setForeGroundAndBackGroundColor(Color_White, 6);
 						_tprintf(TEXT("0"));
 					}
 				}
-			}
-
+			
 			for (k = 0; k < 5; k++) {
 
 				if (lab->objectos[ix][iy].objecto[k].tipo == Tipo_Vitamina)

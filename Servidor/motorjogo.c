@@ -83,12 +83,11 @@ void inicializaObjectos(JogoServidor *jog) {
 				jog->objectos[x][y].objecto[r].tipo = 0;
 			}
 
-			for (r = 0; r < MAXJOGADORES; r++) {
 
-				jog->jogadoresMapa[x][y].posicaoOcupada[r] = 0;
-				jog->jogadoresMapa[x][y].pidCliente = 0;
+			jog->jogadoresMapa[x][y].posicaoOcupada = 0;
+			jog->jogadoresMapa[x][y].pidCliente = 0;
 
-			}
+
 		}
 
 
@@ -171,29 +170,26 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 
 		for (y = 0; y < serv->mapa.tamy; y++)
 		{
-			/*i = (x + serv->jogoVisivel - 1) - x;
-			j = (y + serv->jogoVisivel - 1) - y;*/
-
 
 			if (x == oldx && y == oldy)
 			{
-				for (r = 0; r < MAXJOGADORES; r++) {
-					if (serv->jogadoresMapa[x][y].posicaoOcupada[r] == jogcl->pidCliente) {
-						serv->jogadoresMapa[x][y].posicaoOcupada[r] = 0;
-						serv->jogadoresMapa[x][y].pidCliente = 0;
-					}
+
+				if (serv->jogadoresMapa[x][y].posicaoOcupada == jogcl->pidCliente) {
+					serv->jogadoresMapa[x][y].posicaoOcupada = 0;
+					serv->jogadoresMapa[x][y].pidCliente = 0;
+
 				}
 			}
 
 			if (x == jogcl->jogador.posicao.x && y == jogcl->jogador.posicao.y)
 			{
-				for (r = 0; r < MAXJOGADORES; r++) {
-					if (serv->jogadoresMapa[x][y].posicaoOcupada[r] == 0) {
-						serv->jogadoresMapa[x][y].posicaoOcupada[r] = jogcl->pidCliente;
-						serv->jogadoresMapa[x][y].pidCliente = jogcl->pidCliente;
-						break;
-					}
+
+				if (serv->jogadoresMapa[x][y].posicaoOcupada == 0) {
+					serv->jogadoresMapa[x][y].posicaoOcupada = jogcl->pidCliente;
+					serv->jogadoresMapa[x][y].pidCliente = jogcl->pidCliente;
+					break;
 				}
+
 			}
 
 
@@ -289,3 +285,35 @@ void criaJogador(JogoServidor *jogo, TCHAR nome[], DWORD pid) {
 
 }
 
+void atualizaClientesMapas(JogoServidor *jogo, JogoCliente *jogclt) {
+
+	int i = 0;
+
+	JogoCliente *jog;
+	jog = malloc(sizeof(JogoCliente));
+
+	for (i = 0; i < jogo->jogadoresLigados; i++)
+	{
+
+		if (jogclt->jogador.posicao.x >= jogo->jogoClientes[i].jogador.posicao.x - 7
+			&& jogclt->jogador.posicao.y >= jogo->jogoClientes[i].jogador.posicao.y - 7
+			&& jogclt->jogador.posicao.x <= jogo->jogoClientes[i].jogador.posicao.x + 7
+			&& jogclt->jogador.posicao.y <= jogo->jogoClientes[i].jogador.posicao.y + 7)
+		{
+
+			atualizaMapaServidor(jogo, &(jogo->jogoClientes[i]),
+				jogo->jogadores[jogo->jogadoresLigados].posicao.x,
+				jogo->jogadores[jogo->jogadoresLigados].posicao.y);
+
+			atualizaMapaCliente(jogo, jog,
+				jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
+				jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
+			);
+
+		}
+	}
+
+	//free(jog);
+
+
+}

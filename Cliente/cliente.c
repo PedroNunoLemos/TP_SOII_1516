@@ -20,7 +20,7 @@ TCHAR servnome[256];
 JogoCliente *jogo;
 HANDLE pipeAtualizaCliente;
 HANDLE hPipe = INVALID_HANDLE_VALUE;
-
+DWORD tot;
 
 
 int _tmain(int argc, LPTSTR argv[]) {
@@ -38,7 +38,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	jogo = malloc(sizeof(JogoCliente));
 	jogo->pidCliente = GetCurrentProcessId();
-
+	tot = 0;
 
 	cursorVisible(0);
 
@@ -145,14 +145,14 @@ void jogar() {
 	{
 
 
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
+
 		limpaArea(0, 0, 70, 20);
 		GoToXY(0, 3);
 
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
-
 		mostraJogo(hPipe, jogo);
 
-
+		CloseHandle(hPipe);
 
 		return;
 
@@ -161,10 +161,13 @@ void jogar() {
 	{
 
 		if (juntarJogo(hPipe, jogo)) {
-			_tcscpy_s(message, 256, TEXT("Ligando a jogo existente"));
-			
+
 			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 
+
+
+			limpaArea(0, 0, 70, 20);
+			GoToXY(0, 3);
 
 			mostraJogo(hPipe, jogo);
 
@@ -294,54 +297,31 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 	m = malloc(sizeof(JogoCliente));
 
-		while (1) {
+	while (1) {
 
 
 
-			ret = lePipeJogoClienteComRetVal(pipeAtualizaCliente, m);
+		ret = lePipeJogoClienteComRetVal(pipeAtualizaCliente, m);
 
-			if (ret == 1)
-				break;
+		if (ret == 1)
+			break;
 
-			if (m->pidCliente == jogo->pidCliente)
-			{
-				jogo = m;
+		if (m->pidCliente == jogo->pidCliente)
+		{
+			jogo = m;
 
-				setcolor(Color_BrightWhite);
-
-				GoToXY(8, 2);
-				_tprintf(jogo->jogador.nome);
-
-				GoToXY(8, 4);
-				_tprintf(TEXT("Saude : %d"), jogo->jogador.saude);
-
-				GoToXY(8, 6);
-				_tprintf(TEXT("Lentidao : %d"), jogo->jogador.lentidao);
-
-				GoToXY(8, 8);
-				_tprintf(TEXT("Vitaminas : %d"), jogo->jogador.qtdVitaminas);
-
-
-				GoToXY(8, 9);
-				_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.qtdOranges);
-
-
-				GoToXY(8, 10);
-				_tprintf(TEXT("Cafeina : %d"), jogo->jogador.qtdCafeinas);
-
-				GoToXY(8, 11);
-				_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
-
-
-				imprimeLabirinto(38, 3, jogo);
-
-			}
 
 
 
 
 
 		}
+
+
+
+
+
+	}
 
 
 

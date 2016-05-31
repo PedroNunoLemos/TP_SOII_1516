@@ -26,7 +26,7 @@ typedef struct DLL_IMP_API _posicao_JogadorMapa
 {
 	DWORD cor;
 	DWORD pidCliente;
-	DWORD posicaoOcupada[MAXJOGADORES];
+	DWORD posicaoOcupada;
 
 }PosicaoJogadorMapa;
 
