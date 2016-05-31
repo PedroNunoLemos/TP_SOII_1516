@@ -9,17 +9,17 @@
 #include "..\Controlador\constantes.h"
 
 #include "JogoServidor.h"
+#include "servidor.h"
 #include "motorjogo.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
 #define MOVE_MUTEX TEXT("moveMutex")
 
-DWORD WINAPI AtendeCliente(LPVOID param);
-
 BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
 HANDLE hPipeA[MAXJOGADORES];
+
 HANDLE moveMutex;
 
 DWORD total = 0;
@@ -32,10 +32,13 @@ JogoServidor *jogo;
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int nCmdShow) {
 
 	HANDLE hThread = NULL;
+	HANDLE hThreadRec = NULL;
 	BOOL pLigado = FALSE;
 	DWORD dwThreadID = 0;
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
+	HANDLE hPipeRec = INVALID_HANDLE_VALUE;
 
+	PipesServer *pipes;
 
 
 	int i;
@@ -53,9 +56,13 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 		return -1;
 	}
 
+	pipes = malloc(sizeof(PipesServer));
+	pipes->hPipe = INVALID_HANDLE_VALUE;
+	pipes->hPipeRec = INVALID_HANDLE_VALUE;
+
 	jogo = malloc(sizeof(JogoServidor));
 	jogo->jogadoresLigados = 0;
-
+	jogo->totalLigacoes = 0;
 
 
 	for (i = 0; i < MAXJOGADORES; i++) {
@@ -66,35 +73,59 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 			| PIPE_READMODE_MESSAGE, MAXJOGADORES, sizeof(JogoCliente), sizeof(JogoCliente),
 			1000, NULL);
 
+
+		hPipeRec = CreateNamedPipe(PIPE_RECECAO, PIPE_ACCESS_OUTBOUND | FILE_FLAG_OVERLAPPED, PIPE_WAIT | PIPE_TYPE_MESSAGE
+			| PIPE_READMODE_MESSAGE, MAXJOGADORES, sizeof(JogoCliente), sizeof(JogoCliente),
+			1000, NULL);
+
+
 		if (hPipe == INVALID_HANDLE_VALUE) {
 			exit(-1);
 		}
 
+		if (hPipeRec == INVALID_HANDLE_VALUE) {
+			exit(-1);
+		}
 
-		pLigado = ConnectNamedPipe(hPipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
-
+		pLigado = ConnectNamedPipe(hPipe, NULL)  ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
 
 		if (pLigado) {
 
+			jogo->totalLigacoes++;
 
-			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)hPipe, 0, NULL);
+			pipes->hPipe = hPipe;
 
-			if (hThread == NULL) {
+			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)pipes, 0, NULL);
+
+
+			if (hThread == NULL ) {
+
+				jogo->totalLigacoes--;
+
 				exit(-1);
 			}
 			else
+			{
+				//WaitForSingleObject(jogo->hThreadClientes[i], INFINITE);
 				CloseHandle(hThread);
+			}
 		}
 		else
-			CloseHandle(hPipe);
+		{
+			CloseHandle(pipes->hPipe);
+			CloseHandle(pipes->hPipeRec);
+		}
 
 	}
 
-	WaitForSingleObject(hThread, INFINITE);
+
 
 	free(jogo);
+	free(pipes);
 	return 0;
 }
+
+
 
 DWORD WINAPI AtendeCliente(LPVOID param) {
 
@@ -104,18 +135,23 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	BOOL ret = FALSE;
 
+	PipesServer *pipes = param;
+
 	//trabalhar somente com 1 cliente especifico
-	HANDLE cliente = (HANDLE)param;
+	HANDLE cliente = (HANDLE)pipes->hPipe;
+
+
 
 	JogoCliente *jog;
 	jog = malloc(sizeof(JogoCliente));
 
 
 
+
 	do {
 
 
-		
+
 		ret = ReadFile(cliente, jog, sizeof(JogoCliente), &nlidos, NULL);
 
 		if (!ret || !nlidos)
@@ -124,133 +160,139 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 
-			if (jog->comando == 1)
+		if (jog->comando == 1)
+		{
+
+			if (JOGO_ONLINE == FALSE && JogoCliente_COMECOU == FALSE)
 			{
 
-				if (JOGO_ONLINE == FALSE && JogoCliente_COMECOU == FALSE)
-				{
 
-					jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog->pidCliente;
+				jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog->pidCliente;
 
 
-					criaJogo(jogo);
+				criaJogo(jogo);
 
-					criaJogador(jogo, TEXT(""), jog->pidCliente);
+				criaJogador(jogo, TEXT(""), jog->pidCliente);
 
-					atualizaMapaServidor(jogo, jog, jogo->jogadores[jogo->jogadoresLigados].posicao.x,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.y);
+				atualizaMapaServidor(jogo, jog, jogo->jogadores[jogo->jogadoresLigados].posicao.x,
+					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
 
-					atualizaMapaCliente(jogo, jog,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
-					);
+				atualizaMapaCliente(jogo, jog,
+					jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
+					jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
+				);
 
 
 
-					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
+				jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
 
-					jogo->clientes[jogo->jogadoresLigados] = *jog;
+				jogo->jogoClientes[jogo->jogadoresLigados] = *jog;
 
-					jogo->jogadoresLigados++;
-
-					jog->respostaComando = 1;
-
-					JOGO_ONLINE = TRUE;
-
-					JogoCliente_COMECOU = 1;
-
-				}
-				else
-					jog->respostaComando = 0;
-			}
-
-			else if (jog->comando == 5)
-			{
-
-				WaitForSingleObject(moveMutex, INFINITE);
-
-
-
-				int x = 0;
-				int y = 0;
-				int r = 0;
-
-				int ox = 0;
-				int oy = 0;
-
-
-				x = jog->jogador.posicao.x;
-				y = jog->jogador.posicao.y;
-
-				ox = x;
-				oy = y;
-
-				if (jog->moveuDirecao == 1) if (validaMovimentoBase(jogo->mapa, x, y - 1)) y--; //Mover Para Cima
-				if (jog->moveuDirecao == 2) if (validaMovimentoBase(jogo->mapa, x, y + 1)) y++; //Mover Para Baixo
-				if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
-				if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
-
-
-
-				jog->jogador.posicao.x = x;
-				jog->jogador.posicao.y = y;
-
-
-				atualizaMapaServidor(jogo, jog, ox, oy);
-
-				atualizaJogadorServidor(jogo, *jog);
-
-				atualizaMapaCliente(jogo, jog, x - 7, y - 7);
+				jogo->jogadoresLigados++;
 
 				jog->respostaComando = 1;
 
-				ReleaseMutex(moveMutex);
+				JOGO_ONLINE = TRUE;
 
-			}
-			else if (jog->comando == 3)
-			{
-				if (JOGO_ONLINE == TRUE && JogoCliente_COMECOU == 1) {
+				JogoCliente_COMECOU = 1;
 
-				
-					jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog->pidCliente;
-
-					criaJogador(jogo, TEXT(""), jog->pidCliente);
-
-					atualizaJogadorServidor(jogo, *jog);
-
-					jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
-
-					atualizaMapaServidor(jogo, jog,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.x,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.y);
-
-					atualizaMapaCliente(jogo, jog,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
-						jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
-					);
-
-
-
-					jogo->clientes[jogo->jogadoresLigados] = *jog;
-
-					jogo->jogadoresLigados++;
-
-					swprintf(jog->mensagem, 256, TEXT("%s Ligou-se"), jog->jogador.nome);
-
-					jog->respostaComando = 1;
-
-				}
-
-				else
-					jog->respostaComando = 0;
 			}
 			else
-				_tcscpy_s(jog->mensagem, 30, TEXT("nenhuma opcao valida"));
+				jog->respostaComando = 0;
+		}
+
+		else if (jog->comando == 5)
+		{
+
+			WaitForSingleObject(moveMutex, INFINITE);
+
+
+
+			int x = 0;
+			int y = 0;
+			int r = 0;
+
+			int ox = 0;
+			int oy = 0;
+
+
+			x = jog->jogador.posicao.x;
+			y = jog->jogador.posicao.y;
+
+			ox = x;
+			oy = y;
+
+			if (jog->moveuDirecao == 1) if (validaMovimentoBase(jogo->mapa, x, y - 1)) y--; //Mover Para Cima
+			if (jog->moveuDirecao == 2) if (validaMovimentoBase(jogo->mapa, x, y + 1)) y++; //Mover Para Baixo
+			if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
+			if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
+
+
+
+			jog->jogador.posicao.x = x;
+			jog->jogador.posicao.y = y;
+
+
+			atualizaMapaServidor(jogo, jog, ox, oy);
+
+			atualizaJogadorServidor(jogo, *jog);
+
+			atualizaMapaCliente(jogo, jog, x - 7, y - 7);
+
+			jog->respostaComando = 1;
+
+			ReleaseMutex(moveMutex);
+
+		}
+		else if (jog->comando == 3)
+		{
+			if (JOGO_ONLINE == TRUE && JogoCliente_COMECOU == 1) {
+
+
+				jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog->pidCliente;
+
+				criaJogador(jogo, TEXT(""), jog->pidCliente);
+
+				atualizaJogadorServidor(jogo, *jog);
+
+				jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
+
+				atualizaMapaServidor(jogo, jog,
+					jogo->jogadores[jogo->jogadoresLigados].posicao.x,
+					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
+
+				atualizaMapaCliente(jogo, jog,
+					jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
+					jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
+				);
+
+
+
+				jogo->jogoClientes[jogo->jogadoresLigados] = *jog;
+
+				jogo->jogadoresLigados++;
+
+				swprintf(jog->mensagem, 256, TEXT("%s Ligou-se"), jog->jogador.nome);
+
+				jog->respostaComando = 1;
+
+			}
+
+			else
+				jog->respostaComando = 0;
+		}
+		else
+			_tcscpy_s(jog->mensagem, 30, TEXT("nenhuma opcao valida"));
 
 
 
 
-			escrevePipeJogoCliente(cliente, jog);
+		escrevePipeJogoCliente(cliente, jog);
+
+		//for (i = 0; i < jogo->jogadoresLigados; i++) {
+		//	if (jogo->jogoClientes[i].pidCliente != jog->pidCliente)
+		//		escrevePipeJogoCliente(jogo->pipeClientes[i], &(jogo->jogoClientes[i]));
+		//}
 
 	} while (1);
 
@@ -293,5 +335,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	return 0;
 }
+
 
 

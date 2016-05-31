@@ -141,10 +141,16 @@ void jogar() {
 	if (criaIniciaJogo(hPipe, jogo))//ssucesso 
 	{
 
+
 		limpaArea(0, 0, 70, 20);
 		GoToXY(0, 3);
 
+
+
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
+
 		mostraJogo(hPipe, jogo);
+
 
 
 		return;
@@ -156,6 +162,7 @@ void jogar() {
 		if (juntarJogo(hPipe, jogo)) {
 			_tcscpy_s(message, 256, TEXT("Ligando a jogo existente"));
 
+			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 
 			mostraJogo(hPipe, jogo);
 
@@ -256,8 +263,6 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 		if (ch == key_RIGHT) moverJogador(Hpipe, jogo, 4); //Dir 4
 
 
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, (LPVOID)Hpipe, 0, NULL);
-
 	}
 
 	setForeGroundAndBackGroundColor(Color_White, Color_Black);
@@ -280,17 +285,16 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 	int res = 0;
 
-	//HANDLE hPipe = INVALID_HANDLE_VALUE;
-	HANDLE hPipe = param;
+	HANDLE hPipe = INVALID_HANDLE_VALUE;
+
 	DWORD n;
 	JogoCliente m;
 	BOOL ret = FALSE;
 
-	//hPipe = pipeRececaoCliente();
-
-	if (hPipe != INVALID_HANDLE_VALUE) {
 
 		while (1) {
+
+
 
 			ret = lePipeJogoClienteComRetVal(hPipe, &m);
 
@@ -309,7 +313,8 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 		}
 
-	}
+
+
 
 
 	return 0;

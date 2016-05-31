@@ -25,9 +25,9 @@ void atualizaJogadorServidor(JogoServidor *jog, JogoCliente jogcl) {
 
 		}
 
-		if (jog->clientes[i].pidCliente == jogcl.pidCliente) {
+		if (jog->jogoClientes[i].pidCliente == jogcl.pidCliente) {
 
-			jog->clientes[i] = jogcl;
+			jog->jogoClientes[i] = jogcl;
 
 			return;
 

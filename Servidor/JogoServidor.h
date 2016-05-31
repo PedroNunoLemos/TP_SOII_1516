@@ -17,7 +17,7 @@ typedef struct  _jogoservidor
 	ObjectoMapa objectos[MAXTAMX][MAXTAMY];
 	PosicaoJogadorMapa jogadoresMapa[MAXTAMX][MAXTAMX];
 
-	JogoCliente clientes[MAXJOGADORES];
+	JogoCliente jogoClientes[MAXJOGADORES];
 
 	int JogoIniciado;
 	int ClienteLigado;
