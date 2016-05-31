@@ -14,14 +14,14 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#define MOVE_MUTEX TEXT("moveMutex")
+#define MOVE_MUTEX TEXT("servidorMutex")
 
 BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
 HANDLE clientes[MAXJOGADORES];
 HANDLE clientes_atualizar[MAXJOGADORES];
 
-HANDLE moveMutex;
+HANDLE servidorMutex;
 
 DWORD total = 0;
 
@@ -207,7 +207,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		else if (jog->comando == 5)
 		{
 
-			WaitForSingleObject(moveMutex, INFINITE);
+			WaitForSingleObject(servidorMutex, INFINITE);
 
 
 
@@ -244,7 +244,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			jog->respostaComando = 1;
 
-			ReleaseMutex(moveMutex);
+			ReleaseMutex(servidorMutex);
 
 		}
 		else if (jog->comando == 3)
@@ -287,14 +287,22 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		else
 			_tcscpy_s(jog->mensagem, 30, TEXT("nenhuma opcao valida"));
 
+		WaitForSingleObject(servidorMutex, INFINITE);
 
+		atualizaClientesMapas(jogo, jog);
 
+		ReleaseMutex(servidorMutex);
 
 		escrevePipeJogoCliente(cliente, jog);
 
+
 		for (i = 0; i < jogo->totalLigacoes; i++) {
-			if (jogo->jogoClientes[i].pidCliente != jog->pidCliente)
+			if (jogo->jogoClientes[i].pidCliente != jog->pidCliente) {
+
 				escrevePipeJogoCliente(clientes_atualizar[i], &(jogo->jogoClientes[i]));
+
+			}
+
 		}
 
 

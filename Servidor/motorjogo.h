@@ -10,5 +10,6 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 
 void criaJogador(JogoServidor *jogo, TCHAR nome[], DWORD pid);
 
-
 void criaObjectosMapa(JogoServidor *serv);
+
+void atualizaClientesMapas(JogoServidor *jogo, JogoCliente *jogclt);

@@ -146,8 +146,8 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 			j = (y1 + serv->jogoVisivel - 1) - y;
 
 			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
-			jogcl->objectos[i][j] = serv->objectos[x][y];
-			jogcl->jogadores[i][j] = serv->jogadoresMapa[x][y];
+			jogcl->objectosMapa[i][j] = serv->objectos[x][y];
+			jogcl->jogadoresMapa[i][j] = serv->jogadoresMapa[x][y];
 
 		}
 	}
@@ -301,14 +301,11 @@ void atualizaClientesMapas(JogoServidor *jogo, JogoCliente *jogclt) {
 			&& jogclt->jogador.posicao.y <= jogo->jogoClientes[i].jogador.posicao.y + 7)
 		{
 
-			atualizaMapaServidor(jogo, &(jogo->jogoClientes[i]),
-				jogo->jogadores[jogo->jogadoresLigados].posicao.x,
-				jogo->jogadores[jogo->jogadoresLigados].posicao.y);
+			if (jogo->jogoClientes[i].jogador.pidJogador == jogclt->pidCliente)
+			{
+				jogo->jogoClientes[i].jogador = jogclt->jogador;
+			}
 
-			atualizaMapaCliente(jogo, jog,
-				jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
-				jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
-			);
 
 		}
 	}
