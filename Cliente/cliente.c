@@ -145,8 +145,6 @@ void jogar() {
 		limpaArea(0, 0, 70, 20);
 		GoToXY(0, 3);
 
-
-
 		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 
 		mostraJogo(hPipe, jogo);
@@ -161,8 +159,9 @@ void jogar() {
 
 		if (juntarJogo(hPipe, jogo)) {
 			_tcscpy_s(message, 256, TEXT("Ligando a jogo existente"));
-
+			
 			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
+
 
 			mostraJogo(hPipe, jogo);
 
@@ -290,6 +289,8 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 	DWORD n;
 	JogoCliente m;
 	BOOL ret = FALSE;
+
+	hPipe = pipeRececaoCliente();
 
 
 		while (1) {

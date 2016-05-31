@@ -34,6 +34,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	HANDLE hThread = NULL;
 	HANDLE hThreadRec = NULL;
 	BOOL pLigado = FALSE;
+	BOOL pLigadoRec = FALSE;
 	DWORD dwThreadID = 0;
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
 	HANDLE hPipeRec = INVALID_HANDLE_VALUE;
@@ -74,7 +75,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 			1000, NULL);
 
 
-		hPipeRec = CreateNamedPipe(PIPE_RECECAO, PIPE_ACCESS_OUTBOUND | FILE_FLAG_OVERLAPPED, PIPE_WAIT | PIPE_TYPE_MESSAGE
+		hPipeRec = CreateNamedPipe(PIPE_RECECAO, PIPE_ACCESS_INBOUND | FILE_FLAG_OVERLAPPED, PIPE_WAIT | PIPE_TYPE_MESSAGE
 			| PIPE_READMODE_MESSAGE, MAXJOGADORES, sizeof(JogoCliente), sizeof(JogoCliente),
 			1000, NULL);
 
@@ -88,12 +89,14 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 		}
 
 		pLigado = ConnectNamedPipe(hPipe, NULL)  ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
+		
 
-		if (pLigado) {
+		if (pLigado ) {
 
 			jogo->totalLigacoes++;
 
 			pipes->hPipe = hPipe;
+			pipes->hPipeRec = hPipeRec;
 
 			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)pipes, 0, NULL);
 
