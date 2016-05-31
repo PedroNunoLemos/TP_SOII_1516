@@ -310,8 +310,7 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 		{
 			jogo = m;
 
-
-
+			imprimeLabirinto(38, 3, jogo);
 
 
 

@@ -11,23 +11,23 @@
 #include "JogoServidor.h"
 #include "motorjogo.h"
 
-void atualizaJogadorServidor(JogoServidor *jog, JogoCliente jogcl) {
+void atualizaJogadorServidor(JogoServidor *jog, JogoCliente *jogcl) {
 
 	int i = 0;
 
 	for (i = 0; i < jog->jogadoresLigados; i++)
 	{
-		if (jog->jogadores[i].pidJogador == jogcl.pidCliente) {
+		if (jog->jogadores[i].pidJogador == jogcl->pidCliente) {
 
-			jog->jogadores[i] = jogcl.jogador;
+			jog->jogadores[i] = (jogcl->jogador);
 
 			return;
 
 		}
 
-		if (jog->jogoClientes[i].pidCliente == jogcl.pidCliente) {
+		if (jog->jogoClientes[i].pidCliente == jogcl->pidCliente) {
 
-			jog->jogoClientes[i] = jogcl;
+			jog->jogoClientes[i] = *jogcl;
 
 			return;
 
@@ -277,6 +277,7 @@ void criaJogador(JogoServidor *jogo, TCHAR nome[], DWORD pid) {
 	jogo->jogadores[jogo->jogadoresLigados].posicao.x = pos.x;
 	jogo->jogadores[jogo->jogadoresLigados].posicao.y = pos.y;
 
+	jogo->jogoClientes[jogo->jogadoresLigados].pidCliente = pid;
 
 	swprintf(jogo->jogadores[jogo->jogadoresLigados].nome, 256, TEXT("Jogador %d"), jogo->jogadoresLigados + 1);
 
@@ -285,23 +286,3 @@ void criaJogador(JogoServidor *jogo, TCHAR nome[], DWORD pid) {
 
 }
 
-void atualizaClientesMapas(JogoServidor *jogo, JogoCliente *jogclt) {
-
-	int i = 0;
-
-
-	for (i = 0; i < jogo->jogadoresLigados; i++)
-	{
-
-	
-			if (jogo->jogoClientes[i].jogador.pidJogador == jogclt->pidCliente)
-			{
-				jogo->jogoClientes[i].jogador = jogclt->jogador;
-			}
-
-
-		
-	}
-
-
-}

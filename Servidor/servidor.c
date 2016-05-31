@@ -161,8 +161,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			break;
 
 
-
-
 		if (jog->comando == 1)
 		{
 
@@ -170,12 +168,11 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			{
 
 
-				jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog->pidCliente;
-
-
 				criaJogo(jogo);
 
 				criaJogador(jogo, TEXT(""), jog->pidCliente);
+
+				atualizaJogadorServidor(jogo, jog);
 
 				atualizaMapaServidor(jogo, jog, jogo->jogadores[jogo->jogadoresLigados].posicao.x,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
@@ -183,13 +180,9 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
-				);
+					);
 
 
-
-				jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
-
-				jogo->jogoClientes[jogo->jogadoresLigados] = *jog;
 
 				jogo->jogadoresLigados++;
 
@@ -238,8 +231,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			atualizaMapaServidor(jogo, jog, ox, oy);
 
-			atualizaJogadorServidor(jogo, *jog);
-
 			atualizaMapaCliente(jogo, jog, x - 7, y - 7);
 
 			jog->respostaComando = 1;
@@ -256,8 +247,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogador(jogo, TEXT(""), jog->pidCliente);
 
-				atualizaJogadorServidor(jogo, *jog);
-
 				jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
 
 				atualizaMapaServidor(jogo, jog,
@@ -267,11 +256,9 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
-				);
+					);
 
 
-
-				jogo->jogoClientes[jogo->jogadoresLigados] = *jog;
 
 				jogo->jogadoresLigados++;
 
@@ -284,26 +271,38 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			else
 				jog->respostaComando = 0;
 		}
-		else
-			_tcscpy_s(jog->mensagem, 30, TEXT("nenhuma opcao valida"));
 
-		WaitForSingleObject(servidorMutex, INFINITE);
 
-		atualizaClientesMapas(jogo, jog);
 
-		ReleaseMutex(servidorMutex);
+
+		atualizaJogadorServidor(jogo, jog);
 
 		escrevePipeJogoCliente(cliente, jog);
 
+		WaitForSingleObject(servidorMutex, INFINITE);
 
-		for (i = 0; i < jogo->totalLigacoes; i++) {
-			if (jogo->jogoClientes[i].pidCliente != jog->pidCliente) {
+		for (i = 0; i < jogo->jogadoresLigados; i++)
+		{
 
-				escrevePipeJogoCliente(clientes_atualizar[i], &(jogo->jogoClientes[i]));
+
+			if (
+				jogo->jogoClientes[i].pidCliente != jog->pidCliente
+				&& jogo->jogadores[i].pidJogador != 0 && jogo->jogoClientes[i].pidCliente != 0)
+			{
+
+				JogoCliente *tmp = &(jogo->jogoClientes[i]);
+
+
+
+				escrevePipeJogoCliente(clientes_atualizar[i], tmp);
 
 			}
 
+
 		}
+
+		ReleaseMutex(servidorMutex);
+
 
 
 
