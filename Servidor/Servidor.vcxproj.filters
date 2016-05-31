@@ -18,9 +18,6 @@
     <ClCompile Include="labirinto.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="servidortestes2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="servidor.c">
       <Filter>Source Files</Filter>
     </ClCompile>

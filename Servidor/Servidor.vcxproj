@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClCompile Include="labirinto.c" />
     <ClCompile Include="motorjogo.c" />
-    <ClCompile Include="servidortestes2.c" />
     <ClCompile Include="servidor.c" />
   </ItemGroup>
   <ItemGroup>
