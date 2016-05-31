@@ -73,7 +73,7 @@ void limpaArea(int x, int y, int x2, int y2) {
 
 }
 
-void imprimeLabirinto(int x, int y, JogoCliente lab) {
+void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 
 	int ix = 0;
 	int iy = 0;
@@ -89,9 +89,9 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 
 			
 			for (k = 0; k < MAXJOGADORES; k++) {
-				if (lab.jogadores[ix][iy].posicaoOcupada[k] != 0) {
+				if (lab->jogadores[ix][iy].posicaoOcupada[k] != 0) {
 
-					if (lab.jogadores[ix][iy].posicaoOcupada[k] != lab.jogador.pidJogador) {
+					if (lab->jogadores[ix][iy].posicaoOcupada[k] != lab->jogador.pidJogador) {
 						setForeGroundAndBackGroundColor(Color_White, 6);
 						_tprintf(TEXT("0"));
 					}
@@ -100,22 +100,22 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 
 			for (k = 0; k < 5; k++) {
 
-				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Vitamina)
+				if (lab->objectos[ix][iy].objecto[k].tipo == Tipo_Vitamina)
 				{
 					setForeGroundAndBackGroundColor(Color_LightRed, 6);  _tprintf(TEXT("V"));
 				}
 
-				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Cafeina)
+				if (lab->objectos[ix][iy].objecto[k].tipo == Tipo_Cafeina)
 				{
 					setForeGroundAndBackGroundColor(Color_LightYellow, 6);  _tprintf(TEXT("C"));
 				}
 
-				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_OrangeBull)
+				if (lab->objectos[ix][iy].objecto[k].tipo == Tipo_OrangeBull)
 				{
 					setForeGroundAndBackGroundColor(Color_Green, 6);  _tprintf(TEXT("O"));
 				}
 
-				if (lab.objectos[ix][iy].objecto[k].tipo == Tipo_Pedra)
+				if (lab->objectos[ix][iy].objecto[k].tipo == Tipo_Pedra)
 				{
 					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("P"));
 				}
@@ -123,17 +123,17 @@ void imprimeLabirinto(int x, int y, JogoCliente lab) {
 
 			}
 
-			if (lab.mapa[ix][iy].tipo == TipoCelula_CHAO
-				|| lab.mapa[ix][iy].tipo == TipoCelula_PORTA)
+			if (lab->mapa[ix][iy].tipo == TipoCelula_CHAO
+				|| lab->mapa[ix][iy].tipo == TipoCelula_PORTA)
 			{
 				setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT(" "));
 			}
 
-			else if (lab.mapa[ix][iy].tipo == TipoCelula_PAREDE) {
+			else if (lab->mapa[ix][iy].tipo == TipoCelula_PAREDE) {
 				setForeGroundAndBackGroundColor(7, 3);
 				_tprintf(TEXT(" "));
 			}
-			else if (lab.mapa[ix][iy].tipo == TipoCelula_VAZIO)
+			else if (lab->mapa[ix][iy].tipo == TipoCelula_VAZIO)
 			{ setForeGroundAndBackGroundColor(Color_Black, Color_Black); _tprintf(TEXT(" ")); }
 			else { setForeGroundAndBackGroundColor(Color_Black, Color_Black); _tprintf(TEXT(" ")); }
 

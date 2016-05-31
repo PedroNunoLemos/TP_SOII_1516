@@ -18,6 +18,9 @@ TCHAR servnome[256];
 
 
 JogoCliente *jogo;
+HANDLE pipeAtualizaCliente;
+HANDLE hPipe = INVALID_HANDLE_VALUE;
+
 
 
 int _tmain(int argc, LPTSTR argv[]) {
@@ -90,7 +93,6 @@ void jogar() {
 	TCHAR message[256];
 	TCHAR ch;
 
-	HANDLE hPipe = INVALID_HANDLE_VALUE;
 
 	limpaArea(5, 5, 40, 15);
 
@@ -115,8 +117,9 @@ void jogar() {
 
 
 	hPipe = ligarServidor(servnome);
+	pipeAtualizaCliente = pipeRececaoCliente();
 
-	if (hPipe == INVALID_HANDLE_VALUE)
+	if (hPipe == INVALID_HANDLE_VALUE && pipeAtualizaCliente == INVALID_HANDLE_VALUE)
 	{
 
 
@@ -249,7 +252,7 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 		_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
 
 
-		imprimeLabirinto(38, 3, *jogo);
+		imprimeLabirinto(38, 3, jogo);
 
 		ch = _gettch();
 
@@ -284,33 +287,59 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 	int res = 0;
 
-	HANDLE hPipe = INVALID_HANDLE_VALUE;
 
 	DWORD n;
-	JogoCliente m;
+	JogoCliente *m;
 	BOOL ret = FALSE;
 
-	hPipe = pipeRececaoCliente();
-
+	m = malloc(sizeof(JogoCliente));
 
 		while (1) {
 
 
 
-			ret = lePipeJogoClienteComRetVal(hPipe, &m);
+			ret = lePipeJogoClienteComRetVal(pipeAtualizaCliente, m);
 
 			if (ret == 1)
 				break;
 
-			if (m.pidCliente == jogo->pidCliente)
+			if (m->pidCliente == jogo->pidCliente)
 			{
-				jogo = &m;
+				jogo = m;
+
+				setcolor(Color_BrightWhite);
+
+				GoToXY(8, 2);
+				_tprintf(jogo->jogador.nome);
+
+				GoToXY(8, 4);
+				_tprintf(TEXT("Saude : %d"), jogo->jogador.saude);
+
+				GoToXY(8, 6);
+				_tprintf(TEXT("Lentidao : %d"), jogo->jogador.lentidao);
+
+				GoToXY(8, 8);
+				_tprintf(TEXT("Vitaminas : %d"), jogo->jogador.qtdVitaminas);
+
+
+				GoToXY(8, 9);
+				_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.qtdOranges);
+
+
+				GoToXY(8, 10);
+				_tprintf(TEXT("Cafeina : %d"), jogo->jogador.qtdCafeinas);
+
+				GoToXY(8, 11);
+				_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
+
+
+				imprimeLabirinto(38, 3, jogo);
 
 			}
 
 
-			GoToXY(8, 10);
-			_tprintf(TEXT("Atualizado !!"));
+
+
 
 		}
 

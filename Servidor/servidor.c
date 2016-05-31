@@ -18,11 +18,13 @@
 
 BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
-HANDLE hPipeA[MAXJOGADORES];
+HANDLE clientes[MAXJOGADORES];
+HANDLE clientes_atualizar[MAXJOGADORES];
 
 HANDLE moveMutex;
 
 DWORD total = 0;
+
 
 JogoServidor *jogo;
 
@@ -38,8 +40,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	DWORD dwThreadID = 0;
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
 	HANDLE hPipeRec = INVALID_HANDLE_VALUE;
-
-	PipesServer *pipes;
 
 
 	int i;
@@ -57,10 +57,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 		return -1;
 	}
 
-	pipes = malloc(sizeof(PipesServer));
-	pipes->hPipe = INVALID_HANDLE_VALUE;
-	pipes->hPipeRec = INVALID_HANDLE_VALUE;
-
 	jogo = malloc(sizeof(JogoServidor));
 	jogo->jogadoresLigados = 0;
 	jogo->totalLigacoes = 0;
@@ -75,7 +71,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 			1000, NULL);
 
 
-		hPipeRec = CreateNamedPipe(PIPE_RECECAO, PIPE_ACCESS_INBOUND | FILE_FLAG_OVERLAPPED, PIPE_WAIT | PIPE_TYPE_MESSAGE
+		hPipeRec = CreateNamedPipe(PIPE_RECECAO, PIPE_ACCESS_OUTBOUND | FILE_FLAG_OVERLAPPED, PIPE_WAIT | PIPE_TYPE_MESSAGE
 			| PIPE_READMODE_MESSAGE, MAXJOGADORES, sizeof(JogoCliente), sizeof(JogoCliente),
 			1000, NULL);
 
@@ -88,22 +84,30 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 			exit(-1);
 		}
 
-		pLigado = ConnectNamedPipe(hPipe, NULL)  ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
-		
+		clientes[jogo->totalLigacoes] = hPipe;
+		clientes_atualizar[jogo->totalLigacoes] = hPipeRec;
 
-		if (pLigado ) {
+		pLigado = ConnectNamedPipe(hPipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
+
+
+		if (pLigado) {
+
+
+
+
+			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)jogo->totalLigacoes, 0, NULL);
 
 			jogo->totalLigacoes++;
 
-			pipes->hPipe = hPipe;
-			pipes->hPipeRec = hPipeRec;
-
-			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)pipes, 0, NULL);
+			if (hThread == NULL) {
 
 
-			if (hThread == NULL ) {
+				CloseHandle(clientes[jogo->totalLigacoes]);
+				CloseHandle(clientes_atualizar[jogo->totalLigacoes]);
+
 
 				jogo->totalLigacoes--;
+
 
 				exit(-1);
 			}
@@ -115,8 +119,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 		}
 		else
 		{
-			CloseHandle(pipes->hPipe);
-			CloseHandle(pipes->hPipeRec);
+			CloseHandle(clientes[jogo->totalLigacoes]);
+			CloseHandle(clientes_atualizar[jogo->totalLigacoes]);
 		}
 
 	}
@@ -124,7 +128,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 
 	free(jogo);
-	free(pipes);
 	return 0;
 }
 
@@ -138,11 +141,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	BOOL ret = FALSE;
 
-	PipesServer *pipes = param;
-
 	//trabalhar somente com 1 cliente especifico
-	HANDLE cliente = (HANDLE)pipes->hPipe;
-
+	HANDLE cliente = clientes[(int)param];
 
 
 	JogoCliente *jog;
@@ -292,10 +292,12 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 		escrevePipeJogoCliente(cliente, jog);
 
-		//for (i = 0; i < jogo->jogadoresLigados; i++) {
-		//	if (jogo->jogoClientes[i].pidCliente != jog->pidCliente)
-		//		escrevePipeJogoCliente(jogo->pipeClientes[i], &(jogo->jogoClientes[i]));
-		//}
+		for (i = 0; i < jogo->totalLigacoes; i++) {
+			if (jogo->jogoClientes[i].pidCliente != jog->pidCliente)
+				escrevePipeJogoCliente(clientes_atualizar[i], &(jogo->jogoClientes[i]));
+		}
+
+
 
 	} while (1);
 
