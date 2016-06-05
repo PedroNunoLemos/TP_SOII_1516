@@ -208,7 +208,9 @@ void jogar() {
 
 void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
-	TCHAR ch = TEXT("");
+	TCHAR ch;
+
+	ch = TEXT("");
 
 	limpaArea(0, 0, 75, 25);
 	caixa(5, 1, 26, 19, 0, 0);
@@ -288,10 +290,7 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
 DWORD WINAPI AtualizaCliente(LPVOID param) {
 
-	int res = 0;
 
-
-	DWORD n;
 	JogoCliente *m;
 	BOOL ret = FALSE;
 
@@ -310,8 +309,15 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 		{
 			jogo = m;
 
-			imprimeLabirinto(38, 3, jogo);
+			//(38, 3, jogo);
 
+
+			setcolor(Color_BrightWhite);
+			limpaArea(9, 22, 20, 23);
+
+			GoToXY(8, 21);
+			_tprintf(TEXT("Utilizador %s -> %d/%d "),m->jogador.nome,m->jogador.posicao.x
+				,m->jogador.posicao.y);
 
 
 		}

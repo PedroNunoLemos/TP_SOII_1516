@@ -255,34 +255,38 @@ void criaJogo(JogoServidor *jog)
 }
 
 
-void criaJogador(JogoServidor *jogo, TCHAR nome[], DWORD pid) {
+void criaJogador(JogoServidor *jogo,   JogoCliente *clt) {
 
 	int i = 0;
 	int j = 0;
 
+	Jogador jog;
 
 
+	jog.qtdCafeinas = 0;
+	jog.qtdOranges = 0;
+	jog.qtdPedras = 0;
+	jog.qtdVitaminas = 0;
 
-	jogo->jogadores[jogo->jogadoresLigados].qtdCafeinas = 0;
-	jogo->jogadores[jogo->jogadoresLigados].qtdOranges = 0;
-	jogo->jogadores[jogo->jogadoresLigados].qtdPedras = 0;
-	jogo->jogadores[jogo->jogadoresLigados].qtdVitaminas = 0;
-
-	jogo->jogadores[jogo->jogadoresLigados].saude = 10;
-	jogo->jogadores[jogo->jogadoresLigados].lentidao = 5;
+	jog.saude = 10;
+	jog.lentidao = 5;
 
 
 	Coordenada pos = PosicaoIniJog(jogo);
 
-	jogo->jogadores[jogo->jogadoresLigados].posicao.x = pos.x;
-	jogo->jogadores[jogo->jogadoresLigados].posicao.y = pos.y;
+	jog.posicao.x = pos.x;
+	jog.posicao.y = pos.y;
 
-	jogo->jogoClientes[jogo->jogadoresLigados].pidCliente = pid;
-
-	swprintf(jogo->jogadores[jogo->jogadoresLigados].nome, 256, TEXT("Jogador %d"), jogo->jogadoresLigados + 1);
+	jog.pidJogador = clt->pidCliente;
 
 
+	swprintf(jog.nome, 256, TEXT("Jogador %d"), jogo->jogadoresLigados + 1);
+	
+	clt->jogador = jog;
 
+	jogo->jogadores[jogo->jogadoresLigados] = jog;
+
+	jogo->jogoClientes[jogo->jogadoresLigados] = *clt;
 
 }
 
