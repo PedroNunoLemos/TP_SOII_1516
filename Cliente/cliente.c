@@ -315,10 +315,11 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 			setcolor(Color_BrightWhite);
 			limpaArea(9, 22, 20, 23);
 
-			GoToXY(8, 21);
-			_tprintf(TEXT("Utilizador %s -> %d/%d "),m->jogador.nome,m->jogador.posicao.x
-				,m->jogador.posicao.y);
-
+			if (m->jogadorAt.pidJogador != 0) {
+				GoToXY(8, 21);
+				_tprintf(TEXT("Utilizador %s -> %d/%d "), m->jogadorAt.nome, m->jogadorAt.posicao.x
+					, m->jogadorAt.posicao.y);
+			}
 
 		}
 

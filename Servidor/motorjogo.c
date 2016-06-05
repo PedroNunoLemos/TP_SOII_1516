@@ -271,6 +271,18 @@ void criaJogador(JogoServidor *jogo,   JogoCliente *clt) {
 	jog.saude = 10;
 	jog.lentidao = 5;
 
+	clt->jogadorAt.qtdCafeinas = 0;
+	clt->jogadorAt.qtdOranges = 0;
+	clt->jogadorAt.qtdPedras = 0;
+	clt->jogadorAt.qtdVitaminas = 0;
+
+	clt->jogadorAt.saude = 10;
+	clt->jogadorAt.lentidao = 5;
+
+	clt->jogadorAt.pidJogador = 0;
+
+	swprintf(clt->jogadorAt.nome, 256, TEXT("Jogador -"));
+
 
 	Coordenada pos = PosicaoIniJog(jogo);
 
@@ -283,6 +295,7 @@ void criaJogador(JogoServidor *jogo,   JogoCliente *clt) {
 	swprintf(jog.nome, 256, TEXT("Jogador %d"), jogo->jogadoresLigados + 1);
 	
 	clt->jogador = jog;
+
 
 	jogo->jogadores[jogo->jogadoresLigados] = jog;
 

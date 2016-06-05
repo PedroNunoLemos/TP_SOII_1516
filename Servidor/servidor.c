@@ -136,7 +136,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
-	DWORD i;
+	int i, k;
 	DWORD nlidos;
 
 	BOOL ret = FALSE;
@@ -170,7 +170,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogo(jogo);
 
-				criaJogador(jogo,jog);
+				criaJogador(jogo, jog);
 
 				atualizaJogadorServidor(jogo, jog);
 
@@ -246,8 +246,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogador(jogo, jog);
 
-				jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
-
+				
 				atualizaMapaServidor(jogo, jog,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.x,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
@@ -260,8 +259,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 				jogo->jogadoresLigados++;
-
-				swprintf(jog->mensagem, 256, TEXT("%s Ligou-se"), jog->jogador.nome);
 
 				jog->respostaComando = 1;
 
@@ -288,10 +285,11 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			{
 
 				JogoCliente *tmp = &(jogo->jogoClientes[i]);
-
-
+				tmp->jogadorAt = jog->jogador;
 
 				escrevePipeJogoCliente(clientes_atualizar[i], tmp);
+
+			
 
 			}
 

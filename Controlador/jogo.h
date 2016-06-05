@@ -40,6 +40,7 @@ typedef struct DLL_IMP_API _jogoCliente
 
 
 	Celula mapa[15][15];
+	Jogador jogadorAt;
 
 	PosicaoJogadorMapa jogadoresMapa[15][15];
 	ObjectoMapa objectosMapa[15][15];
