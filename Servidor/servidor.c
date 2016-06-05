@@ -14,15 +14,17 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#define MOVE_MUTEX TEXT("moveMutex")
+#define MOVE_MUTEX TEXT("servidorMutex")
 
 BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
-HANDLE hPipeA[MAXJOGADORES];
+HANDLE clientes[MAXJOGADORES];
+HANDLE clientes_atualizar[MAXJOGADORES];
 
-HANDLE moveMutex;
+HANDLE servidorMutex;
 
 DWORD total = 0;
+
 
 JogoServidor *jogo;
 
@@ -38,8 +40,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	DWORD dwThreadID = 0;
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
 	HANDLE hPipeRec = INVALID_HANDLE_VALUE;
-
-	PipesServer *pipes;
 
 
 	int i;
@@ -57,10 +57,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 		return -1;
 	}
 
-	pipes = malloc(sizeof(PipesServer));
-	pipes->hPipe = INVALID_HANDLE_VALUE;
-	pipes->hPipeRec = INVALID_HANDLE_VALUE;
-
 	jogo = malloc(sizeof(JogoServidor));
 	jogo->jogadoresLigados = 0;
 	jogo->totalLigacoes = 0;
@@ -75,7 +71,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 			1000, NULL);
 
 
-		hPipeRec = CreateNamedPipe(PIPE_RECECAO, PIPE_ACCESS_INBOUND | FILE_FLAG_OVERLAPPED, PIPE_WAIT | PIPE_TYPE_MESSAGE
+		hPipeRec = CreateNamedPipe(PIPE_RECECAO, PIPE_ACCESS_OUTBOUND | FILE_FLAG_OVERLAPPED, PIPE_WAIT | PIPE_TYPE_MESSAGE
 			| PIPE_READMODE_MESSAGE, MAXJOGADORES, sizeof(JogoCliente), sizeof(JogoCliente),
 			1000, NULL);
 
@@ -88,22 +84,30 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 			exit(-1);
 		}
 
-		pLigado = ConnectNamedPipe(hPipe, NULL)  ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
-		
+		clientes[jogo->totalLigacoes] = hPipe;
+		clientes_atualizar[jogo->totalLigacoes] = hPipeRec;
 
-		if (pLigado ) {
+		pLigado = ConnectNamedPipe(hPipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
+
+
+		if (pLigado) {
+
+
+
+
+			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)jogo->totalLigacoes, 0, NULL);
 
 			jogo->totalLigacoes++;
 
-			pipes->hPipe = hPipe;
-			pipes->hPipeRec = hPipeRec;
-
-			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)pipes, 0, NULL);
+			if (hThread == NULL) {
 
 
-			if (hThread == NULL ) {
+				CloseHandle(clientes[jogo->totalLigacoes]);
+				CloseHandle(clientes_atualizar[jogo->totalLigacoes]);
+
 
 				jogo->totalLigacoes--;
+
 
 				exit(-1);
 			}
@@ -115,8 +119,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 		}
 		else
 		{
-			CloseHandle(pipes->hPipe);
-			CloseHandle(pipes->hPipeRec);
+			CloseHandle(clientes[jogo->totalLigacoes]);
+			CloseHandle(clientes_atualizar[jogo->totalLigacoes]);
 		}
 
 	}
@@ -124,7 +128,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 
 	free(jogo);
-	free(pipes);
 	return 0;
 }
 
@@ -138,11 +141,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	BOOL ret = FALSE;
 
-	PipesServer *pipes = param;
-
 	//trabalhar somente com 1 cliente especifico
-	HANDLE cliente = (HANDLE)pipes->hPipe;
-
+	HANDLE cliente = clientes[(int)param];
 
 
 	JogoCliente *jog;
@@ -161,8 +161,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			break;
 
 
-
-
 		if (jog->comando == 1)
 		{
 
@@ -170,12 +168,11 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			{
 
 
-				jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog->pidCliente;
-
-
 				criaJogo(jogo);
 
-				criaJogador(jogo, TEXT(""), jog->pidCliente);
+				criaJogador(jogo,jog);
+
+				atualizaJogadorServidor(jogo, jog);
 
 				atualizaMapaServidor(jogo, jog, jogo->jogadores[jogo->jogadoresLigados].posicao.x,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
@@ -183,13 +180,9 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
-				);
+					);
 
 
-
-				jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
-
-				jogo->jogoClientes[jogo->jogadoresLigados] = *jog;
 
 				jogo->jogadoresLigados++;
 
@@ -207,7 +200,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		else if (jog->comando == 5)
 		{
 
-			WaitForSingleObject(moveMutex, INFINITE);
+			WaitForSingleObject(servidorMutex, INFINITE);
 
 
 
@@ -238,13 +231,11 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			atualizaMapaServidor(jogo, jog, ox, oy);
 
-			atualizaJogadorServidor(jogo, *jog);
-
 			atualizaMapaCliente(jogo, jog, x - 7, y - 7);
 
 			jog->respostaComando = 1;
 
-			ReleaseMutex(moveMutex);
+			ReleaseMutex(servidorMutex);
 
 		}
 		else if (jog->comando == 3)
@@ -252,11 +243,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			if (JOGO_ONLINE == TRUE && JogoCliente_COMECOU == 1) {
 
 
-				jogo->jogadores[jogo->jogadoresLigados].pidJogador = jog->pidCliente;
 
-				criaJogador(jogo, TEXT(""), jog->pidCliente);
-
-				atualizaJogadorServidor(jogo, *jog);
+				criaJogador(jogo, jog);
 
 				jog->jogador = jogo->jogadores[jogo->jogadoresLigados];
 
@@ -267,11 +255,9 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
-				);
+					);
 
 
-
-				jogo->jogoClientes[jogo->jogadoresLigados] = *jog;
 
 				jogo->jogadoresLigados++;
 
@@ -284,18 +270,38 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			else
 				jog->respostaComando = 0;
 		}
-		else
-			_tcscpy_s(jog->mensagem, 30, TEXT("nenhuma opcao valida"));
 
 
 
 
 		escrevePipeJogoCliente(cliente, jog);
 
-		for (i = 0; i < jogo->jogadoresLigados; i++) {
-			if (jogo->jogoClientes[i].pidCliente != jog->pidCliente)
-				escrevePipeJogoCliente(jogo->pipeClientes[i], &(jogo->jogoClientes[i]));
+		WaitForSingleObject(servidorMutex, INFINITE);
+
+		for (i = 0; i < jogo->jogadoresLigados; i++)
+		{
+
+
+			if (
+				jogo->jogoClientes[i].pidCliente != jog->pidCliente
+				&& jogo->jogadores[i].pidJogador != 0 && jogo->jogoClientes[i].pidCliente != 0)
+			{
+
+				JogoCliente *tmp = &(jogo->jogoClientes[i]);
+
+
+
+				escrevePipeJogoCliente(clientes_atualizar[i], tmp);
+
+			}
+
+
 		}
+
+		ReleaseMutex(servidorMutex);
+
+
+
 
 	} while (1);
 
