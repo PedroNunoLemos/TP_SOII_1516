@@ -87,52 +87,56 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 
 			GoToXY(x + ix, y + iy);
 
-				if (lab->jogadoresMapa[ix][iy].posicaoOcupada != 0) {
+			//if (lab->jogadoresMapa[ix][iy].posicaoOcupada != 0) {
 
-					if (lab->jogadoresMapa[ix][iy].posicaoOcupada != lab->jogador.pidJogador) {
-						setForeGroundAndBackGroundColor(Color_White, 6);
-						_tprintf(TEXT("0"));
-					}
-				}
-			
-			for (k = 0; k < 5; k++) {
+			//	if (lab->jogadoresMapa[ix][iy].posicaoOcupada != lab->jogador.pidJogador) {
+			//		setForeGroundAndBackGroundColor(Color_White, 6);
+			//		_tprintf(TEXT("0"));
+			//	}
+			//}
 
-				if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_Vitamina)
-				{
-					setForeGroundAndBackGroundColor(Color_LightRed, 6);  _tprintf(TEXT("V"));
-				}
+		//for (k = 0; k < 5; k++) {
 
-				if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_Cafeina)
-				{
-					setForeGroundAndBackGroundColor(Color_LightYellow, 6);  _tprintf(TEXT("C"));
-				}
+		//	if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_Vitamina)
+		//	{
+		//		setForeGroundAndBackGroundColor(Color_LightRed, 6);  _tprintf(TEXT("V"));
+		//	}
 
-				if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_OrangeBull)
-				{
-					setForeGroundAndBackGroundColor(Color_Green, 6);  _tprintf(TEXT("O"));
-				}
+		//	if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_Cafeina)
+		//	{
+		//		setForeGroundAndBackGroundColor(Color_LightYellow, 6);  _tprintf(TEXT("C"));
+		//	}
 
-				if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_Pedra)
-				{
-					setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("P"));
-				}
+		//	if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_OrangeBull)
+		//	{
+		//		setForeGroundAndBackGroundColor(Color_Green, 6);  _tprintf(TEXT("O"));
+		//	}
+
+		//	if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_Pedra)
+		//	{
+		//		setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("P"));
+		//	}
 
 
-			}
+		//}
 
-			if (lab->mapa[ix][iy].tipo == TipoCelula_CHAO
-				|| lab->mapa[ix][iy].tipo == TipoCelula_PORTA)
+			switch (lab->mapa[ix][iy].tipo)
 			{
-				setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT(" "));
-			}
 
-			else if (lab->mapa[ix][iy].tipo == TipoCelula_PAREDE) {
+			case TipoCelula_PORTA:
+			case TipoCelula_CHAO:
+
+				setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT(" "));
+
+				break;
+			case TipoCelula_PAREDE:
 				setForeGroundAndBackGroundColor(7, 3);
 				_tprintf(TEXT(" "));
+				break;
+			default:
+				setForeGroundAndBackGroundColor(Color_Black, Color_Black); _tprintf(TEXT(" "));
+				break;
 			}
-			else if (lab->mapa[ix][iy].tipo == TipoCelula_VAZIO)
-			{ setForeGroundAndBackGroundColor(Color_Black, Color_Black); _tprintf(TEXT(" ")); }
-			else { setForeGroundAndBackGroundColor(Color_Black, Color_Black); _tprintf(TEXT(" ")); }
 
 
 
