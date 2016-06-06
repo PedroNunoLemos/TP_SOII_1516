@@ -62,7 +62,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	jogo->totalLigacoes = 0;
 
 
-	for (i = 0; i < MAXJOGADORES; i++) { 
+	for (i = 0; i < MAXJOGADORES; i++) {
 
 
 
