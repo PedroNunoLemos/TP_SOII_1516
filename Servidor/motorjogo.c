@@ -142,8 +142,8 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 
 		for (y = y1; y < y1 + MAXVISY; y++)
 		{
-			i = (x1 + MAXVISX ) - x;
-			j = (y1 + MAXVISY ) - y;
+			i = (x1 + MAXVISX) - x - 2;
+			j = (y1 + MAXVISY) - y - 2;
 
 			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
 			jogcl->objectosMapa[i][j] = serv->objectos[x][y];
@@ -253,7 +253,7 @@ void criaJogo(JogoServidor *jog)
 }
 
 
-void criaJogador(JogoServidor *jogo,   JogoCliente *clt) {
+void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 
 	int i = 0;
 	int j = 0;
@@ -280,7 +280,7 @@ void criaJogador(JogoServidor *jogo,   JogoCliente *clt) {
 
 
 	swprintf(jog.nome, 256, TEXT("Jogador %d"), jogo->jogadoresLigados + 1);
-	
+
 	clt->jogador = jog;
 
 
