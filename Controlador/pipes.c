@@ -191,5 +191,20 @@ int apanharItem(HANDLE hPipe, JogoCliente *jogo) {
 }
 
 
+int atualizarMapa(HANDLE hPipe, JogoCliente *jogo) {
+
+	//envia pedido registo
+
+	jogo->comando = 6;
+
+	escrevePipeJogoCliente(hPipe, jogo);
+
+	////Recebe resposta
+
+	lePipeJogoCliente(hPipe, jogo);
+
+	return jogo->respostaComando;
+
+}
 
 

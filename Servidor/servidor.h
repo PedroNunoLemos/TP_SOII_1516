@@ -3,6 +3,7 @@
 #include <Windows.h>
 
 DWORD WINAPI AtendeCliente(LPVOID param);
+DWORD WINAPI Lentidao(LPVOID param);
 
 typedef struct _pipesServer
 {
@@ -10,3 +11,4 @@ typedef struct _pipesServer
 	HANDLE hPipeRec;
 
 } PipesServer;
+

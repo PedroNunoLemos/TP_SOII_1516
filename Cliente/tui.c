@@ -80,9 +80,9 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 
 	int k = 0;
 
-	for (ix = 0; ix < 15; ix++)
+	for (ix = 0; ix < MAXVISX; ix++)
 	{
-		for (iy = 0; iy < 15; iy++) {
+		for (iy = 0; iy < MAXVISY; iy++) {
 
 
 			GoToXY(x + ix, y + iy);
@@ -144,7 +144,7 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 	}
 
 
-	GoToXY(x + 7, y + 7);
+	GoToXY(x + (MAXVISX/2), y + (MAXVISY/2));
 	setForeGroundAndBackGroundColor(Color_Blue, 6);
 	_tprintf(TEXT("@"));
 

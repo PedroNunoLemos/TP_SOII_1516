@@ -4,6 +4,8 @@
 
 
 #define MAXJOGADORES 10 
+#define MAXVISX 14 
+#define MAXVISY 14 
 
 #define MAXVITAMINAS 20 
 #define MAXORANGES 15
