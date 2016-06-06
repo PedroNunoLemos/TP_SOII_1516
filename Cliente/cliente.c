@@ -293,6 +293,8 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 	JogoCliente *m;
 	BOOL ret = FALSE;
+	int x = 0, y = 0;
+
 
 	m = malloc(sizeof(JogoCliente));
 
@@ -307,19 +309,27 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 		if (m->pidCliente == jogo->pidCliente)
 		{
-			jogo = m;
-
-			//(38, 3, jogo);
 
 
-			setcolor(Color_BrightWhite);
-			limpaArea(9, 22, 20, 23);
+			for (x = 0; x < MAXVISX; x++)
+			{
 
-			if (m->jogadorAt.pidJogador != 0) {
-				GoToXY(8, 21);
-				_tprintf(TEXT("Utilizador %s -> %d/%d "), m->jogadorAt.nome, m->jogadorAt.posicao.x
-					, m->jogadorAt.posicao.y);
+				for (y = 0; y < MAXVISY; y++)
+				{
+
+					jogo->mapa[x][y] = m->mapa[x][y];
+				}
 			}
+
+			if (atualizarMapa(hPipe, jogo)) {
+
+				imprimeLabirinto(38, 3, jogo);
+
+			}
+
+
+			//
+
 
 		}
 

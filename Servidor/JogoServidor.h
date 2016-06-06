@@ -21,7 +21,6 @@ typedef struct  _jogoservidor
 
 	int JogoIniciado;
 	int ClienteLigado;
-	int jogoVisivel;
 
 
 

@@ -178,8 +178,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
 
 				atualizaMapaCliente(jogo, jog,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
+					jogo->jogadores[jogo->jogadoresLigados].posicao.x - (MAXVISX/2),
+					jogo->jogadores[jogo->jogadoresLigados].posicao.y - (MAXVISY/2)
 					);
 
 
@@ -231,7 +231,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			atualizaMapaServidor(jogo, jog, ox, oy);
 
-			atualizaMapaCliente(jogo, jog, x - 7, y - 7);
+			atualizaMapaCliente(jogo, jog, x - (MAXVISX/2), y - (MAXVISY/2));
 
 			jog->respostaComando = 1;
 
@@ -252,8 +252,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
 
 				atualizaMapaCliente(jogo, jog,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
+					jogo->jogadores[jogo->jogadoresLigados].posicao.x - (MAXVISX/2),
+					jogo->jogadores[jogo->jogadoresLigados].posicao.y - (MAXVISY/2)
 					);
 
 
@@ -262,6 +262,30 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				jog->respostaComando = 1;
 
+			}
+			else if (jog->comando == 6)
+			{
+
+				int x = 0;
+				int y = 0;
+				int r = 0;
+
+				int ox = 0;
+				int oy = 0;
+
+
+				x = jog->jogador.posicao.x;
+				y = jog->jogador.posicao.y;
+
+				ox = x;
+				oy = y;
+				
+
+				atualizaMapaServidor(jogo, jog, ox, oy);
+				atualizaMapaCliente(jogo, jog, x - (MAXVISX/2), y - (MAXVISY/2));
+
+
+				jog->respostaComando = 1;
 			}
 
 			else
@@ -285,7 +309,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			{
 
 				JogoCliente *tmp = &(jogo->jogoClientes[i]);
-				tmp->jogadorAt = jog->jogador;
+
 
 				escrevePipeJogoCliente(clientes_atualizar[i], tmp);
 
