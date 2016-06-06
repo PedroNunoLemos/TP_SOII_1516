@@ -137,13 +137,13 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 	int cntjog = 0;
 
 
-	for (x = x1; x < x1 + MAXVISX; x++)
+	for (x = x1; x < x1 + 15; x++)
 	{
 
-		for (y = y1; y < y1 + MAXVISY; y++)
+		for (y = y1; y < y1 + 15; y++)
 		{
-			i = (x1 + MAXVISX) - x - 2;
-			j = (y1 + MAXVISY) - y - 2;
+			i = (x1 + 15 - 1) - x;
+			j = (y1 + 15 - 1) - y;
 
 			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
 			jogcl->objectosMapa[i][j] = serv->objectos[x][y];
@@ -241,6 +241,7 @@ void criaObjectosMapa(JogoServidor *serv) {
 void criaJogo(JogoServidor *jog)
 {
 
+
 	Labirinto *lab = CriaLabirinto(200, 200, 10);
 
 	jog->mapa = *lab;
@@ -269,6 +270,17 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 	jog.saude = 10;
 	jog.lentidao = 5;
 
+	clt->jogadorAt.qtdCafeinas = 0;
+	clt->jogadorAt.qtdOranges = 0;
+	clt->jogadorAt.qtdPedras = 0;
+	clt->jogadorAt.qtdVitaminas = 0;
+
+	clt->jogadorAt.saude = 10;
+	clt->jogadorAt.lentidao = 5;
+
+	clt->jogadorAt.pidJogador = 0;
+
+	swprintf(clt->jogadorAt.nome, 256, TEXT("Jogador -"));
 
 
 	Coordenada pos = PosicaoIniJog(jogo);

@@ -172,17 +172,15 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogador(jogo, jog);
 
-				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Lentidao, (LPVOID)jogo->jogadoresLigados, 0, NULL);
-
 				atualizaJogadorServidor(jogo, jog);
 
 				atualizaMapaServidor(jogo, jog, jogo->jogadores[jogo->jogadoresLigados].posicao.x,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
 
 				atualizaMapaCliente(jogo, jog,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.x - (MAXVISX / 2),
-					jogo->jogadores[jogo->jogadoresLigados].posicao.y - (MAXVISY / 2)
-				);
+					jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
+					jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
+					);
 
 
 
@@ -230,11 +228,10 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			jog->jogador.posicao.x = x;
 			jog->jogador.posicao.y = y;
 
-			atualizaJogadorServidor(jogo, jog);
 
 			atualizaMapaServidor(jogo, jog, ox, oy);
 
-			atualizaMapaCliente(jogo, jog, x - (MAXVISX / 2), y - (MAXVISY / 2));
+			atualizaMapaCliente(jogo, jog, x - 7, y - 7);
 
 			jog->respostaComando = 1;
 
@@ -249,16 +246,15 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogador(jogo, jog);
 
-				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Lentidao, (LPVOID)jogo->jogadoresLigados, 0, NULL);
 
 				atualizaMapaServidor(jogo, jog,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.x,
 					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
 
 				atualizaMapaCliente(jogo, jog,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.x - (MAXVISX / 2),
-					jogo->jogadores[jogo->jogadoresLigados].posicao.y - (MAXVISY / 2)
-				);
+					jogo->jogadores[jogo->jogadoresLigados].posicao.x - 7,
+					jogo->jogadores[jogo->jogadoresLigados].posicao.y - 7
+					);
 
 
 
@@ -266,30 +262,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				jog->respostaComando = 1;
 
-			}
-			else if (jog->comando == 6)
-			{
-
-				int x = 0;
-				int y = 0;
-				int r = 0;
-
-				int ox = 0;
-				int oy = 0;
-
-
-				x = jog->jogador.posicao.x;
-				y = jog->jogador.posicao.y;
-
-				ox = x;
-				oy = y;
-
-
-				atualizaMapaServidor(jogo, jog, ox, oy);
-				atualizaMapaCliente(jogo, jog, x - (MAXVISX / 2), y - (MAXVISY / 2));
-
-
-				jog->respostaComando = 1;
 			}
 
 			else
@@ -301,7 +273,30 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 		escrevePipeJogoCliente(cliente, jog);
 
+		WaitForSingleObject(servidorMutex, INFINITE);
 
+		for (i = 0; i < jogo->jogadoresLigados; i++)
+		{
+
+
+			if (
+				jogo->jogoClientes[i].pidCliente != jog->pidCliente
+				&& jogo->jogadores[i].pidJogador != 0 && jogo->jogoClientes[i].pidCliente != 0)
+			{
+
+				JogoCliente *tmp = &(jogo->jogoClientes[i]);
+				tmp->jogadorAt = jog->jogador;
+
+				escrevePipeJogoCliente(clientes_atualizar[i], tmp);
+
+
+
+			}
+
+
+		}
+
+		ReleaseMutex(servidorMutex);
 
 
 
@@ -321,38 +316,25 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	if (jogo->jogadoresLigados > 0)
 	{
+		jogo->jogadores[jogo->jogadoresLigados].pidJogador = 0;
+		jogo->jogadores[jogo->jogadoresLigados].posicao.x = -1;
+		jogo->jogadores[jogo->jogadoresLigados].posicao.y = -1;
+		jogo->jogadores[jogo->jogadoresLigados].saude = 10;
+		jogo->jogadores[jogo->jogadoresLigados].lentidao = 5;
 
-		for (int i = 0; i < jogo->jogadoresLigados; i++)
-		{
+		jogo->jogadores[jogo->jogadoresLigados].qtdOranges = 0;
+		jogo->jogadores[jogo->jogadoresLigados].qtdCafeinas = 0;
+		jogo->jogadores[jogo->jogadoresLigados].qtdPedras = 0;
+		jogo->jogadores[jogo->jogadoresLigados].qtdVitaminas = 0;
 
-			if (jogo->jogadores[i].pidJogador == jog->jogador.pidJogador)
-			{
-				jogo->jogadores[i].pidJogador = 0;
-				jogo->jogadores[i].posicao.x = -1;
-				jogo->jogadores[i].posicao.y = -1;
-				jogo->jogadores[i].saude = 10;
-				jogo->jogadores[i].lentidao = 5;
 
-				jogo->jogadores[i].qtdOranges = 0;
-				jogo->jogadores[i].qtdCafeinas = 0;
-				jogo->jogadores[i].qtdPedras = 0;
-				jogo->jogadores[i].qtdVitaminas = 0;
+		jogo->jogadoresLigados--;
 
-			}
-
-			if (jogo->jogoClientes[i].pidCliente == jog->pidCliente)
-			{
-				jogo->jogoClientes[i].pidCliente = 0;
-			}
-
-			jogo->jogadoresLigados--;
-			free(jog);
-		}
 	}
 
 	if (JOGO_ONLINE == TRUE && jogo->jogadoresLigados == 0)
 	{
-
+		free(jog);
 		exit(-1);
 	}
 
@@ -362,32 +344,4 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 }
 
 
-
-DWORD WINAPI Lentidao(LPVOID param) {
-	DWORD n;
-	int i = 0;
-
-	JogoCliente cliente = jogo->jogoClientes[(int)param];
-
-	while (1) {
-
-		cliente = jogo->jogoClientes[(int)param];
-
-
-
-		for (i = 0; i < jogo->jogadoresLigados; i++) {
-
-			JogoCliente *tmp = &(jogo->jogoClientes[i]);
-
-			atualizaJogadorServidor(jogo, tmp);
-			atualizaMapaServidor(jogo, tmp, tmp->jogador.posicao.x
-				, tmp->jogador.posicao.y);
-
-			escrevePipeJogoCliente(clientes_atualizar[i], tmp);
-
-		}
-
-		Sleep((1000 / 15));
-	}
-}
 
