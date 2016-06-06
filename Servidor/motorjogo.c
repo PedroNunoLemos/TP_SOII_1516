@@ -137,13 +137,13 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 	int cntjog = 0;
 
 
-	for (x = x1; x < x1 + 15; x++)
+	for (x = x1; x < x1 + MAXVISX; x++)
 	{
 
-		for (y = y1; y < y1 + 15; y++)
+		for (y = y1; y < y1 + MAXVISY; y++)
 		{
-			i = (x1 + 15 - 1) - x;
-			j = (y1 + 15 - 1) - y;
+			i = (x1 + MAXVISX - 1) - x;
+			j = (y1 + MAXVISY - 1) - y;
 
 			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
 			jogcl->objectosMapa[i][j] = serv->objectos[x][y];
