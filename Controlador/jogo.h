@@ -39,11 +39,11 @@ typedef struct DLL_IMP_API _jogoCliente
 	int moveuDirecao;
 
 
-	Celula mapa[15][15];
+	Celula mapa[MAXVISX][MAXVISY];
 	Jogador jogadorAt;
 
-	PosicaoJogadorMapa jogadoresMapa[15][15];
-	ObjectoMapa objectosMapa[15][15];
+	PosicaoJogadorMapa jogadoresMapa[MAXVISX][MAXVISY];
+	ObjectoMapa objectosMapa[MAXVISX][MAXVISY];
 
 	DWORD pidCliente;
 	Jogador jogador;

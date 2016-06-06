@@ -311,22 +311,7 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 		{
 
 
-			for (x = 0; x < MAXVISX; x++)
-			{
-
-				for (y = 0; y < MAXVISY; y++)
-				{
-
-					jogo->mapa[x][y] = m->mapa[x][y];
-				}
-			}
-
-			if (atualizarMapa(hPipe, jogo)) {
-
-				imprimeLabirinto(38, 3, jogo);
-
-			}
-
+			//atualizarMapa(hPipe, jogo);
 
 			//
 
