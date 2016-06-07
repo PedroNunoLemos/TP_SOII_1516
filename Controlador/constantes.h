@@ -1,9 +1,21 @@
 #pragma once
 
 
+#define VISAO_MONSTRO 5
 
+#define SAUDE_MONSTRO_DIST 5
+#define SAUDE_MONSTRO_BULLY 10
+
+#define VELOCIDADE_MONSTRO_BULLY 1
+#define VELOCIDADE_MONSTRO_DIST 5
 
 #define MAXJOGADORES 10 
+#define MAXINIMIGOS 10
+
+#define MAXTAMX 200
+#define MAXTAMY 200
+#define MAXSALAS 20
+
 #define MAXVISX 14 
 #define MAXVISY 14 
 

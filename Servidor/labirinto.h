@@ -3,11 +3,7 @@
 
 #include "../Controlador/celula.h"
 #include "../Controlador/uteis.h"
-
-
-#define MAXTAMX 200
-#define MAXTAMY 200
-#define MAXSALAS 20
+#include "../Controlador/constantes.h"
 
 
 typedef struct _sala{

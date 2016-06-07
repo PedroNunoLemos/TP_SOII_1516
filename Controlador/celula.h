@@ -25,8 +25,20 @@ typedef enum tipocelula {
 	//Celula representa espaço vazio no labirinto
 	TipoCelula_VAZIO,
 
-	//Celula representa uma parede no labirinto
+	//Celula representa uma parede no labirinto (Compatibilidade)
 	TipoCelula_PAREDE,
+
+	//Celula representa uma parede no labirinto
+	TipoCelula_PAREDE_SUP,
+
+	//Celula representa uma parede no labirinto
+	TipoCelula_PAREDE_LE,
+
+	//Celula representa uma parede no labirinto
+	TipoCelula_PAREDE_LD,
+
+	//Celula representa uma parede no labirinto
+	TipoCelula_PAREDE_INF,
 
 	//Celula repesenta uma porta
 	TipoCelula_PORTA,
@@ -40,7 +52,8 @@ typedef enum tipocelula {
 typedef struct DLL_IMP_API _celula  
 {
 	TipoCelula tipo;
-	Coordenada ponto;
+
+
 
 } Celula;
 

@@ -22,13 +22,6 @@
 #endif
 
 
-typedef struct DLL_IMP_API _posicao_JogadorMapa
-{
-	DWORD cor;
-	DWORD pidCliente;
-	DWORD posicaoOcupada;
-
-}PosicaoJogadorMapa;
 
 typedef struct DLL_IMP_API _jogoCliente
 {

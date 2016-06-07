@@ -59,5 +59,8 @@
     <ClInclude Include="pipes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="memoria.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

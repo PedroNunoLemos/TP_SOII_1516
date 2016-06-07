@@ -18,6 +18,12 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="monstro.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="loc_monstro.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{42F52863-59E2-40A5-9549-5DF50C22A20E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

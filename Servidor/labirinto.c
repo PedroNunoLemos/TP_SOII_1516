@@ -203,6 +203,7 @@ Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
 	Labirinto *lab;
 	lab = malloc(sizeof(Labirinto));
 
+	
 	lab->tamsalas = salas;
 	lab->tamx = tamx;
 	lab->tamy = tamy;
@@ -214,8 +215,6 @@ Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
 		{
 
 			lab->celula[x][y].tipo = TipoCelula_VAZIO;
-			lab->celula[x][y].ponto.x = x;
-			lab->celula[x][y].ponto.y = y;
 			
 
 		}

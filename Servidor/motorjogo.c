@@ -73,10 +73,10 @@ void inicializaObjectos(JogoServidor *jog) {
 	int r = 0;
 
 
-	for (x = 0; x < jog->mapa.tamx; x++)
+	for (x = 0; x < jog->mapa->tamx; x++)
 	{
 
-		for (y = 0; y < jog->mapa.tamy; y++)
+		for (y = 0; y < jog->mapa->tamy; y++)
 		{
 			for (r = 0; r < 5; r++)
 			{
@@ -109,10 +109,10 @@ Coordenada PosicaoIniJog(JogoServidor *jog) {
 	res.x = -1;
 	res.y = -1;
 
-	for (r = 0; r < jog->mapa.tamsalas; r++) {
+	for (r = 0; r < jog->mapa->tamsalas; r++) {
 
-		x = jog->mapa.salas[r].porta.x;
-		y = jog->mapa.salas[r].porta.y;
+		x = jog->mapa->salas[r].porta.x;
+		y = jog->mapa->salas[r].porta.y;
 
 		if (!existeJogadorNaPosicao(jog, x, y))
 		{
@@ -145,7 +145,7 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 			i = (x1 + MAXVISX ) - x;
 			j = (y1 + MAXVISY ) - y;
 
-			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
+			jogcl->mapa[i][j] = serv->mapa->celula[x][y];
 			jogcl->objectosMapa[i][j] = serv->objectos[x][y];
 			jogcl->jogadoresMapa[i][j] = serv->jogadoresMapa[x][y];
 
@@ -165,10 +165,10 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 	int r = 0;
 
 
-	for (x = 0; x < serv->mapa.tamx; x++)
+	for (x = 0; x < serv->mapa->tamx; x++)
 	{
 
-		for (y = 0; y < serv->mapa.tamy; y++)
+		for (y = 0; y < serv->mapa->tamy; y++)
 		{
 
 			if (x == oldx && y == oldy)
@@ -212,9 +212,9 @@ void criaObjectosMapa(JogoServidor *serv) {
 
 	int r = 0;
 
-	for (r = 0; r < serv->mapa.tamsalas; r++) {
+	for (r = 0; r < serv->mapa->tamsalas; r++) {
 
-		Sala sala = serv->mapa.salas[r];
+		Sala sala = serv->mapa->salas[r];
 
 		for (xx = sala.x + 1; xx < sala.x + sala.w - 1; xx++) {
 			for (yy = sala.y + 1; yy < sala.y + sala.h - 1; yy++) {
@@ -240,11 +240,11 @@ void criaObjectosMapa(JogoServidor *serv) {
 
 void criaJogo(JogoServidor *jog)
 {
-
+	
 
 	Labirinto *lab = CriaLabirinto(200, 200, 10);
 
-	jog->mapa = *lab;
+	jog->mapa = lab;
 
 
 	inicializaObjectos(jog);

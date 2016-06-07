@@ -4,14 +4,14 @@
 #include "..\Controlador\constantes.h"
 #include "..\Controlador\objecto.h"
 #include "..\Controlador\jogador.h"
-
+#include "..\Controlador\jogo.h"
 
 typedef struct  _jogoservidor
 {
 
 	int jogadoresLigados;
 
-	Labirinto mapa;
+	Labirinto *mapa;
 
 	Jogador jogadores[MAXJOGADORES];
 	ObjectoMapa objectos[MAXTAMX][MAXTAMY];
