@@ -136,7 +136,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
-	int i, k;
+	int i;
 	DWORD nlidos;
 
 	BOOL ret = FALSE;

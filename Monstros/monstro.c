@@ -18,21 +18,11 @@ Monstro me;
 int tamx;
 int tamy;
 int nSpaces;
-TCHAR processName[kBufferSize]; //Monster Process
+TCHAR processName[kBufferSize]; 
 STARTUPINFO si;
 PROCESS_INFORMATION pi;
 
 
-
-typedef struct Order Order;
-
-struct Order {
-
-	LPSYSTEMTIME initialTime;
-	int cmd;
-};
-
-Order queue[QUEUE_SIZE];
 
 void abrirMemoriaPartilhada() {
 
@@ -45,7 +35,7 @@ void abrirMemoriaPartilhada() {
 	{
 		_tprintf(TEXT("Could not open file mapping object (%d).\n"),
 			GetLastError());
-		return NULL;
+		return ;
 	}
 
 	pBuf = (MemoriaPartilhada*)MapViewOfFile(hMapFile, // handle to map object
@@ -60,7 +50,7 @@ void abrirMemoriaPartilhada() {
 
 		CloseHandle(hMapFile);
 
-		return NULL;
+		return ;
 	}
 }
 
@@ -114,6 +104,7 @@ DWORD WINAPI validaPosicao(LPVOID param)
 	Jogador* sch;
 	Coordenada newMonster;
 	while (1) {
+
 		if (/* posicao jogador = monstro*/1) {
 			sch = pBuf->jogadores;
 			for (; sch != &pBuf->jogadores[MAXJOGADORES + 1];) {
@@ -122,17 +113,19 @@ DWORD WINAPI validaPosicao(LPVOID param)
 				}
 			}
 		}
+
 		if (me.energia >= (2 /* duplicatemonster*/ * SAUDE_MONSTRO_DIST) && me.tipo == 0) {
 
 			newMonster.y = me.posicao.y;
 
-			if (pBuf->mapa[me.posicao.y][me.posicao.x + 1] != 1 &&
-				pBuf->mapa[me.posicao.y][me.posicao.x + 1] != 2) {
+			if (pBuf->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
+				pBuf->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
 				newMonster.x = me.posicao.x + 1;
 			}
 			else {
 				newMonster.x = me.posicao.x - 1;
 			}
+
 			me.energia *= .8;
 
 			_stprintf_s(processName, kBufferSize, TEXT("%s %d %d %d %d %d %d %d"),
@@ -145,8 +138,8 @@ DWORD WINAPI validaPosicao(LPVOID param)
 		}
 		else if (me.energia >= (2 * SAUDE_MONSTRO_BULLY) && me.tipo == 1) {
 			newMonster.y = me.posicao.y;
-			if (pBuf->mapa[me.posicao.y][me.posicao.x + 1] != 1 &&
-				pBuf->mapa[me.posicao.y][me.posicao.x + 1] != 2) {
+			if (pBuf->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
+				pBuf->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
 				newMonster.x = me.posicao.x + 1;
 			}
 			else {
@@ -170,7 +163,6 @@ DWORD WINAPI validaPosicao(LPVOID param)
 
 }
 
-//Method of use: Monster typeofMonster tamx nCOLUMS --- (1-Distraido / 2-Bully)
 int _tmain(int argc, LPTSTR argv[]) {
 
 
@@ -187,11 +179,11 @@ int _tmain(int argc, LPTSTR argv[]) {
 	me.posicao.x = _ttoi(argv[5]);
 
 	if (me.tipo == 0) {
-		_tcscpy(me.descricao, TEXT("Distracted"));
+		wcscpy_s(me.descricao, 10,TEXT("Distracted"));
 		me.lentidao = VELOCIDADE_MONSTRO_BULLY;
 	}
 	else {
-		_tcscpy(me.descricao, TEXT("Bully"));
+		wcscpy_s(me.descricao, 10,TEXT("Bully"));
 		me.lentidao = VELOCIDADE_MONSTRO_DIST;
 	}
 
@@ -207,11 +199,11 @@ int _tmain(int argc, LPTSTR argv[]) {
 		TEXT("moveMutex"));
 
 	if (moveMutex == NULL) {
-		_tprintf(TEXT("CreateMutex error: %d\n", getlastError()));
+		_tprintf(TEXT("CreateMutex error: %d\n"), GetLastError());
 		return 1;
 	}
 
-	openMappedMemory();
+	abrirMemoriaPartilhada();
 
 
 	if (pBuf == NULL) {
@@ -219,7 +211,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 		return -1;
 	}
 
-	//hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)validaPosition, (LPVOID)NULL, 0, NULL);
+	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)validaPosicao, (LPVOID)NULL, 0, NULL);
 	if (me.tipo == 0) {
 		IniciaDistraido();
 	}

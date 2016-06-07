@@ -208,9 +208,9 @@ void jogar() {
 
 void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
-	TCHAR ch;
+	int ch;
 
-	ch = TEXT("");
+	ch = '\0';
 
 	limpaArea(0, 0, 75, 25);
 	caixa(5, 1, 26, 19, 0, 0);

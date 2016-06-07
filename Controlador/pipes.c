@@ -86,7 +86,6 @@ int lePipeJogoClienteComRetVal(HANDLE hPipe, JogoCliente *jogo) {
 
 HANDLE pipeRececaoCliente() {
 	HANDLE hPipe;
-	DWORD n;
 	BOOL ret = FALSE;
 
 	if (!WaitNamedPipe(pipeRececao, NMPWAIT_WAIT_FOREVER)) {
