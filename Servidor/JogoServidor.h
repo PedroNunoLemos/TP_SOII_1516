@@ -14,8 +14,6 @@ typedef struct  _jogoservidor
 	Labirinto *mapa;
 
 	Jogador jogadores[MAXJOGADORES];
-	ObjectoMapa objectos[MAXTAMX][MAXTAMY];
-	PosicaoJogadorMapa jogadoresMapa[MAXTAMX][MAXTAMX];
 
 	JogoCliente jogoClientes[MAXJOGADORES];
 

@@ -55,7 +55,7 @@ int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 
 }
 
-
+/*
 Item *devolveObjectoNaPosicao(JogoServidor jogo, int  x, int y) {
 
 
@@ -63,7 +63,7 @@ Item *devolveObjectoNaPosicao(JogoServidor jogo, int  x, int y) {
 
 	return jogo.objectos[x][y].objecto;
 
-}
+}*/
 
 void inicializaObjectos(JogoServidor *jog) {
 
@@ -78,20 +78,17 @@ void inicializaObjectos(JogoServidor *jog) {
 
 		for (y = 0; y < jog->mapa->tamy; y++)
 		{
-			for (r = 0; r < 5; r++)
-			{
-				jog->objectos[x][y].objecto[r].tipo = 0;
-			}
 
 
-			jog->jogadoresMapa[x][y].posicaoOcupada = 0;
-			jog->jogadoresMapa[x][y].pidCliente = 0;
+			jog->mapa->celula[x][y].objeto = 0;
+			jog->mapa->celula[x][y].jogador = 0;
 
 
 		}
 
 
 	}
+
 }
 
 
@@ -142,12 +139,10 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 
 		for (y = y1; y < y1 + MAXVISY; y++)
 		{
-			i = (x1 + MAXVISX ) - x;
-			j = (y1 + MAXVISY ) - y;
+			i = (x1 + MAXVISX) - x;
+			j = (y1 + MAXVISY) - y;
 
 			jogcl->mapa[i][j] = serv->mapa->celula[x][y];
-			jogcl->objectosMapa[i][j] = serv->objectos[x][y];
-			jogcl->jogadoresMapa[i][j] = serv->jogadoresMapa[x][y];
 
 		}
 	}
@@ -160,8 +155,7 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 
 	int x = 0;
 	int y = 0;
-	int i = -1;
-	int j = -1;
+
 	int r = 0;
 
 
@@ -174,9 +168,8 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 			if (x == oldx && y == oldy)
 			{
 
-				if (serv->jogadoresMapa[x][y].posicaoOcupada == jogcl->pidCliente) {
-					serv->jogadoresMapa[x][y].posicaoOcupada = 0;
-					serv->jogadoresMapa[x][y].pidCliente = 0;
+				if (serv->mapa->celula[x][y].jogador == jogcl->pidCliente) {
+					serv->mapa->celula[x][y].jogador = 0;
 
 				}
 			}
@@ -184,9 +177,8 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 			if (x == jogcl->jogador.posicao.x && y == jogcl->jogador.posicao.y)
 			{
 
-				if (serv->jogadoresMapa[x][y].posicaoOcupada == 0) {
-					serv->jogadoresMapa[x][y].posicaoOcupada = jogcl->pidCliente;
-					serv->jogadoresMapa[x][y].pidCliente = jogcl->pidCliente;
+				if (serv->mapa->celula[x][y].jogador == 0) {
+					serv->mapa->celula[x][y].jogador = jogcl->pidCliente;
 					break;
 				}
 
@@ -202,45 +194,50 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 
 void criaObjectosMapa(JogoServidor *serv) {
 
-	int xx = 0;
-	int yy = 0;
 
 	int tipo = 0;
 
-	int sx = 0;
-	int sy = 0;
 
 	int r = 0;
 
-	for (r = 0; r < serv->mapa->tamsalas; r++) {
 
-		Sala sala = serv->mapa->salas[r];
-
-		for (xx = sala.x + 1; xx < sala.x + sala.w - 1; xx++) {
-			for (yy = sala.y + 1; yy < sala.y + sala.h - 1; yy++) {
-
-				tipo = aleatorio(0, 4, yy);
+	int cnt = 0;
+	int x = 0;
+	int y = 0;
+	int prob = 0;
 
 
+	for (x = 0; x < serv->mapa->tamx; x++)
+	{
 
-				sx = aleatorio(sala.x + 1, sala.x + sala.w - 1, xx);
-				sy = aleatorio(sala.y + 1, sala.y + sala.h - 1, yy);
+		for (y = 0; y < serv->mapa->tamy; y++)
+		{
 
 
-				serv->objectos[sx][sy].objecto[0].tipo = tipo;
+			if (serv->mapa->celula[x][y].tipo == TipoCelula_CHAO) {
 
+				for (r = 0; r < 5; r++)
+				{
+					cnt++;
+					prob = aleatorio(1, 100, y*cnt);
+					tipo = aleatorio(1, 4, cnt);
+
+
+					if (prob < 10) {
+						serv->mapa->celula[x][y].objeto = tipo;
+					}
+				}
 			}
+
 		}
-
 	}
-
 }
 
 
 
 void criaJogo(JogoServidor *jog)
 {
-	
+
 
 	Labirinto *lab = CriaLabirinto(200, 200, 10);
 

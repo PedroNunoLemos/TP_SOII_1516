@@ -79,6 +79,7 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 	int iy = 0;
 
 	int k = 0;
+	char c = ' ';
 
 	for (ix = 0; ix < MAXVISX; ix++)
 	{
@@ -87,38 +88,8 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 
 			GoToXY(x + ix, y + iy);
 
-			//if (lab->jogadoresMapa[ix][iy].posicaoOcupada != 0) {
-
-			//	if (lab->jogadoresMapa[ix][iy].posicaoOcupada != lab->jogador.pidJogador) {
-			//		setForeGroundAndBackGroundColor(Color_White, 6);
-			//		_tprintf(TEXT("0"));
-			//	}
-			//}
-
-		//for (k = 0; k < 5; k++) {
-
-		//	if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_Vitamina)
-		//	{
-		//		setForeGroundAndBackGroundColor(Color_LightRed, 6);  _tprintf(TEXT("V"));
-		//	}
-
-		//	if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_Cafeina)
-		//	{
-		//		setForeGroundAndBackGroundColor(Color_LightYellow, 6);  _tprintf(TEXT("C"));
-		//	}
-
-		//	if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_OrangeBull)
-		//	{
-		//		setForeGroundAndBackGroundColor(Color_Green, 6);  _tprintf(TEXT("O"));
-		//	}
-
-		//	if (lab->objectosMapa[ix][iy].objecto[k].tipo == Tipo_Pedra)
-		//	{
-		//		setForeGroundAndBackGroundColor(Color_LightBlue, 6);  _tprintf(TEXT("P"));
-		//	}
 
 
-		//}
 
 			switch (lab->mapa[ix][iy].tipo)
 			{
@@ -126,7 +97,33 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 			case TipoCelula_PORTA:
 			case TipoCelula_CHAO:
 
-				setForeGroundAndBackGroundColor(0, 6); _tprintf(TEXT(" "));
+				setForeGroundAndBackGroundColor(0, 6);
+				c = ' ';
+
+				switch (lab->mapa[ix][iy].objeto)
+				{
+				case Tipo_Pedra:
+					setForeGroundAndBackGroundColor(Color_Yellow, 6);
+					c = 'p';
+					break;
+
+				case Tipo_Vitamina:
+					setForeGroundAndBackGroundColor(Color_LightRed, 6);
+					c = 'v';
+					break;
+
+				case Tipo_Cafeina:
+					setForeGroundAndBackGroundColor(Color_LightMagenta, 6);
+					c = 'c';
+					break;
+
+				default:
+					break;
+
+				}
+
+
+				_tprintf(TEXT("%c"), c);
 
 				break;
 			case TipoCelula_PAREDE:
@@ -134,17 +131,17 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 				_tprintf(TEXT(" "));
 				break;
 			default:
-				setForeGroundAndBackGroundColor(Color_Black, Color_Black); _tprintf(TEXT(" "));
+				setForeGroundAndBackGroundColor(Color_Black, Color_Black);
+				_tprintf(TEXT("."));
 				break;
 			}
-
 
 
 		}
 	}
 
 
-	GoToXY(x + (MAXVISX/2), y + (MAXVISY/2));
+	GoToXY(x + (MAXVISX / 2), y + (MAXVISY / 2));
 	setForeGroundAndBackGroundColor(Color_Blue, 6);
 	_tprintf(TEXT("@"));
 

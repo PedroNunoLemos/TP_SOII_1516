@@ -309,17 +309,10 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 		{
 			jogo = m;
 
-			//(38, 3, jogo);
-
-
 			setcolor(Color_BrightWhite);
 			limpaArea(9, 22, 20, 23);
 
-			if (m->jogadorAt.pidJogador != 0) {
-				GoToXY(8, 21);
-				_tprintf(TEXT("Utilizador %s -> %d/%d "), m->jogadorAt.nome, m->jogadorAt.posicao.x
-					, m->jogadorAt.posicao.y);
-			}
+			//imprimeLabirinto(38, 3, jogo);
 
 		}
 
