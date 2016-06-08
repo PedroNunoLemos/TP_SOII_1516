@@ -310,9 +310,9 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 			jogo = m;
 
 			setcolor(Color_BrightWhite);
-			limpaArea(9, 22, 20, 23);
+			//limpaArea(9, 22, 20, 23);
 
-			//imprimeLabirinto(38, 3, jogo);
+			imprimeLabirinto(38, 3, jogo);
 
 		}
 

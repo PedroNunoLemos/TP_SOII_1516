@@ -6,6 +6,13 @@
 #include "..\Controlador\jogador.h"
 #include "..\Controlador\jogo.h"
 
+typedef struct  _cliente
+{
+	JogoCliente jogo;
+	HANDLE ligacao;
+
+} Cliente;
+
 typedef struct  _jogoservidor
 {
 
@@ -13,9 +20,14 @@ typedef struct  _jogoservidor
 
 	Labirinto *mapa;
 
-	Jogador jogadores[MAXJOGADORES];
 
-	JogoCliente jogoClientes[MAXJOGADORES];
+	Cliente clientes[MAXJOGADORES];
+
+	//JogoCliente jogoClientes[MAXJOGADORES];
+	//HANDLE clientes[MAXJOGADORES];
+
+	HANDLE clientes_atualizar[MAXJOGADORES];
+
 
 	int JogoIniciado;
 	int ClienteLigado;

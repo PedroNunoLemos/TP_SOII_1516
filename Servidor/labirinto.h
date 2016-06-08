@@ -37,7 +37,7 @@ typedef struct
 //Cria Labirinto
 Labirinto *CriaLabirinto(int tamx, int tamy, int salas);
 
-int validaMovimentoBase(Labirinto lab, int x, int y);
+int validaMovimentoBase(Labirinto *lab, int x, int y);
 
 
 

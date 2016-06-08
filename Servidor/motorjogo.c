@@ -11,35 +11,6 @@
 #include "JogoServidor.h"
 #include "motorjogo.h"
 
-void atualizaJogadorServidor(JogoServidor *jog, JogoCliente *jogcl) {
-
-	int i = 0;
-
-	for (i = 0; i < jog->jogadoresLigados; i++)
-	{
-		if (jog->jogadores[i].pidJogador == jogcl->pidCliente) {
-
-			jog->jogadores[i] = (jogcl->jogador);
-
-			return;
-
-		}
-
-		if (jog->jogoClientes[i].pidCliente == jogcl->pidCliente) {
-
-			jog->jogoClientes[i] = *jogcl;
-
-			return;
-
-		}
-
-
-
-	}
-
-	return;
-}
-
 int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 
 
@@ -47,7 +18,7 @@ int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 
 	for (i = 0; i < jogo->jogadoresLigados; i++) {
 
-		if (jogo->jogadores[i].posicao.x == x && jogo->jogadores[i].posicao.y == y)
+		if (jogo->clientes[i].jogo.jogador.posicao.x == x && jogo->clientes[i].jogo.jogador.posicao.y == y)
 			return 1;
 	}
 
@@ -165,23 +136,14 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 		for (y = 0; y < serv->mapa->tamy; y++)
 		{
 
-			if (x == oldx && y == oldy)
+			serv->mapa->celula[x][y].jogador = 0;
+
+			for (r = 0; r < serv->jogadoresLigados; r++)
 			{
-
-				if (serv->mapa->celula[x][y].jogador == jogcl->pidCliente) {
-					serv->mapa->celula[x][y].jogador = 0;
-
+				if (x == serv->clientes[r].jogo.jogador.posicao.x && y == serv->clientes[r].jogo.jogador.posicao.y)
+				{
+					serv->mapa->celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
 				}
-			}
-
-			if (x == jogcl->jogador.posicao.x && y == jogcl->jogador.posicao.y)
-			{
-
-				if (serv->mapa->celula[x][y].jogador == 0) {
-					serv->mapa->celula[x][y].jogador = jogcl->pidCliente;
-					break;
-				}
-
 			}
 
 
@@ -216,16 +178,16 @@ void criaObjectosMapa(JogoServidor *serv) {
 
 			if (serv->mapa->celula[x][y].tipo == TipoCelula_CHAO) {
 
-					cnt++;
-					prob = aleatorio(1, 100, y*cnt);
-					tipo = aleatorio(2, 8, prob);
+				cnt++;
+				prob = aleatorio(1, 100, y*cnt);
+				tipo = aleatorio(2, 8, prob);
 
 
-					if (prob < 8) {
-						serv->mapa->celula[x][y].objeto = tipo/2;
+				if (prob < 8) {
+					serv->mapa->celula[x][y].objeto = tipo / 2;
 
-					}
-				
+				}
+
 			}
 
 		}
@@ -255,46 +217,28 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 	int i = 0;
 	int j = 0;
 
-	Jogador jog;
 
 
-	jog.qtdCafeinas = 0;
-	jog.qtdOranges = 0;
-	jog.qtdPedras = 0;
-	jog.qtdVitaminas = 0;
+	clt->jogador.qtdCafeinas = 0;
+	clt->jogador.qtdOranges = 0;
+	clt->jogador.qtdPedras = 0;
+	clt->jogador.qtdVitaminas = 0;
 
-	jog.saude = 10;
-	jog.lentidao = 5;
+	clt->jogador.saude = 10;
+	clt->jogador.lentidao = 5;
 
-	clt->jogadorAt.qtdCafeinas = 0;
-	clt->jogadorAt.qtdOranges = 0;
-	clt->jogadorAt.qtdPedras = 0;
-	clt->jogadorAt.qtdVitaminas = 0;
-
-	clt->jogadorAt.saude = 10;
-	clt->jogadorAt.lentidao = 5;
-
-	clt->jogadorAt.pidJogador = 0;
-
-	swprintf(clt->jogadorAt.nome, 256, TEXT("Jogador -"));
+	clt->jogador.pidJogador = 0;
 
 
 	Coordenada pos = PosicaoIniJog(jogo);
 
-	jog.posicao.x = pos.x;
-	jog.posicao.y = pos.y;
+	clt->jogador.posicao.x = pos.x;
+	clt->jogador.posicao.y = pos.y;
 
-	jog.pidJogador = clt->pidCliente;
-
-
-	swprintf(jog.nome, 256, TEXT("Jogador %d"), jogo->jogadoresLigados + 1);
-
-	clt->jogador = jog;
+	clt->jogador.pidJogador = clt->pidCliente;
 
 
-	jogo->jogadores[jogo->jogadoresLigados] = jog;
-
-	jogo->jogoClientes[jogo->jogadoresLigados] = *clt;
+	swprintf(clt->jogador.nome, 256, TEXT("Jogador %d"), jogo->jogadoresLigados + 1);
 
 }
 

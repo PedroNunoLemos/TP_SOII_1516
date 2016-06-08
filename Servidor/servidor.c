@@ -18,8 +18,7 @@
 
 BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
-HANDLE clientes[MAXJOGADORES];
-HANDLE clientes_atualizar[MAXJOGADORES];
+
 
 HANDLE servidorMutex;
 
@@ -84,8 +83,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 			exit(-1);
 		}
 
-		clientes[jogo->totalLigacoes] = hPipe;
-		clientes_atualizar[jogo->totalLigacoes] = hPipeRec;
+		jogo->clientes[jogo->totalLigacoes].ligacao = hPipe;
+		jogo->clientes_atualizar[jogo->totalLigacoes] = hPipeRec;
 
 		pLigado = ConnectNamedPipe(hPipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
 
@@ -102,8 +101,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 			if (hThread == NULL) {
 
 
-				CloseHandle(clientes[jogo->totalLigacoes]);
-				CloseHandle(clientes_atualizar[jogo->totalLigacoes]);
+				CloseHandle(jogo->clientes[jogo->totalLigacoes].ligacao);
+				CloseHandle(jogo->clientes_atualizar[jogo->totalLigacoes]);
 
 
 				jogo->totalLigacoes--;
@@ -119,8 +118,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 		}
 		else
 		{
-			CloseHandle(clientes[jogo->totalLigacoes]);
-			CloseHandle(clientes_atualizar[jogo->totalLigacoes]);
+			CloseHandle(jogo->clientes[jogo->totalLigacoes].ligacao);
+			CloseHandle(jogo->clientes_atualizar[jogo->totalLigacoes]);
 		}
 
 	}
@@ -142,7 +141,10 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	BOOL ret = FALSE;
 
 	//trabalhar somente com 1 cliente especifico
-	HANDLE cliente = clientes[(int)param];
+	int id = (int)param;
+
+
+	HANDLE cliente = jogo->clientes[id].ligacao;
 
 
 	JogoCliente *jog;
@@ -160,7 +162,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		if (!ret || !nlidos)
 			break;
 
-
+	
 		if (jog->comando == 1)
 		{
 
@@ -172,14 +174,14 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogador(jogo, jog);
 
-				atualizaJogadorServidor(jogo, jog);
+				jogo->clientes[id].jogo = *jog;
 
-				atualizaMapaServidor(jogo, jog, jogo->jogadores[jogo->jogadoresLigados].posicao.x,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
+				atualizaMapaServidor(jogo, jog, jogo->clientes[id].jogo.jogador.posicao.x,
+					jogo->clientes[id].jogo.jogador.posicao.y);
 
 				atualizaMapaCliente(jogo, jog,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.x - (MAXVISX/2),
-					jogo->jogadores[jogo->jogadoresLigados].posicao.y - (MAXVISY/2)
+					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX/2),
+					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY/2)
 					);
 
 
@@ -202,6 +204,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			WaitForSingleObject(servidorMutex, INFINITE);
 
+			jogo->clientes[id].jogo = *jog;
 
 
 			int x = 0;
@@ -212,22 +215,21 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			int oy = 0;
 
 
-			x = jog->jogador.posicao.x;
-			y = jog->jogador.posicao.y;
+			x = jogo->clientes[id].jogo.jogador.posicao.x;
+			y = jogo->clientes[id].jogo.jogador.posicao.y;
 
 			ox = x;
 			oy = y;
 
-			if (jog->moveuDirecao == 1) if (validaMovimentoBase(*(jogo->mapa), x, y - 1)) y--; //Mover Para Cima
-			if (jog->moveuDirecao == 2) if (validaMovimentoBase(*(jogo->mapa), x, y + 1)) y++; //Mover Para Baixo
-			if (jog->moveuDirecao == 3) if (validaMovimentoBase(*(jogo->mapa), x + 1, y))  x++; //Mover Para Esquerda
-			if (jog->moveuDirecao == 4) if (validaMovimentoBase(*(jogo->mapa), x - 1, y))  x--; //Mover Para  Direita
+			if (jog->moveuDirecao == 1) if (validaMovimentoBase(jogo->mapa, x, y - 1)) y--; //Mover Para Cima
+			if (jog->moveuDirecao == 2) if (validaMovimentoBase(jogo->mapa, x, y + 1)) y++; //Mover Para Baixo
+			if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
+			if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
 
 
 
 			jog->jogador.posicao.x = x;
 			jog->jogador.posicao.y = y;
-
 
 			atualizaMapaServidor(jogo, jog, ox, oy);
 
@@ -246,14 +248,15 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogador(jogo, jog);
 
+				jogo->clientes[id].jogo = *jog;
 
 				atualizaMapaServidor(jogo, jog,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.x,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.y);
+					jogo->clientes[id].jogo.jogador.posicao.x,
+					jogo->clientes[id].jogo.jogador.posicao.y);
 
 				atualizaMapaCliente(jogo, jog,
-					jogo->jogadores[jogo->jogadoresLigados].posicao.x - (MAXVISX/2),
-					jogo->jogadores[jogo->jogadoresLigados].posicao.y - (MAXVISY/2)
+					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX/2),
+					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY/2)
 					);
 
 
@@ -269,7 +272,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		}
 
 
-
+		jogo->clientes[id].jogo = *jog;
 
 		escrevePipeJogoCliente(cliente, jog);
 
@@ -280,14 +283,19 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 			if (
-				jogo->jogoClientes[i].pidCliente != jog->pidCliente
-				&& jogo->jogadores[i].pidJogador != 0 && jogo->jogoClientes[i].pidCliente != 0)
+				jogo->clientes[i].jogo.pidCliente != jog->pidCliente && jogo->clientes[i].jogo.pidCliente != 0)
 			{
 
-				JogoCliente *tmp = &(jogo->jogoClientes[i]);
-				tmp->jogadorAt = jog->jogador;
+				JogoCliente *tmp = &(jogo->clientes[i].jogo);
 
-				escrevePipeJogoCliente(clientes_atualizar[i], tmp);
+				atualizaMapaCliente(jogo, tmp,
+					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
+					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
+				);
+
+				jogo->clientes[i].jogo.mapa = tmp->mapa;
+
+				escrevePipeJogoCliente(jogo->clientes_atualizar[i], tmp);
 
 
 
@@ -316,16 +324,16 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	if (jogo->jogadoresLigados > 0)
 	{
-		jogo->jogadores[jogo->jogadoresLigados].pidJogador = 0;
-		jogo->jogadores[jogo->jogadoresLigados].posicao.x = -1;
-		jogo->jogadores[jogo->jogadoresLigados].posicao.y = -1;
-		jogo->jogadores[jogo->jogadoresLigados].saude = 10;
-		jogo->jogadores[jogo->jogadoresLigados].lentidao = 5;
+		jogo->clientes[id].jogo.jogador.pidJogador = 0;
+		jogo->clientes[id].jogo.jogador.posicao.x = -1;
+		jogo->clientes[id].jogo.jogador.posicao.y = -1;
+		jogo->clientes[id].jogo.jogador.saude = 10;
+		jogo->clientes[id].jogo.jogador.lentidao = 5;
 
-		jogo->jogadores[jogo->jogadoresLigados].qtdOranges = 0;
-		jogo->jogadores[jogo->jogadoresLigados].qtdCafeinas = 0;
-		jogo->jogadores[jogo->jogadoresLigados].qtdPedras = 0;
-		jogo->jogadores[jogo->jogadoresLigados].qtdVitaminas = 0;
+		jogo->clientes[id].jogo.jogador.qtdOranges = 0;
+		jogo->clientes[id].jogo.jogador.qtdCafeinas = 0;
+		jogo->clientes[id].jogo.jogador.qtdPedras = 0;
+		jogo->clientes[id].jogo.jogador.qtdVitaminas = 0;
 
 
 		jogo->jogadoresLigados--;
