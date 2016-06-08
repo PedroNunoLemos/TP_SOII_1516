@@ -7,6 +7,7 @@
 
 #include "..\Controlador\pipes.h"
 #include "..\Controlador\constantes.h"
+#include "..\Controlador\memoria.h"
 
 #include "JogoServidor.h"
 #include "servidor.h"
@@ -21,11 +22,18 @@ BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
 
 HANDLE servidorMutex;
-
+HANDLE lentidaoMutex;
+TCHAR nomeMemoria[] = TEXT("Mapa Global");
 DWORD total = 0;
 
-
 JogoServidor *jogo;
+
+STARTUPINFO si[10];
+PROCESS_INFORMATION pi[10];
+
+HANDLE memoria;
+
+MemoriaPartilhada *ptrMapa;
 
 
 
@@ -41,10 +49,13 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	HANDLE hPipeRec = INVALID_HANDLE_VALUE;
 
 
+
+
 	int i;
 
 
 	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
+	lentidaoMutex = CreateMutex(NULL, TRUE, TEXT("_lentidao"));
 
 	if (GetLastError() == ERROR_ALREADY_EXISTS)
 	{
@@ -59,6 +70,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	jogo = malloc(sizeof(JogoServidor));
 	jogo->jogadoresLigados = 0;
 	jogo->totalLigacoes = 0;
+
+
+
 
 
 	for (i = 0; i < MAXJOGADORES; i++) {
@@ -92,7 +106,23 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 		if (pLigado) {
 
 
+			/////////////////////////Mapeamento de memória/////////////////////////////////////////////
 
+			memoria = CreateFileMapping(NULL, NULL, PAGE_READWRITE, 0, sizeof(MemoriaPartilhada), nomeMemoria);
+
+			if (memoria == NULL) {
+				_tprintf(TEXT("[ERRO] Criação de handle de memória - %d"), GetLastError());
+				return -1;
+			}
+
+			ptrMapa = (MemoriaPartilhada *)MapViewOfFile(memoria, FILE_MAP_WRITE, 0, 0, sizeof(MemoriaPartilhada));
+
+			if (ptrMapa == NULL) {
+				//_tprintf(TEXT("[ERRO] Mapeamento de Memoria partilhada - %d"), GetLastError());
+				return -1;
+			}
+
+			//////////////////////////////////////////////////////////////////////
 
 			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)jogo->totalLigacoes, 0, NULL);
 
@@ -124,7 +154,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	}
 
-
+	UnmapViewOfFile(ptrMapa);
+	CloseHandle(memoria);
 
 	free(jogo);
 	return 0;
@@ -258,9 +289,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
 				);
-
-
-
+				
 				jogo->jogadoresLigados++;
 
 				jog->respostaComando = 1;
@@ -274,9 +303,16 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 		jogo->clientes[id].jogo = *jog;
 
+		//WaitForSingleObject(lentidaoMutex, INFINITE);
+
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Lentidao, (LPVOID)id, 0, NULL);
+
+
+		//ReleaseMutex(lentidaoMutex);
+
+
 		escrevePipeJogoCliente(cliente, jog);
 
-		WaitForSingleObject(servidorMutex, INFINITE);
 
 		for (i = 0; i < jogo->jogadoresLigados; i++)
 		{
@@ -304,10 +340,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 		}
-
-		ReleaseMutex(servidorMutex);
-
-
 
 
 	} while (1);
@@ -352,5 +384,24 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	return 0;
 }
 
+
+
+
+DWORD WINAPI Lentidao(LPVOID param) {
+
+	DWORD n;
+	int i = 0;
+
+	JogoCliente *jog = &(jogo->clientes[(int)param].jogo);
+
+
+
+
+	Sleep((1000 / 15));
+
+
+
+	return 0;
+}
 
 
