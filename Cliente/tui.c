@@ -103,7 +103,7 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 				switch (lab->mapa[ix][iy].objeto)
 				{
 				case Tipo_Pedra:
-					setForeGroundAndBackGroundColor(Color_Yellow, 6);
+					setForeGroundAndBackGroundColor(Color_BrightWhite, 6);
 					c = 'p';
 					break;
 
@@ -117,11 +117,23 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 					c = 'c';
 					break;
 
+				case Tipo_OrangeBull:
+					setForeGroundAndBackGroundColor(Color_Blue, 6);
+					c = 'x';
+					break;
+
+
 				default:
 					break;
 
 				}
 
+				if (lab->mapa[ix][iy].jogador != 0 &&
+					lab->mapa[ix][iy].jogador != lab->jogador.pidJogador)
+				{
+					setForeGroundAndBackGroundColor(Color_LightCyan, 6);
+					c = '0';
+				}
 
 				_tprintf(TEXT("%c"), c);
 

@@ -134,10 +134,10 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 	int cntjog = 0;
 
 
-	for (x = x1; x < x1 + MAXVISX; x++)
+	for (x = x1; x < x1 + MAXVISX + 1; x++)
 	{
 
-		for (y = y1; y < y1 + MAXVISY; y++)
+		for (y = y1; y < y1 + MAXVISY + 1; y++)
 		{
 			i = (x1 + MAXVISX) - x;
 			j = (y1 + MAXVISY) - y;
@@ -216,17 +216,16 @@ void criaObjectosMapa(JogoServidor *serv) {
 
 			if (serv->mapa->celula[x][y].tipo == TipoCelula_CHAO) {
 
-				for (r = 0; r < 5; r++)
-				{
 					cnt++;
 					prob = aleatorio(1, 100, y*cnt);
-					tipo = aleatorio(1, 4, cnt);
+					tipo = aleatorio(2, 8, prob);
 
 
-					if (prob < 10) {
-						serv->mapa->celula[x][y].objeto = tipo;
+					if (prob < 8) {
+						serv->mapa->celula[x][y].objeto = tipo/2;
+
 					}
-				}
+				
 			}
 
 		}
