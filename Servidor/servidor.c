@@ -176,6 +176,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 	HANDLE cliente = jogo->clientes[id].ligacao;
+	HANDLE lnt_thr;
 
 
 	JogoCliente *jog;
@@ -214,8 +215,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
 				);
-
-
 
 				jogo->jogadoresLigados++;
 
@@ -257,8 +256,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
 			if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
 
-
-
 			jog->jogador.posicao.x = x;
 			jog->jogador.posicao.y = y;
 
@@ -267,6 +264,11 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			atualizaMapaCliente(jogo, jog, x - (MAXVISX / 2), y - (MAXVISX / 2));
 
 			jog->respostaComando = 1;
+
+
+			lnt_thr = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Lentidao, (LPVOID)id, 0, NULL);
+			WaitForSingleObject(lnt_thr, INFINITE);
+			CloseHandle(lnt_thr);
 
 			ReleaseMutex(servidorMutex);
 
@@ -302,17 +304,11 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 		jogo->clientes[id].jogo = *jog;
+				
 
-		//WaitForSingleObject(lentidaoMutex, INFINITE);
-
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Lentidao, (LPVOID)id, 0, NULL);
-
-
-		//ReleaseMutex(lentidaoMutex);
-
+		WaitForSingleObject(servidorMutex, INFINITE);
 
 		escrevePipeJogoCliente(cliente, jog);
-
 
 		for (i = 0; i < jogo->jogadoresLigados; i++)
 		{
@@ -340,6 +336,9 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 		}
+
+
+		ReleaseMutex(servidorMutex);
 
 
 	} while (1);
@@ -397,7 +396,7 @@ DWORD WINAPI Lentidao(LPVOID param) {
 
 
 
-	Sleep((1000 / 15));
+	Sleep((10000 / 15));
 
 
 
