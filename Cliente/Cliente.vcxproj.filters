@@ -37,6 +37,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Debug\Controlador.lib" />
+    <Library Include="..\Debug\Controlador.lib">
+      <Filter>Source Files</Filter>
+    </Library>
   </ItemGroup>
 </Project>

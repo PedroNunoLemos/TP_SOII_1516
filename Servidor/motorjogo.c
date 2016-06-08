@@ -26,17 +26,53 @@ int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 
 }
 
-/*
-Item *devolveObjectoNaPosicao(JogoServidor jogo, int  x, int y) {
 
 
-	int i = 0;
+void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 
-	return jogo.objectos[x][y].objecto;
+	int x = 0;
+	int y = 0;
 
-}*/
 
+	for (x = 0; x < serv->mapa->tamx; x++)
+	{
 
+		for (y = 0; y < serv->mapa->tamy; y++)
+		{
+
+			if (x == px && y == py)
+			{
+
+				switch (serv->mapa->celula[x][y].objeto)
+				{
+				case Tipo_Pedra:
+					jogcl->jogador.qtdPedras++;
+
+					break;
+
+				case Tipo_Vitamina:
+					jogcl->jogador.qtdVitaminas++;
+					break;
+
+				case Tipo_Cafeina:
+					jogcl->jogador.qtdCafeinas++;
+					break;
+
+				case Tipo_OrangeBull:
+					jogcl->jogador.qtdOranges++;
+
+					break;
+
+				default:
+					break;
+				}
+
+				serv->mapa->celula[x][y].objeto = 0;
+
+			}
+		}
+	}
+}
 
 //Copia mapa Origem / Destino 
 void atualizaMapaEntreClientes(JogoCliente *origem, JogoCliente *dest) {
@@ -74,7 +110,7 @@ void inicializaObjectos(JogoServidor *jog) {
 
 			jog->mapa->celula[x][y].objeto = 0;
 			jog->mapa->celula[x][y].jogador = 0;
-
+			jog->mapa->celula[x][y].monstro = 0;
 
 		}
 
@@ -161,10 +197,17 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 
 			for (r = 0; r < serv->jogadoresLigados; r++)
 			{
-				if (x == serv->clientes[r].jogo.jogador.posicao.x && y == serv->clientes[r].jogo.jogador.posicao.y)
-				{
-					serv->mapa->celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
+
+				if (serv->clientes[r].jogo.pidCliente != jogcl->pidCliente) {
+					if (x == serv->clientes[r].jogo.jogador.posicao.x && y == serv->clientes[r].jogo.jogador.posicao.y)
+						serv->mapa->celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
 				}
+
+				if (serv->clientes[r].jogo.pidCliente == jogcl->pidCliente) {
+					if (x == jogcl->jogador.posicao.x && y == jogcl->jogador.posicao.y)
+						serv->mapa->celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
+				}
+
 			}
 
 

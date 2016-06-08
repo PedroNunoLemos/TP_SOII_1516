@@ -145,7 +145,6 @@ void jogar() {
 	{
 
 
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 
 		limpaArea(0, 0, 70, 20);
 		GoToXY(0, 3);
@@ -161,9 +160,6 @@ void jogar() {
 	{
 
 		if (juntarJogo(hPipe, jogo)) {
-
-			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
-
 
 
 			limpaArea(0, 0, 70, 20);
@@ -225,6 +221,8 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
 	GoToXY(8, 23);
 	_tprintf(TEXT("Pressione ESC para sair"));
+
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 
 	while (ch != key_ESCAPE)
 	{

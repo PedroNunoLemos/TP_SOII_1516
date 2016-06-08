@@ -15,8 +15,6 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#define MOVE_MUTEX TEXT("servidorMutex")
-
 BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
 
@@ -56,6 +54,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
 	lentidaoMutex = CreateMutex(NULL, TRUE, TEXT("_lentidao"));
+	servidorMutex = CreateMutex(NULL, TRUE, TEXT("_servidorMutex"));
+
 
 	if (GetLastError() == ERROR_ALREADY_EXISTS)
 	{
@@ -167,7 +167,16 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 	int i;
+	int x = 0;
+	int y = 0;
+	int r = 0;
+
+	int ox = 0;
+	int oy = 0;
+
+
 	DWORD nlidos;
+	DWORD retwait;
 
 	BOOL ret = FALSE;
 
@@ -183,13 +192,13 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	jog = malloc(sizeof(JogoCliente));
 
 
-
-
 	do {
 
 
 
 		ret = ReadFile(cliente, jog, sizeof(JogoCliente), &nlidos, NULL);
+
+
 
 		if (!ret || !nlidos)
 			break;
@@ -211,10 +220,13 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaServidor(jogo, jog, jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
 
+				atualizaPosicao(jogo, jog, jogo->clientes[id].jogo.jogador.posicao.x,
+					jogo->clientes[id].jogo.jogador.posicao.y);
+
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
-				);
+					);
 
 				jogo->jogadoresLigados++;
 
@@ -232,17 +244,10 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		else if (jog->comando == 5)
 		{
 
-			WaitForSingleObject(servidorMutex, INFINITE);
+
+
 
 			jogo->clientes[id].jogo = *jog;
-
-
-			int x = 0;
-			int y = 0;
-			int r = 0;
-
-			int ox = 0;
-			int oy = 0;
 
 
 			x = jogo->clientes[id].jogo.jogador.posicao.x;
@@ -256,10 +261,13 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
 			if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
 
+			
 			jog->jogador.posicao.x = x;
 			jog->jogador.posicao.y = y;
 
 			atualizaMapaServidor(jogo, jog, ox, oy);
+
+			atualizaPosicao(jogo, jog, ox, oy);
 
 			atualizaMapaCliente(jogo, jog, x - (MAXVISX / 2), y - (MAXVISX / 2));
 
@@ -267,10 +275,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 			lnt_thr = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Lentidao, (LPVOID)id, 0, NULL);
-			WaitForSingleObject(lnt_thr, INFINITE);
-			CloseHandle(lnt_thr);
 
-			ReleaseMutex(servidorMutex);
 
 		}
 		else if (jog->comando == 3)
@@ -287,11 +292,14 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
 
+				atualizaPosicao(jogo, id, jogo->clientes[id].jogo.jogador.posicao.x,
+					jogo->clientes[id].jogo.jogador.posicao.y);
+
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
-				);
-				
+					);
+
 				jogo->jogadoresLigados++;
 
 				jog->respostaComando = 1;
@@ -303,12 +311,13 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		}
 
 
-		jogo->clientes[id].jogo = *jog;
-				
 
-		WaitForSingleObject(servidorMutex, INFINITE);
+		jogo->clientes[id].jogo = *jog;
+
+
 
 		escrevePipeJogoCliente(cliente, jog);
+
 
 		for (i = 0; i < jogo->jogadoresLigados; i++)
 		{
@@ -320,16 +329,15 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				JogoCliente *tmp = &(jogo->clientes[i].jogo);
 
+
 				atualizaMapaCliente(jogo, tmp,
 					tmp->jogador.posicao.x - (MAXVISX / 2),
 					tmp->jogador.posicao.y - (MAXVISY / 2)
-				);
+					);
 
 
 				atualizaMapaEntreClientes(&(jogo->clientes[i].jogo), tmp);
-
 				escrevePipeJogoCliente(jogo->clientes_atualizar[i], tmp);
-
 
 
 			}
@@ -338,7 +346,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		}
 
 
-		ReleaseMutex(servidorMutex);
 
 
 	} while (1);
@@ -395,10 +402,10 @@ DWORD WINAPI Lentidao(LPVOID param) {
 
 
 
-
-	Sleep((10000 / 15));
-
-
+	/*WaitForSingleObject(servidorMutex, INFINITE);
+	Sleep((5000));
+	ReleaseMutex(servidorMutex);
+*/
 
 	return 0;
 }
