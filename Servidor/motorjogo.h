@@ -2,6 +2,7 @@
 
 
 void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1);
+void atualizaMapaEntreClientes(JogoCliente *origem, JogoCliente *dest);
 
 void criaJogo(JogoServidor *jog);
 

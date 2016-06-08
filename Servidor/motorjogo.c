@@ -36,6 +36,27 @@ Item *devolveObjectoNaPosicao(JogoServidor jogo, int  x, int y) {
 
 }*/
 
+
+
+//Copia mapa Origem / Destino 
+void atualizaMapaEntreClientes(JogoCliente *origem, JogoCliente *dest) {
+
+	int x = 0;
+	int y = 0;
+
+
+
+	for (x = 0; x < MAXVISX; x++)
+	{
+
+		for (y = 0; y < MAXVISY; y++)
+		{
+			dest->mapa[x][y] = origem->mapa[x][y];
+		}
+	}
+
+}
+
 void inicializaObjectos(JogoServidor *jog) {
 
 
