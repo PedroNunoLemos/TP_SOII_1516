@@ -19,10 +19,11 @@
 #define MAXVISX 14 
 #define MAXVISY 14 
 
-#define MAXVITAMINAS 20 
-#define MAXORANGES 15
-#define MAXPEDRAS 50 
-#define MAXCAFEINAS 8 
+#define SAUDE_JOG_INI 10
+#define LENTIDAO_JOG_INI 5
+
+#define MAXPEDRAS 15 
+
 
 #define Color_Black 0
 #define Color_Blue 1

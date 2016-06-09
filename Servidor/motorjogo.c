@@ -58,7 +58,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 
 	int x = 0;
 	int y = 0;
-
+	float s = 0;
 
 	for (x = 0; x < serv->mapa->tamx; x++)
 	{
@@ -72,20 +72,50 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 				switch (serv->mapa->celula[x][y].objeto)
 				{
 				case Tipo_Pedra:
-					jogcl->jogador.qtdPedras++;
+
+					//apanha pedra se puder carregar
+					if (jogcl->jogador.qtdPedras <= MAXPEDRAS) {
+
+						jogcl->jogador.qtdPedras++;
+						serv->mapa->celula[x][y].objeto = 0;
+
+					}
 
 					break;
 
 				case Tipo_Vitamina:
-					jogcl->jogador.qtdVitaminas++;
+
+					s = ((jogcl->jogador.saude + 1) / SAUDE_JOG_INI);
+					s = s * 100;
+
+					//so executa se saude < 200%
+					if (s <= 200)
+						jogcl->jogador.saude++;
+
+					serv->mapa->celula[x][y].objeto = 0;
+
 					break;
 
 				case Tipo_Cafeina:
-					jogcl->jogador.qtdCafeinas++;
+
+					if (jogcl->jogador.efeitoCafeina == 0 && jogcl->jogador.lentidao - 2 >= 0)
+						jogcl->jogador.lentidao -= 2;
+
+					serv->mapa->celula[x][y].objeto = 0;
+
 					break;
 
 				case Tipo_OrangeBull:
-					jogcl->jogador.qtdOranges++;
+
+
+					s = ((jogcl->jogador.saude + 3) / SAUDE_JOG_INI);
+					s = s * 100;
+
+					//so executa se saude < 200%
+					if (s <= 200)
+						jogcl->jogador.saude += 3;
+
+					serv->mapa->celula[x][y].objeto = 0;
 
 					break;
 
@@ -93,7 +123,6 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 					break;
 				}
 
-				serv->mapa->celula[x][y].objeto = 0;
 
 			}
 		}
@@ -312,14 +341,14 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 	int j = 0;
 
 
+	clt->jogador.usarPedra = 0;
+	clt->jogador.efeitoCafeina = 0;
 
-	clt->jogador.qtdCafeinas = 0;
-	clt->jogador.qtdOranges = 0;
 	clt->jogador.qtdPedras = 0;
-	clt->jogador.qtdVitaminas = 0;
+	
 
-	clt->jogador.saude = 10;
-	clt->jogador.lentidao = 5;
+	clt->jogador.saude = SAUDE_JOG_INI;
+	clt->jogador.lentidao = LENTIDAO_JOG_INI;
 
 	clt->jogador.pidJogador = 0;
 

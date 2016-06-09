@@ -368,24 +368,10 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	}
 
 	CloseHandle(cliente);
+	CloseHandle(jogo->clientes_atualizar[id]);
 
 	if (jogo->jogadoresLigados > 0)
-	{
-		jogo->clientes[id].jogo.jogador.pidJogador = 0;
-		jogo->clientes[id].jogo.jogador.posicao.x = -1;
-		jogo->clientes[id].jogo.jogador.posicao.y = -1;
-		jogo->clientes[id].jogo.jogador.saude = 10;
-		jogo->clientes[id].jogo.jogador.lentidao = 5;
-
-		jogo->clientes[id].jogo.jogador.qtdOranges = 0;
-		jogo->clientes[id].jogo.jogador.qtdCafeinas = 0;
-		jogo->clientes[id].jogo.jogador.qtdPedras = 0;
-		jogo->clientes[id].jogo.jogador.qtdVitaminas = 0;
-
-
 		jogo->jogadoresLigados--;
-
-	}
 
 	if (JOGO_ONLINE == TRUE && jogo->jogadoresLigados == 0)
 	{

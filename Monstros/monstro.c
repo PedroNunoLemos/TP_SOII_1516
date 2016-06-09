@@ -103,7 +103,8 @@ DWORD WINAPI validaPosicao(LPVOID param)
 {
 	Jogador* sch;
 	Coordenada newMonster;
-	while (1) {
+	
+while (1) {
 
 		if (/* posicao jogador = monstro*/1) {
 			sch = pBuf->jogadores;
@@ -190,9 +191,6 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	me.energia = _ttoi(argv[7]);
 
-
-
-
 	moveMutex = CreateMutex(
 		NULL,
 		FALSE,
@@ -212,6 +210,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	}
 
 	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)validaPosicao, (LPVOID)NULL, 0, NULL);
+
 	if (me.tipo == 0) {
 		IniciaDistraido();
 	}

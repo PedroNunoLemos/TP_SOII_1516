@@ -41,9 +41,13 @@ typedef struct DLL_IMP_API _jogador
 	Coordenada posicao;
 	DWORD pidJogador;
 
-	int qtdVitaminas;
-	int qtdOranges;
+	//int qtdVitaminas;
+	//int qtdOranges;
+	//int qtdCafeinas;
+
 	int qtdPedras;
-	int qtdCafeinas;
+
+	int usarPedra;
+	int efeitoCafeina;
 
 } Jogador;

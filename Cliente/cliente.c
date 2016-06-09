@@ -215,7 +215,7 @@ void impDados(JogoCliente *jogo) {
 
 	GoToXY(8, 6);
 	_tprintf(TEXT("Lentidao : %d"), jogo->jogador.lentidao);
-
+/*
 	GoToXY(8, 8);
 	_tprintf(TEXT("Vitaminas : %d"), jogo->jogador.qtdVitaminas);
 
@@ -226,6 +226,8 @@ void impDados(JogoCliente *jogo) {
 
 	GoToXY(8, 10);
 	_tprintf(TEXT("Cafeina : %d"), jogo->jogador.qtdCafeinas);
+	
+	*/
 
 	GoToXY(8, 11);
 	_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
