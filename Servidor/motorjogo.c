@@ -72,6 +72,10 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 			}
 		}
 	}
+
+	//lentidao 
+	Sleep(1 / 15 * (jogcl->jogador.lentidao) * 1000);
+
 }
 
 //Copia mapa Origem / Destino 

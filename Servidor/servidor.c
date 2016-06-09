@@ -18,9 +18,9 @@
 BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
 
-
-HANDLE servidorMutex;
 HANDLE lentidaoMutex;
+HANDLE servidorMutex;
+
 TCHAR nomeMemoria[] = TEXT("Mapa Global");
 DWORD total = 0;
 
@@ -53,8 +53,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 
 	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
-	lentidaoMutex = CreateMutex(NULL, TRUE, TEXT("_lentidao"));
-	servidorMutex = CreateMutex(NULL, TRUE, TEXT("_servidorMutex"));
+	lentidaoMutex = CreateMutex(NULL, FALSE, TEXT("_lentidao"));
+	servidorMutex = CreateMutex(NULL, FALSE, TEXT("_servidorMutex"));
 
 
 	if (GetLastError() == ERROR_ALREADY_EXISTS)
@@ -203,6 +203,9 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		if (!ret || !nlidos)
 			break;
 
+		WaitForSingleObject(servidorMutex, INFINITE);
+
+
 
 		if (jog->comando == 1)
 		{
@@ -226,7 +229,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
-					);
+				);
 
 				jogo->jogadoresLigados++;
 
@@ -261,11 +264,12 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
 			if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
 
-			
+
 			jog->jogador.posicao.x = x;
 			jog->jogador.posicao.y = y;
 
 			atualizaMapaServidor(jogo, jog, ox, oy);
+
 
 			atualizaPosicao(jogo, jog, x, y);
 
@@ -273,8 +277,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			jog->respostaComando = 51;
 
-
-			lnt_thr = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Lentidao, (LPVOID)id, 0, NULL);
 
 
 		}
@@ -292,13 +294,16 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
 
-				atualizaPosicao(jogo, id, jogo->clientes[id].jogo.jogador.posicao.x,
+	
+				atualizaPosicao(jogo, jog, jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
+
+
 
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
-					);
+				);
 
 				jogo->jogadoresLigados++;
 
@@ -315,6 +320,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		jogo->clientes[id].jogo = *jog;
 
 
+
+		ReleaseMutex(servidorMutex);
 
 		escrevePipeJogoCliente(cliente, jog);
 
@@ -334,7 +341,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, tmp,
 					tmp->jogador.posicao.x - (MAXVISX / 2),
 					tmp->jogador.posicao.y - (MAXVISY / 2)
-					);
+				);
 
 
 				atualizaMapaEntreClientes(&(jogo->clientes[i].jogo), tmp);
@@ -391,24 +398,5 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	return 0;
 }
 
-
-
-
-DWORD WINAPI Lentidao(LPVOID param) {
-
-	DWORD n;
-	int i = 0;
-
-	JogoCliente *jog = &(jogo->clientes[(int)param].jogo);
-
-
-
-	/*WaitForSingleObject(servidorMutex, INFINITE);
-	Sleep((5000));
-	ReleaseMutex(servidorMutex);
-*/
-
-	return 0;
-}
 
 
