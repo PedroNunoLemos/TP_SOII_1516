@@ -156,28 +156,13 @@ int registarJogador(TCHAR nome[], HANDLE hPipe, JogoCliente *jogo) {
 
 }
 
-JogoCliente *moverJogador(HANDLE hPipe, JogoCliente *jogo, int dir) {
+void moverJogador(HANDLE hPipe, JogoCliente *jogo, int dir) {
 
 	//envia pedido registo
 
 	jogo->comando = 5;
 	jogo->moveuDirecao = dir;
 
-	escrevePipeJogoCliente(hPipe, jogo);
-
-	////Recebe resposta
-
-	lePipeJogoCliente(hPipe, jogo);
-
-	return jogo;
-
-}
-
-int apanharItem(HANDLE hPipe, JogoCliente *jogo) {
-
-	//envia pedido registo
-
-	jogo->comando = 11;
 
 	escrevePipeJogoCliente(hPipe, jogo);
 
@@ -185,24 +170,7 @@ int apanharItem(HANDLE hPipe, JogoCliente *jogo) {
 
 	lePipeJogoCliente(hPipe, jogo);
 
-	return jogo->respostaComando;
-
-}
-
-
-int atualizarMapa(HANDLE hPipe, JogoCliente *jogo) {
-
-	//envia pedido registo
-
-	jogo->comando = 6;
-
-	escrevePipeJogoCliente(hPipe, jogo);
-
-	////Recebe resposta
-
-	lePipeJogoCliente(hPipe, jogo);
-
-	return jogo->respostaComando;
+	//return jogo;
 
 }
 

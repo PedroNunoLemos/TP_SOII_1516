@@ -267,7 +267,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			atualizaMapaServidor(jogo, jog, ox, oy);
 
-			atualizaPosicao(jogo, jog, ox, oy);
+			atualizaPosicao(jogo, jog, x, y);
 
 			atualizaMapaCliente(jogo, jog, x - (MAXVISX / 2), y - (MAXVISX / 2));
 
@@ -324,7 +324,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 			if (
-				jogo->clientes[i].jogo.pidCliente != jog->pidCliente && jogo->clientes[i].jogo.pidCliente != 0)
+				jogo->clientes[i].jogo.pidCliente != jog->pidCliente &&
+				jogo->clientes[i].jogo.pidCliente != 0)
 			{
 
 				JogoCliente *tmp = &(jogo->clientes[i].jogo);

@@ -238,8 +238,10 @@ void impDados(JogoCliente *jogo) {
 void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
 	int ch;
+	char tmp;
 	int res=0;
-	
+	int dir=0;
+
 	ch = '\0';
 
 	limpaArea(0, 0, 75, 25);
@@ -256,28 +258,27 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 	GoToXY(8, 23);
 	_tprintf(TEXT("Pressione ESC para sair"));
 
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
+
+
+	impDados(jogo);
+
+
+	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 
 	while (ch != key_ESCAPE)
 	{
 
-
-		impDados(jogo);
-
 		ch = _gettch();
-
-
-		jogo->respostaComando = 0;
 
 		if (ch == key_DOWN) moverJogador(Hpipe, jogo, 1); //Dir 1
 		if (ch == key_UP) moverJogador(Hpipe, jogo, 2); //Dir 2 
 		if (ch == key_LEFT) moverJogador(Hpipe, jogo, 3); //Dir 3
 		if (ch == key_RIGHT) moverJogador(Hpipe, jogo, 4); //Dir 4
 
+		
+		impDados(jogo);
+
 	
-		res++;
-
-
 	}
 
 	setForeGroundAndBackGroundColor(Color_White, Color_Black);
@@ -316,11 +317,12 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 		if (m->pidCliente == jogo->pidCliente)
 		{
-			jogo = m;
+			//jogo = m;
 
 			setcolor(Color_BrightWhite);
 			//limpaArea(9, 22, 20, 23);
-			impDados(jogo);
+			impDados(m);
+
 		}
 
 
