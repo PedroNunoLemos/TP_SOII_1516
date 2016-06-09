@@ -5,7 +5,6 @@
 #include "../Controlador/uteis.h"
 #include "../Controlador/constantes.h"
 
-
 typedef struct _sala{
 
 	int x;
@@ -36,8 +35,4 @@ typedef struct
 
 //Cria Labirinto
 Labirinto *CriaLabirinto(int tamx, int tamy, int salas);
-
-int validaMovimentoBase(Labirinto *lab, int x, int y);
-
-
 

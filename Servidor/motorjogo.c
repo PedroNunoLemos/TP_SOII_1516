@@ -11,6 +11,32 @@
 #include "JogoServidor.h"
 #include "motorjogo.h"
 
+
+int validaMovimentoBase(JogoServidor *serv, int x, int y) {
+
+
+
+
+	if ((
+		serv->mapa->celula[x][y].tipo == TipoCelula_CHAO ||
+		serv->mapa->celula[x][y].tipo == TipoCelula_PORTA))
+		return 1; else return 0;
+
+
+}
+
+
+int validaMovimentoJogador(JogoServidor *serv, JogoCliente *jog, int nx, int ny) {
+
+	if (!validaMovimentoBase(serv, nx, ny))
+		return 0;
+
+	if (existeJogadorNaPosicao(serv, nx, ny))
+		return 0;
+
+	return 1;
+}
+
 int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 
 

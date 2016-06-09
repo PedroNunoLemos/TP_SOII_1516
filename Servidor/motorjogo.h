@@ -1,6 +1,9 @@
 #pragma once
 
 
+
+int validaMovimentoJogador(JogoServidor *serv, JogoCliente *jog, int nx, int ny);
+
 void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1);
 
 void atualizaMapaEntreClientes(JogoCliente *origem, JogoCliente *dest);

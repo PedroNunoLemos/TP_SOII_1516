@@ -229,7 +229,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
-				);
+					);
 
 				jogo->jogadoresLigados++;
 
@@ -259,10 +259,10 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			ox = x;
 			oy = y;
 
-			if (jog->moveuDirecao == 1) if (validaMovimentoBase(jogo->mapa, x, y - 1)) y--; //Mover Para Cima
-			if (jog->moveuDirecao == 2) if (validaMovimentoBase(jogo->mapa, x, y + 1)) y++; //Mover Para Baixo
-			if (jog->moveuDirecao == 3) if (validaMovimentoBase(jogo->mapa, x + 1, y))  x++; //Mover Para Esquerda
-			if (jog->moveuDirecao == 4) if (validaMovimentoBase(jogo->mapa, x - 1, y))  x--; //Mover Para  Direita
+			if (jog->moveuDirecao == 1) if (validaMovimentoJogador(jogo, jog, x, y - 1)) y--; //Mover Para Cima
+			if (jog->moveuDirecao == 2) if (validaMovimentoJogador(jogo, jog, x, y + 1)) y++; //Mover Para Baixo
+			if (jog->moveuDirecao == 3) if (validaMovimentoJogador(jogo, jog, x + 1, y))  x++; //Mover Para Esquerda
+			if (jog->moveuDirecao == 4) if (validaMovimentoJogador(jogo, jog, x - 1, y))  x--; //Mover Para  Direita
 
 
 			jog->jogador.posicao.x = x;
@@ -294,7 +294,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
 
-	
+
 				atualizaPosicao(jogo, jog, jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
 
@@ -303,7 +303,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
-				);
+					);
 
 				jogo->jogadoresLigados++;
 
@@ -341,7 +341,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, tmp,
 					tmp->jogador.posicao.x - (MAXVISX / 2),
 					tmp->jogador.posicao.y - (MAXVISY / 2)
-				);
+					);
 
 
 				atualizaMapaEntreClientes(&(jogo->clientes[i].jogo), tmp);
