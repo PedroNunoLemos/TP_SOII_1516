@@ -263,7 +263,7 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 	impDados(jogo);
 
 
-	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 
 	while (ch != key_ESCAPE)
 	{
@@ -317,11 +317,11 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 		if (m->pidCliente == jogo->pidCliente)
 		{
-			//jogo = m;
+			jogo = m;
 
 			setcolor(Color_BrightWhite);
 			//limpaArea(9, 22, 20, 23);
-			impDados(m);
+			impDados(jogo);
 
 		}
 
