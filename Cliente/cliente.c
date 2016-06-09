@@ -202,10 +202,44 @@ void jogar() {
 
 }
 
+void impDados(JogoCliente *jogo) {
+
+
+	setcolor(Color_BrightWhite);
+
+	GoToXY(8, 2);
+	_tprintf(jogo->jogador.nome);
+
+	GoToXY(8, 4);
+	_tprintf(TEXT("Saude : %d"), jogo->jogador.saude);
+
+	GoToXY(8, 6);
+	_tprintf(TEXT("Lentidao : %d"), jogo->jogador.lentidao);
+
+	GoToXY(8, 8);
+	_tprintf(TEXT("Vitaminas : %d"), jogo->jogador.qtdVitaminas);
+
+
+	GoToXY(8, 9);
+	_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.qtdOranges);
+
+
+	GoToXY(8, 10);
+	_tprintf(TEXT("Cafeina : %d"), jogo->jogador.qtdCafeinas);
+
+	GoToXY(8, 11);
+	_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
+
+
+	imprimeLabirinto(38, 3, jogo);
+
+}
+
 void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
 	int ch;
-
+	int res=0;
+	
 	ch = '\0';
 
 	limpaArea(0, 0, 75, 25);
@@ -228,34 +262,7 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 	{
 
 
-
-		setcolor(Color_BrightWhite);
-
-		GoToXY(8, 2);
-		_tprintf(jogo->jogador.nome);
-
-		GoToXY(8, 4);
-		_tprintf(TEXT("Saude : %d"), jogo->jogador.saude);
-
-		GoToXY(8, 6);
-		_tprintf(TEXT("Lentidao : %d"), jogo->jogador.lentidao);
-
-		GoToXY(8, 8);
-		_tprintf(TEXT("Vitaminas : %d"), jogo->jogador.qtdVitaminas);
-
-
-		GoToXY(8, 9);
-		_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.qtdOranges);
-
-
-		GoToXY(8, 10);
-		_tprintf(TEXT("Cafeina : %d"), jogo->jogador.qtdCafeinas);
-
-		GoToXY(8, 11);
-		_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
-
-
-		imprimeLabirinto(38, 3, jogo);
+		impDados(jogo);
 
 		ch = _gettch();
 
@@ -266,6 +273,9 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 		if (ch == key_UP) moverJogador(Hpipe, jogo, 2); //Dir 2 
 		if (ch == key_LEFT) moverJogador(Hpipe, jogo, 3); //Dir 3
 		if (ch == key_RIGHT) moverJogador(Hpipe, jogo, 4); //Dir 4
+
+	
+		res++;
 
 
 	}
@@ -285,6 +295,7 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
 	ch = _gettch();
 }
+
 
 DWORD WINAPI AtualizaCliente(LPVOID param) {
 
@@ -309,9 +320,7 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 			setcolor(Color_BrightWhite);
 			//limpaArea(9, 22, 20, 23);
-
-			imprimeLabirinto(38, 3, jogo);
-
+			impDados(jogo);
 		}
 
 

@@ -271,7 +271,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			atualizaMapaCliente(jogo, jog, x - (MAXVISX / 2), y - (MAXVISX / 2));
 
-			jog->respostaComando = 1;
+			jog->respostaComando = 51;
 
 
 			lnt_thr = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Lentidao, (LPVOID)id, 0, NULL);

@@ -156,7 +156,7 @@ int registarJogador(TCHAR nome[], HANDLE hPipe, JogoCliente *jogo) {
 
 }
 
-int moverJogador(HANDLE hPipe, JogoCliente *jogo, int dir) {
+JogoCliente *moverJogador(HANDLE hPipe, JogoCliente *jogo, int dir) {
 
 	//envia pedido registo
 
@@ -169,7 +169,7 @@ int moverJogador(HANDLE hPipe, JogoCliente *jogo, int dir) {
 
 	lePipeJogoCliente(hPipe, jogo);
 
-	return jogo->respostaComando;
+	return jogo;
 
 }
 
