@@ -26,9 +26,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="labirinto.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="JogoServidor.h">
       <Filter>Header Files</Filter>
     </ClInclude>

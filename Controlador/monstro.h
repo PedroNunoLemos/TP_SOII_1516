@@ -29,13 +29,14 @@ typedef enum tipomonstro
 typedef struct DLL_IMP_API _monstro
 {
 
+	int id;
+	int energia;
 	int lentidao;
+	
 	TipoMonstro tipo;
 	Coordenada posicao;
 	TCHAR descricao[10];
 
-	int energia;
 
-	char instancia;//corrigir para handle
 
 } Monstro;

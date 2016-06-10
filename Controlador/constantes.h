@@ -3,7 +3,8 @@
 
 
 #define VISAO_MONSTRO 5
-#define EFEITO_CAFEINA 60000
+#define EFEITO_CAFEINA 5000
+//60000
 
 #define MAXOBJECTOS 5
 
@@ -19,7 +20,7 @@
 #define VELOCIDADE_MONSTRO_DIST 5
 
 #define MAXJOGADORES 10 
-#define MAXINIMIGOS 10
+#define MAXINIMIGOS 4
 
 #define MAXTAMX 200
 #define MAXTAMY 200

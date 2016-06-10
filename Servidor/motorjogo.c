@@ -7,9 +7,11 @@
 
 #include "..\Controlador\pipes.h"
 #include "..\Controlador\constantes.h"
+#include "..\Controlador\memoria.h"
 
 #include "JogoServidor.h"
 #include "motorjogo.h"
+
 
 
 int validaMovimentoBase(JogoServidor *serv, int x, int y) {
@@ -28,11 +30,9 @@ int validaMovimentoBase(JogoServidor *serv, int x, int y) {
 void atualizaJogadorCliente(JogoServidor *serv, JogoCliente* jogcl) {
 
 	serv->clientes[jogcl->id].jogo.jogador.posicao = jogcl->jogador.posicao;
-	serv->clientes[jogcl->id].jogo.jogador.usarPedra = jogcl->jogador.usarPedra;
-
 	serv->clientes[jogcl->id].jogo.comando = jogcl->comando;
 	serv->clientes[jogcl->id].jogo.moveuDirecao = jogcl->moveuDirecao;
-
+	serv->clientes[jogcl->id].jogo.usarPedra = jogcl->usarPedra;
 }
 
 void forcaDadosServidor(JogoServidor *serv, JogoCliente* jogcl) {
@@ -41,6 +41,8 @@ void forcaDadosServidor(JogoServidor *serv, JogoCliente* jogcl) {
 	jogcl->jogador.saude = serv->clientes[jogcl->id].jogo.jogador.saude;
 	jogcl->jogador.lentidao = serv->clientes[jogcl->id].jogo.jogador.lentidao;
 	jogcl->jogador.qtdPedras = serv->clientes[jogcl->id].jogo.jogador.qtdPedras;
+
+
 
 }
 
@@ -93,7 +95,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 				case Tipo_Pedra:
 
 					//apanha pedra se puder carregar
-					if (jogcl->jogador.qtdPedras <= MAXPEDRAS) {
+					if (jogcl->jogador.qtdPedras + 1 <= MAXPEDRAS) {
 
 						jogcl->jogador.qtdPedras++;
 						serv->mapa->celula[x][y].objeto = 0;
@@ -104,7 +106,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 
 				case Tipo_Vitamina:
 
-					if ((jogcl->jogador.saude + 1) < (SAUDE_JOG_INI * 2))
+					if ((jogcl->jogador.saude + 1) <= (SAUDE_JOG_INI * 2))
 						jogcl->jogador.saude++;
 
 					serv->mapa->celula[x][y].objeto = 0;
@@ -129,7 +131,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 				case Tipo_OrangeBull:
 
 
-					if ((jogcl->jogador.saude + 3) < (SAUDE_JOG_INI * 2))
+					if ((jogcl->jogador.saude + 3) <= (SAUDE_JOG_INI * 2))
 						jogcl->jogador.saude += 3;
 
 					serv->mapa->celula[x][y].objeto = 0;
@@ -185,6 +187,7 @@ void inicializaObjectos(JogoServidor *jog) {
 			jog->mapa->celula[x][y].objeto = 0;
 			jog->mapa->celula[x][y].jogador = 0;
 			jog->mapa->celula[x][y].monstro = 0;
+			jog->mapa->celula[x][y].tipoMonstro = 0;
 
 		}
 
@@ -193,6 +196,38 @@ void inicializaObjectos(JogoServidor *jog) {
 
 }
 
+
+Coordenada PosicaoIniMonstro(JogoServidor *serv) {
+
+	Coordenada res;
+
+	int i = 0;
+	int r = 0;
+
+	int x = 0;
+	int y = 0;
+
+	int val = 0;
+
+	do {
+
+		int tx = aleatorio(1, serv->mapa->tamx, r);
+		int ty = aleatorio(1, serv->mapa->tamy, r + 1);
+
+		if (
+			serv->mapa->celula[tx][ty].tipo == TipoCelula_CHAO &&
+			serv->mapa->celula[tx][ty].monstro == 0
+			) {
+			res.x = tx;
+			res.y = ty;
+			val == 1;
+		}
+
+		r++;
+	} while (val == 0);
+
+	return res;
+}
 
 
 Coordenada PosicaoIniJog(JogoServidor *jog) {
@@ -365,15 +400,17 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 	int j = 0;
 
 
-	clt->jogador.usarPedra = 0;
+	clt->usarPedra = 0;
 	clt->jogador.efeitoCafeina = 0;
-
+	clt->pode = 0;
 
 	clt->jogador.qtdPedras = 0;
 
 
 	clt->jogador.saude = SAUDE_JOG_INI;
 	clt->jogador.lentidao = LENTIDAO_JOG_INI;
+
+
 
 	clt->jogador.pidJogador = 0;
 
@@ -389,4 +426,33 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 
 }
 
+
+void iniciaMonstros(JogoServidor *serv) {
+
+	for (int i = 0; i < MAXINIMIGOS; i++) {
+
+		serv->monstros[i]->id = i;
+
+		serv->monstros[i]->tipo = rand() % 2;
+
+		serv->monstros[i]->energia = serv->monstros[i]->tipo == 0 ?
+			SAUDE_MONSTRO_DIST : SAUDE_MONSTRO_BULLY;
+
+		serv->monstros[i]->lentidao = serv->monstros[i]->tipo == 0 ?
+			VELOCIDADE_MONSTRO_DIST : VELOCIDADE_MONSTRO_BULLY;
+
+		if (serv->monstros[i]->tipo == DISTRAIDO) {
+			_tcscpy(serv->monstros[i]->descricao, TEXT("Distraido"));
+		}
+		else {
+			_tcscpy(serv->monstros[i]->descricao, TEXT("Bully"));
+		}
+
+		serv->monstros[i]->posicao = PosicaoIniMonstro(serv);
+		
+		serv->mapa->celula[serv->monstros[i]->posicao.x][serv->monstros[i]->posicao.y].monstro
+			= serv->monstros[i]->tipo;
+	}
+
+}
 

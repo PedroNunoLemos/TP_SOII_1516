@@ -7,7 +7,8 @@
 #include "jogador.h"
 #include "celula.h"
 #include "constantes.h"
-
+#include "labirinto.h"
+#include "monstro.h"
 
 #ifdef DLL_EXPORTS
 #define DLL_IMP_API __declspec(dllexport)
@@ -32,7 +33,9 @@ typedef struct DLL_IMP_API _jogoCliente
 
 	int respostaComando;
 	int moveuDirecao;
+	int usarPedra;
 
+	int pode;
 
 	Celula mapa[15][15];
 
@@ -44,4 +47,38 @@ typedef struct DLL_IMP_API _jogoCliente
 
 } JogoCliente;
 
+
+
+
+typedef struct  _cliente
+{
+	JogoCliente jogo;
+	HANDLE ligacao;
+
+} Cliente;
+
+
+typedef struct  _jogoservidor
+{
+
+	int jogadoresLigados;
+
+	Labirinto *mapa;
+
+	DWORD instantes;
+
+	Cliente clientes[MAXJOGADORES];
+	HANDLE clientes_atualizar[MAXJOGADORES];
+
+	Monstro *monstros[MAXINIMIGOS];
+
+	int JogoIniciado;
+	int ClienteLigado;
+
+
+
+	DWORD totalLigacoes;
+
+
+} JogoServidor;
 

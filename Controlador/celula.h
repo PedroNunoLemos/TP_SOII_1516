@@ -56,6 +56,7 @@ typedef struct DLL_IMP_API _celula
 	DWORD jogador;
 	int objeto;
 	int monstro;
+	int tipoMonstro;
 
 } Celula;
 

@@ -20,15 +20,19 @@ BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
 HANDLE servidorMutex;
 
-TCHAR nomeMemoria[] = TEXT("Mapa Global");
+TCHAR nomeMemoria[] = TEXT("MapaGlobal");
+
 DWORD total = 0;
+
+TCHAR procNome[256];
+
+STARTUPINFO si;
+PROCESS_INFORMATION pi;
 
 JogoServidor *jogo;
 
-STARTUPINFO si[10];
-PROCESS_INFORMATION pi[10];
-
 HANDLE memoria;
+HANDLE ticker;
 
 MemoriaPartilhada *ptrMapa;
 
@@ -72,7 +76,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	jogo = malloc(sizeof(JogoServidor));
 	jogo->jogadoresLigados = 0;
 	jogo->totalLigacoes = 0;
-
+	jogo->instantes = 0;
 
 
 
@@ -123,6 +127,12 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 				//_tprintf(TEXT("[ERRO] Mapeamento de Memoria partilhada - %d"), GetLastError());
 				return -1;
 			}
+
+			CopyMemory((PVOID)ptrMapa, &jogo, sizeof(MemoriaPartilhada));
+
+			//jogo. = ptrMapa->map;
+			//game.monsters = ptrMapa->monsters;
+			//game.players = ptrMapa->players;
 
 			//////////////////////////////////////////////////////////////////////
 
@@ -206,10 +216,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		if (!ret || !nlidos)
 			break;
 
-		WaitForSingleObject(servidorMutex, INFINITE);
-
-
-
 
 		if (jog->comando == 1)
 		{
@@ -220,9 +226,14 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogo(jogo);
 
+				jog->id = id;
+
 				criaJogador(jogo, jog);
 
-				jog->id = id;
+				jogo->clientes[id].jogo = *jog;
+
+				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
+				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Temporizador, (LPVOID)id, 0, NULL);
 
 				atualizaJogadorCliente(jogo, jog);
 
@@ -243,6 +254,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				jogo->jogadoresLigados++;
 
 				jog->respostaComando = 1;
+				jog->pode = 1;
 
 				JOGO_ONLINE = TRUE;
 
@@ -257,39 +269,52 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		{
 
 			atualizaJogadorCliente(jogo, jog);
+
 			forcaDadosServidor(jogo, jog);
 
-			x = jogo->clientes[id].jogo.jogador.posicao.x;
-			y = jogo->clientes[id].jogo.jogador.posicao.y;
 
-			ox = x;
-			oy = y;
+			WaitForSingleObject(servidorMutex, INFINITE);
 
-			if (jog->moveuDirecao == 1) if (validaMovimentoJogador(jogo, jog, x, y - 1)) y--; //Mover Para Cima
-			if (jog->moveuDirecao == 2) if (validaMovimentoJogador(jogo, jog, x, y + 1)) y++; //Mover Para Baixo
-			if (jog->moveuDirecao == 3) if (validaMovimentoJogador(jogo, jog, x + 1, y))  x++; //Mover Para Esquerda
-			if (jog->moveuDirecao == 4) if (validaMovimentoJogador(jogo, jog, x - 1, y))  x--; //Mover Para  Direita
+			if ((jogo->clientes[id].jogo.pode == 1))
+			{
+
+				x = jogo->clientes[id].jogo.jogador.posicao.x;
+				y = jogo->clientes[id].jogo.jogador.posicao.y;
+
+				ox = x;
+				oy = y;
+
+				if (jog->moveuDirecao == 1) if (validaMovimentoJogador(jogo, jog, x, y - 1)) y--; //Mover Para Cima
+				if (jog->moveuDirecao == 2) if (validaMovimentoJogador(jogo, jog, x, y + 1)) y++; //Mover Para Baixo
+				if (jog->moveuDirecao == 3) if (validaMovimentoJogador(jogo, jog, x + 1, y))  x++; //Mover Para Esquerda
+				if (jog->moveuDirecao == 4) if (validaMovimentoJogador(jogo, jog, x - 1, y))  x--; //Mover Para  Direita
 
 
-			jog->jogador.posicao.x = x;
-			jog->jogador.posicao.y = y;
+				jog->jogador.posicao.x = x;
+				jog->jogador.posicao.y = y;
 
-			atualizaMapaServidor(jogo, jog, ox, oy);
+				atualizaMapaServidor(jogo, jog, ox, oy);
 
 
-			atualizaPosicao(jogo, jog, x, y);
+				atualizaPosicao(jogo, jog, x, y);
 
-			if (jog->jogador.efeitoCafeina == 1)
-				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
+				if (jog->jogador.efeitoCafeina == 1)
+					CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
 
-			atualizaMapaCliente(jogo, jog, x - (MAXVISX / 2), y - (MAXVISX / 2));
+				atualizaMapaCliente(jogo, jog, x - (MAXVISX / 2), y - (MAXVISX / 2));
+
+				jog->pode = 0;
+
+			}
 
 			jog->respostaComando = 51;
+
+			ReleaseMutex(servidorMutex);
 
 
 
 		}
-		else if (jog->comando == 4)
+		else if (jog->comando == 4) //escolher usar pedra / n Pedra
 		{
 
 			atualizaJogadorCliente(jogo, jog);
@@ -304,13 +329,17 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 			if (JOGO_ONLINE == TRUE && JogoCliente_COMECOU == 1) {
 
 
+				jog->id = id;
 
 				criaJogador(jogo, jog);
 
-				jog->id = id;
+				jogo->clientes[id].jogo = *jog;
+
+				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
+				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Temporizador, (LPVOID)id, 0, NULL);
 
 				atualizaJogadorCliente(jogo, jog);
-				
+
 				atualizaMapaServidor(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
@@ -331,6 +360,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				jog->respostaComando = 1;
 
+				jog->pode = 1;
+
 			}
 
 			else
@@ -340,10 +371,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 		jogo->clientes[id].jogo = *jog;
-
-
-
-		ReleaseMutex(servidorMutex);
 
 		escrevePipeJogoCliente(cliente, jog);
 
@@ -409,17 +436,46 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	return 0;
 }
 
+
+DWORD WINAPI Temporizador(LPVOID param) {
+
+	int id = (int)param;
+
+	int lent = LENTIDAO_JOG_INI;
+	float temp = 0.000;
+
+	while (1)
+	{
+
+		if (jogo->clientes[id].jogo.pidCliente != 0)
+		{
+
+			lent = jogo->clientes[id].jogo.jogador.lentidao;
+
+			temp = (1.00 / 15.00);
+			temp = temp*10.00 / lent;
+
+			Sleep(temp);
+
+			jogo->clientes[id].jogo.pode = 1;
+
+
+		}
+
+	}
+	return 0;
+
+}
+
 DWORD WINAPI BonusCafeina(LPVOID param) {
 
 	int id = (int)param;
 
 	//repor a lentidao do utilizador
-	if (jogo->clientes[id].jogo.jogador.pidJogador != 0)
+	if (jogo->clientes[id].jogo.pidCliente != 0)
 	{
 
-		//Sleep(EFEITO_CAFEINA);
-		Sleep(5000);
-
+		Sleep(EFEITO_CAFEINA);
 
 		jogo->clientes[id].jogo.jogador.lentidao += 2;
 
@@ -429,7 +485,7 @@ DWORD WINAPI BonusCafeina(LPVOID param) {
 		jogo->clientes[id].jogo.jogador.efeitoCafeina = 0;
 
 		jogo->clientes[id].jogo.respostaComando = 71;
-		
+
 		escrevePipeJogoCliente(jogo->clientes_atualizar[id],
 			&(jogo->clientes[id].jogo)
 			);
@@ -464,7 +520,7 @@ void desligaJogador(int id) {
 	}
 
 	for (i = 0; i < jogo->jogadoresLigados; i++) {
-		
+
 		if (i == id) {
 
 			if (jogo->jogadoresLigados > 1) {
@@ -494,5 +550,26 @@ void desligaJogador(int id) {
 }
 
 
+void  lancaMonstros() {
+
+	int tr = 0;
+
+	for (int i = 0; i < MAXINIMIGOS; i++) {
+
+
+		_stprintf_s(procNome, 256,
+			TEXT("%s %d %d %d %d %d %d %d"),
+			TEXT("Monstro"),
+			jogo->monstros[i]->tipo, MAXTAMX, MAXTAMY,
+			jogo->monstros[i]->posicao.x,
+			jogo->monstros[i]->posicao.y, i, jogo->monstros[i]->energia);
+
+		ZeroMemory(&si, sizeof(STARTUPINFO));
+		si.cb = sizeof(STARTUPINFO);
+
+		CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
+
+	}
+}
 
 

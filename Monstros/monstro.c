@@ -5,7 +5,7 @@
 
 
 #define QUEUE_SIZE 5
-#define kBufferSize 256
+#define buf 256
 
 
 
@@ -18,7 +18,8 @@ Monstro me;
 int tamx;
 int tamy;
 int nSpaces;
-TCHAR processName[kBufferSize]; 
+
+TCHAR procNome[buf]; 
 STARTUPINFO si;
 PROCESS_INFORMATION pi;
 
@@ -29,7 +30,7 @@ void abrirMemoriaPartilhada() {
 	hMapFile = OpenFileMapping(
 		FILE_MAP_ALL_ACCESS,   // read/write access
 		FALSE,                 // do not inherit the name
-		TEXT(""));               // name of mapping object
+		TEXT("MapaGlobal"));               // name of mapping object
 
 	if (hMapFile == NULL)
 	{
@@ -107,8 +108,8 @@ DWORD WINAPI validaPosicao(LPVOID param)
 while (1) {
 
 		if (/* posicao jogador = monstro*/1) {
-			sch = pBuf->jogadores;
-			for (; sch != &pBuf->jogadores[MAXJOGADORES + 1];) {
+			sch = pBuf->clientes;
+			for (; sch != &pBuf->clientes[MAXJOGADORES + 1];) {
 				if (sch->posicao.y == me.posicao.y && sch->posicao.x == me.posicao.x) {
 					sch->saude--;
 				}
@@ -129,13 +130,13 @@ while (1) {
 
 			me.energia *= .8;
 
-			_stprintf_s(processName, kBufferSize, TEXT("%s %d %d %d %d %d %d %d"),
+			_stprintf_s(procNome, buf, TEXT("%s %d %d %d %d %d %d %d"),
 				TEXT("Monstro"), me.tipo, MAXTAMX, MAXTAMY, newMonster.y, newMonster.x, MAXINIMIGOS, me.energia);
 
 			ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
 			si.cb = sizeof(STARTUPINFO);
 
-			CreateProcess(NULL, processName, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
+			CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
 		}
 		else if (me.energia >= (2 * SAUDE_MONSTRO_BULLY) && me.tipo == 1) {
 			newMonster.y = me.posicao.y;
@@ -149,13 +150,13 @@ while (1) {
 
 			me.energia *= .8;
 
-			_stprintf_s(processName, kBufferSize, TEXT("%s %d %d %d %d %d %d %d"),
+			_stprintf_s(procNome, buf, TEXT("%s %d %d %d %d %d %d %d"),
 				TEXT("Monstro"), me.tipo, MAXTAMX, MAXTAMY, newMonster.y, newMonster.x, MAXINIMIGOS, me.energia);
 
 			ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
 			si.cb = sizeof(STARTUPINFO);
 
-			CreateProcess(NULL, processName, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
+			CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
 		}
 
 		Sleep(1 / 15 * me.lentidao * 1000);

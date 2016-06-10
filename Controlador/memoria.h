@@ -8,6 +8,7 @@
 #include "objecto.h"
 #include "monstro.h"
 #include "celula.h"
+#include "jogo.h"
 
 
 #ifdef DLL_EXPORTS
@@ -26,7 +27,7 @@
 
 typedef struct _memoriaPartilhada {
 
-	Jogador jogadores[MAXJOGADORES];
+	Cliente clientes[MAXJOGADORES];
 	Monstro monstros[MAXINIMIGOS];
 	Celula mapa[MAXTAMX][MAXTAMY];
 

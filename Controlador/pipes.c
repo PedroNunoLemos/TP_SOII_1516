@@ -175,3 +175,22 @@ void moverJogador(HANDLE hPipe, JogoCliente *jogo, int dir) {
 }
 
 
+
+void usaPedra(HANDLE hPipe, JogoCliente *jogo, int usar) {
+
+	//envia pedido registo
+
+	jogo->comando = 4;
+	jogo->usarPedra = usar;
+
+	escrevePipeJogoCliente(hPipe, jogo);
+
+	////Recebe resposta
+
+	lePipeJogoCliente(hPipe, jogo);
+
+	//return jogo;
+
+}
+
+

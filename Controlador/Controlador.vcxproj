@@ -30,6 +30,7 @@
     <ClInclude Include="coordenada.h" />
     <ClInclude Include="jogador.h" />
     <ClInclude Include="jogo.h" />
+    <ClInclude Include="labirinto.h" />
     <ClInclude Include="memoria.h" />
     <ClInclude Include="monstro.h" />
     <ClInclude Include="objecto.h" />

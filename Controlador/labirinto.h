@@ -1,11 +1,23 @@
 #pragma once
 
+#include "celula.h"
+#include "uteis.h"
+#include "constantes.h"
 
-#include "../Controlador/celula.h"
-#include "../Controlador/uteis.h"
-#include "../Controlador/constantes.h"
+#ifdef DLL_EXPORTS
+#define DLL_IMP_API __declspec(dllexport)
 
-typedef struct _sala{
+#else
+#define DLL_IMP_API __declspec(dllimport)
+#endif
+
+#ifdef UNICODE
+#define tstring wstring
+#else
+#define tstring string
+#endif
+
+typedef struct _sala {
 
 	int x;
 	int y;
@@ -35,4 +47,5 @@ typedef struct
 
 //Cria Labirinto
 Labirinto *CriaLabirinto(int tamx, int tamy, int salas);
+
 

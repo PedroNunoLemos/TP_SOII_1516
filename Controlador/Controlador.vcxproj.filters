@@ -62,5 +62,8 @@
     <ClInclude Include="memoria.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="labirinto.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
