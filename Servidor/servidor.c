@@ -128,7 +128,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 				return -1;
 			}
 
-			CopyMemory((PVOID)ptrMapa, &jogo, sizeof(MemoriaPartilhada));
+			//CopyMemory((PVOID)ptrMapa, &jogo, sizeof(MemoriaPartilhada));
 
 			//jogo. = ptrMapa->map;
 			//game.monsters = ptrMapa->monsters;
