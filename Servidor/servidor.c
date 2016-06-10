@@ -165,6 +165,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 
 
+
 DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
@@ -209,6 +210,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 
+
 		if (jog->comando == 1)
 		{
 
@@ -222,7 +224,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				jog->id = id;
 
-				jogo->clientes[id].jogo = *jog;
+				atualizaJogadorCliente(jogo, jog);
 
 				atualizaMapaServidor(jogo, jog, jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
@@ -254,9 +256,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		else if (jog->comando == 5)
 		{
 
-
-			jogo->clientes[id].jogo = *jog;
-
+			atualizaJogadorCliente(jogo, jog);
+			forcaDadosServidor(jogo, jog);
 
 			x = jogo->clientes[id].jogo.jogador.posicao.x;
 			y = jogo->clientes[id].jogo.jogador.posicao.y;
@@ -288,6 +289,16 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 		}
+		else if (jog->comando == 4)
+		{
+
+			atualizaJogadorCliente(jogo, jog);
+			forcaDadosServidor(jogo, jog);
+
+			jog->respostaComando = 1;
+
+
+		}
 		else if (jog->comando == 3)
 		{
 			if (JOGO_ONLINE == TRUE && JogoCliente_COMECOU == 1) {
@@ -298,8 +309,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				jog->id = id;
 
-				jogo->clientes[id].jogo = *jog;
-
+				atualizaJogadorCliente(jogo, jog);
+				
 				atualizaMapaServidor(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
@@ -408,10 +419,16 @@ DWORD WINAPI BonusCafeina(LPVOID param) {
 		//Sleep(EFEITO_CAFEINA);
 		Sleep(5000);
 
+
 		jogo->clientes[id].jogo.jogador.lentidao += 2;
+
+		if (jogo->clientes[id].jogo.jogador.lentidao >= LENTIDAO_JOG_INI)
+			jogo->clientes[id].jogo.jogador.lentidao = LENTIDAO_JOG_INI;
+
 		jogo->clientes[id].jogo.jogador.efeitoCafeina = 0;
 
-
+		jogo->clientes[id].jogo.respostaComando = 71;
+		
 		escrevePipeJogoCliente(jogo->clientes_atualizar[id],
 			&(jogo->clientes[id].jogo)
 			);

@@ -21,7 +21,7 @@ JogoCliente *jogo;
 HANDLE pipeAtualizaCliente;
 HANDLE hPipe = INVALID_HANDLE_VALUE;
 DWORD tot;
-
+HANDLE hMutex;
 
 int _tmain(int argc, LPTSTR argv[]) {
 
@@ -39,6 +39,8 @@ int _tmain(int argc, LPTSTR argv[]) {
 	jogo = malloc(sizeof(JogoCliente));
 	jogo->pidCliente = GetCurrentProcessId();
 	tot = 0;
+
+	hMutex = CreateMutex(NULL, FALSE, TEXT("server_update"));
 
 	cursorVisible(0);
 
@@ -204,6 +206,7 @@ void jogar() {
 
 void impDados(JogoCliente *jogo) {
 
+	
 
 	setcolor(Color_BrightWhite);
 
@@ -241,12 +244,14 @@ void impDados(JogoCliente *jogo) {
 
 void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
-	int ch;
 	char tmp;
 	int res=0;
-	int dir=0;
+	
+	HANDLE cmdThread;
 
+	int ch;
 	ch = '\0';
+
 
 	limpaArea(0, 0, 75, 25);
 	caixa(5, 1, 26, 19, 0, 0);
@@ -264,27 +269,13 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
 	//_stprintf(jogo->mensagem,TEXT(" "));
 
-
 	impDados(jogo);
 
-
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
-
-	while (ch != key_ESCAPE)
-	{
-
-		ch = _gettch();
-
-		if (ch == key_DOWN) moverJogador(Hpipe, jogo, 1); //Dir 1
-		if (ch == key_UP) moverJogador(Hpipe, jogo, 2); //Dir 2 
-		if (ch == key_LEFT) moverJogador(Hpipe, jogo, 3); //Dir 3
-		if (ch == key_RIGHT) moverJogador(Hpipe, jogo, 4); //Dir 4
-
-		
-		impDados(jogo);
-
+	cmdThread=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ComandosCliente, (LPVOID)Hpipe, 0, NULL);
 	
-	}
+	WaitForSingleObject(cmdThread,INFINITE);
+
 
 	setForeGroundAndBackGroundColor(Color_White, Color_Black);
 
@@ -302,6 +293,32 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 	ch = _gettch();
 }
 
+DWORD WINAPI ComandosCliente(LPVOID param) {
+
+	int ch;
+
+	HANDLE Hpipe=(HANDLE)param;
+
+
+	ch = '\0';
+
+	while (ch != key_ESCAPE)
+	{
+		ch = _gettch();
+
+		if (ch == key_DOWN) moverJogador(Hpipe, jogo, 1); //Dir 1
+		if (ch == key_UP) moverJogador(Hpipe, jogo, 2); //Dir 2 
+		if (ch == key_LEFT) moverJogador(Hpipe, jogo, 3); //Dir 3
+		if (ch == key_RIGHT) moverJogador(Hpipe, jogo, 4); //Dir 4
+
+		impDados(jogo);
+
+
+	}
+
+	return 0;
+
+}
 
 DWORD WINAPI AtualizaCliente(LPVOID param) {
 
@@ -320,19 +337,24 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 		if (ret == 1)
 			break;
 
+
 		if (m->pidCliente == jogo->pidCliente)
 		{
+			if (m->respostaComando != 71) {
 			
-			jogo = m;
+				jogo = m;
 
-			setcolor(Color_BrightWhite);
-			impDados(jogo);
+				setcolor(Color_BrightWhite);
 
+				impDados(jogo);
+			}
+
+			if (m->respostaComando == 71)
+			{
+				jogo->jogador.efeitoCafeina = m->jogador.efeitoCafeina;
+				jogo->jogador.lentidao = m->jogador.lentidao;
+			}
 		}
-
-
-
-
 
 	}
 

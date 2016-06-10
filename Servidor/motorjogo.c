@@ -25,6 +25,25 @@ int validaMovimentoBase(JogoServidor *serv, int x, int y) {
 
 }
 
+void atualizaJogadorCliente(JogoServidor *serv, JogoCliente* jogcl) {
+
+	serv->clientes[jogcl->id].jogo.jogador.posicao = jogcl->jogador.posicao;
+	serv->clientes[jogcl->id].jogo.jogador.usarPedra = jogcl->jogador.usarPedra;
+
+	serv->clientes[jogcl->id].jogo.comando = jogcl->comando;
+	serv->clientes[jogcl->id].jogo.moveuDirecao = jogcl->moveuDirecao;
+
+}
+
+void forcaDadosServidor(JogoServidor *serv, JogoCliente* jogcl) {
+
+	jogcl->jogador.efeitoCafeina = serv->clientes[jogcl->id].jogo.jogador.efeitoCafeina;
+	jogcl->jogador.saude = serv->clientes[jogcl->id].jogo.jogador.saude;
+	jogcl->jogador.lentidao = serv->clientes[jogcl->id].jogo.jogador.lentidao;
+	jogcl->jogador.qtdPedras = serv->clientes[jogcl->id].jogo.jogador.qtdPedras;
+
+}
+
 
 int validaMovimentoJogador(JogoServidor *serv, JogoCliente *jog, int nx, int ny) {
 
