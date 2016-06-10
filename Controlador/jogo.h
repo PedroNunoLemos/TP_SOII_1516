@@ -26,6 +26,8 @@
 typedef struct DLL_IMP_API _jogoCliente
 {
 
+	int id;
+
 	int comando;
 
 	int respostaComando;

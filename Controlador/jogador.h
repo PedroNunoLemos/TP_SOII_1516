@@ -49,5 +49,6 @@ typedef struct DLL_IMP_API _jogador
 
 	int usarPedra;
 	int efeitoCafeina;
+	
 
 } Jogador;

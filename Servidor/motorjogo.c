@@ -85,11 +85,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 
 				case Tipo_Vitamina:
 
-					s = ((jogcl->jogador.saude + 1) / SAUDE_JOG_INI);
-					s = s * 100;
-
-					//so executa se saude < 200%
-					if (s <= 200)
+					if ((jogcl->jogador.saude + 1) < (SAUDE_JOG_INI * 2))
 						jogcl->jogador.saude++;
 
 					serv->mapa->celula[x][y].objeto = 0;
@@ -98,21 +94,23 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 
 				case Tipo_Cafeina:
 
-					if (jogcl->jogador.efeitoCafeina == 0 && jogcl->jogador.lentidao - 2 >= 0)
+					if (jogcl->jogador.efeitoCafeina == 0) {
+
 						jogcl->jogador.lentidao -= 2;
 
-					serv->mapa->celula[x][y].objeto = 0;
+						if (jogcl->jogador.lentidao <= 1) jogcl->jogador.lentidao = 1;
+
+						jogcl->jogador.efeitoCafeina = 1;
+
+						serv->mapa->celula[x][y].objeto = 0;
+					}
 
 					break;
 
 				case Tipo_OrangeBull:
 
 
-					s = ((jogcl->jogador.saude + 3) / SAUDE_JOG_INI);
-					s = s * 100;
-
-					//so executa se saude < 200%
-					if (s <= 200)
+					if ((jogcl->jogador.saude + 3) < (SAUDE_JOG_INI * 2))
 						jogcl->jogador.saude += 3;
 
 					serv->mapa->celula[x][y].objeto = 0;
@@ -128,8 +126,6 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 		}
 	}
 
-	//lentidao 
-	Sleep(1 / 15 * (jogcl->jogador.lentidao) * 1000);
 
 }
 
@@ -344,8 +340,9 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 	clt->jogador.usarPedra = 0;
 	clt->jogador.efeitoCafeina = 0;
 
+
 	clt->jogador.qtdPedras = 0;
-	
+
 
 	clt->jogador.saude = SAUDE_JOG_INI;
 	clt->jogador.lentidao = LENTIDAO_JOG_INI;
@@ -360,8 +357,8 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 
 	clt->jogador.pidJogador = clt->pidCliente;
 
-
 	swprintf(clt->jogador.nome, 256, TEXT("Jogador %d"), jogo->jogadoresLigados + 1);
 
 }
+
 

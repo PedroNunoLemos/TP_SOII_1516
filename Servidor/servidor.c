@@ -18,7 +18,6 @@
 BOOL JOGO_ONLINE = FALSE, JogoCliente_COMECOU = FALSE;
 
 
-HANDLE lentidaoMutex;
 HANDLE servidorMutex;
 
 TCHAR nomeMemoria[] = TEXT("Mapa Global");
@@ -40,6 +39,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	HANDLE hThread = NULL;
 	HANDLE hThreadRec = NULL;
+
+	HANDLE hThreadTime = NULL;
+
 	BOOL pLigado = FALSE;
 	BOOL pLigadoRec = FALSE;
 	DWORD dwThreadID = 0;
@@ -53,7 +55,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 
 	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
-	lentidaoMutex = CreateMutex(NULL, FALSE, TEXT("_lentidao"));
 	servidorMutex = CreateMutex(NULL, FALSE, TEXT("_servidorMutex"));
 
 
@@ -65,6 +66,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 		CloseHandle(hMutex);
 		return -1;
+
 	}
 
 	jogo = malloc(sizeof(JogoServidor));
@@ -218,6 +220,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogador(jogo, jog);
 
+				jog->id = id;
+
 				jogo->clientes[id].jogo = *jog;
 
 				atualizaMapaServidor(jogo, jog, jogo->clientes[id].jogo.jogador.posicao.x,
@@ -225,6 +229,9 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				atualizaPosicao(jogo, jog, jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
+
+				if (jog->jogador.efeitoCafeina == 1)
+					CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
 
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
@@ -246,8 +253,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 		else if (jog->comando == 5)
 		{
-
-
 
 
 			jogo->clientes[id].jogo = *jog;
@@ -273,6 +278,9 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			atualizaPosicao(jogo, jog, x, y);
 
+			if (jog->jogador.efeitoCafeina == 1)
+				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
+
 			atualizaMapaCliente(jogo, jog, x - (MAXVISX / 2), y - (MAXVISX / 2));
 
 			jog->respostaComando = 51;
@@ -288,6 +296,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogador(jogo, jog);
 
+				jog->id = id;
+
 				jogo->clientes[id].jogo = *jog;
 
 				atualizaMapaServidor(jogo, jog,
@@ -298,7 +308,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaPosicao(jogo, jog, jogo->clientes[id].jogo.jogador.posicao.x,
 					jogo->clientes[id].jogo.jogador.posicao.y);
 
-
+				if (jog->jogador.efeitoCafeina == 1)
+					CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
 
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
@@ -367,11 +378,13 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		exit(-1);
 	}
 
-	CloseHandle(cliente);
-	CloseHandle(jogo->clientes_atualizar[id]);
+	//CloseHandle(cliente);
+	//CloseHandle(jogo->clientes_atualizar[id]);
 
-	if (jogo->jogadoresLigados > 0)
-		jogo->jogadoresLigados--;
+	//if (jogo->jogadoresLigados > 0)
+	//	jogo->jogadoresLigados--;
+
+	desligaJogador(id);
 
 	if (JOGO_ONLINE == TRUE && jogo->jogadoresLigados == 0)
 	{
@@ -383,6 +396,85 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	return 0;
 }
+
+DWORD WINAPI BonusCafeina(LPVOID param) {
+
+	int id = (int)param;
+
+	//repor a lentidao do utilizador
+	if (jogo->clientes[id].jogo.jogador.pidJogador != 0)
+	{
+
+		//Sleep(EFEITO_CAFEINA);
+		Sleep(5000);
+
+		jogo->clientes[id].jogo.jogador.lentidao += 2;
+		jogo->clientes[id].jogo.jogador.efeitoCafeina = 0;
+
+
+		escrevePipeJogoCliente(jogo->clientes_atualizar[id],
+			&(jogo->clientes[id].jogo)
+			);
+
+
+	}
+
+
+
+	return 0;
+}
+
+
+void desligaJogador(int id) {
+
+	int i;
+	int del;
+
+	del = 0;
+
+	for (i = 0; i < jogo->jogadoresLigados; i++) {
+		if (i != id) {
+
+			_stprintf(jogo->clientes[i].jogo.mensagem,
+				TEXT("Utilizador %s Saiu!"), jogo->clientes[id].jogo.jogador.nome);
+
+			escrevePipeJogoCliente(jogo->clientes_atualizar[i],
+				&(jogo->clientes[i].jogo)
+				);
+
+		}
+	}
+
+	for (i = 0; i < jogo->jogadoresLigados; i++) {
+		
+		if (i == id) {
+
+			if (jogo->jogadoresLigados > 1) {
+
+				CloseHandle(jogo->clientes_atualizar[i]);
+				CloseHandle(jogo->clientes[i].ligacao);
+
+
+				jogo->clientes[i] = jogo->clientes[i + 1];
+				jogo->clientes_atualizar[i] = jogo->clientes_atualizar[i + 1];
+
+				del = 1;
+			}
+			continue;
+		}
+
+		if (del) {
+
+			jogo->clientes[i] = jogo->clientes[i + 1];
+			jogo->clientes_atualizar[i] = jogo->clientes_atualizar[i + 1];
+
+		}
+
+	}
+
+	jogo->jogadoresLigados--;
+}
+
 
 
 

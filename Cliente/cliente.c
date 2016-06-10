@@ -215,12 +215,12 @@ void impDados(JogoCliente *jogo) {
 
 	GoToXY(8, 6);
 	_tprintf(TEXT("Lentidao : %d"), jogo->jogador.lentidao);
-/*
+
 	GoToXY(8, 8);
-	_tprintf(TEXT("Vitaminas : %d"), jogo->jogador.qtdVitaminas);
+	_tprintf(TEXT("Cafeinas : %d"), jogo->jogador.efeitoCafeina);
 
 
-	GoToXY(8, 9);
+/*	GoToXY(8, 9);
 	_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.qtdOranges);
 
 
@@ -232,6 +232,8 @@ void impDados(JogoCliente *jogo) {
 	GoToXY(8, 11);
 	_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
 
+	//GoToXY(8, 21);
+	//_tprintf(jogo->mensagem);
 
 	imprimeLabirinto(38, 3, jogo);
 
@@ -260,6 +262,7 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 	GoToXY(8, 23);
 	_tprintf(TEXT("Pressione ESC para sair"));
 
+	//_stprintf(jogo->mensagem,TEXT(" "));
 
 
 	impDados(jogo);
@@ -319,10 +322,10 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 		if (m->pidCliente == jogo->pidCliente)
 		{
+			
 			jogo = m;
 
 			setcolor(Color_BrightWhite);
-			//limpaArea(9, 22, 20, 23);
 			impDados(jogo);
 
 		}

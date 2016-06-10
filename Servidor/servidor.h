@@ -3,11 +3,7 @@
 #include <Windows.h>
 
 DWORD WINAPI AtendeCliente(LPVOID param);
+DWORD WINAPI BonusCafeina(LPVOID param);
 
-typedef struct _pipesServer
-{
-	HANDLE hPipe;
-	HANDLE hPipeRec;
-
-} PipesServer;
+void desligaJogador(int id);
 
