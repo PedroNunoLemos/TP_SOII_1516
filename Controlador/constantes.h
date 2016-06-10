@@ -1,8 +1,16 @@
 #pragma once
 
 
+
 #define VISAO_MONSTRO 5
 #define EFEITO_CAFEINA 60000
+
+#define MAXOBJECTOS 5
+
+#define PERC_VITAMINAS 30
+#define PERC_ORANGE 14
+#define PERC_PEDRA 50
+#define PERC_CAFEINA 6
 
 #define SAUDE_MONSTRO_DIST 5
 #define SAUDE_MONSTRO_BULLY 10

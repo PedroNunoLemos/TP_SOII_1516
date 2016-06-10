@@ -359,6 +359,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				JogoCliente *tmp = &(jogo->clientes[i].jogo);
 
+				tmp->respostaComando = 51;
 
 				atualizaMapaCliente(jogo, tmp,
 					tmp->jogador.posicao.x - (MAXVISX / 2),

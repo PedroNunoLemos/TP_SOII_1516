@@ -296,40 +296,49 @@ void criaObjectosMapa(JogoServidor *serv) {
 
 
 	int tipo = 0;
-
-
-	int r = 0;
-
-
 	int cnt = 0;
 	int x = 0;
 	int y = 0;
 	int prob = 0;
+	int r = 0;
 
+	for (int i = 0; i < MAXOBJECTOS; i++) {
 
-	for (x = 0; x < serv->mapa->tamx; x++)
-	{
-
-		for (y = 0; y < serv->mapa->tamy; y++)
+		for (x = 0; x < serv->mapa->tamx; x++)
 		{
 
-
-			if (serv->mapa->celula[x][y].tipo == TipoCelula_CHAO) {
-
-				cnt++;
-				prob = aleatorio(1, 100, y*cnt);
-				tipo = aleatorio(2, 8, prob);
+			for (y = 0; y < serv->mapa->tamy; y++)
+			{
 
 
-				if (prob < 8) {
-					serv->mapa->celula[x][y].objeto = tipo / 2;
+				if (serv->mapa->celula[x][y].tipo == TipoCelula_CHAO) {
+
+
+					r = rand() % 100;
+
+					if (r < PERC_VITAMINAS) tipo = Tipo_Vitamina;
+					else if (r >= PERC_VITAMINAS && r < PERC_ORANGE + PERC_VITAMINAS)
+						tipo = Tipo_OrangeBull;
+					else if (r >= PERC_ORANGE + PERC_VITAMINAS &&
+						r < PERC_ORANGE + PERC_VITAMINAS + PERC_PEDRA)
+						tipo = Tipo_Pedra;
+					else
+						tipo = Tipo_Cafeina;
+
+					cnt++;
+					prob = aleatorio(1, 100, y*cnt);
+
+					if (prob < 8) {
+						serv->mapa->celula[x][y].objeto = tipo;
+
+					}
 
 				}
 
 			}
-
 		}
 	}
+
 }
 
 
