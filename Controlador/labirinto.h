@@ -46,6 +46,8 @@ typedef struct
 //metodos do labirinto
 
 //Cria Labirinto
-Labirinto *CriaLabirinto(int tamx, int tamy, int salas);
 
+//Labirinto *CriaLabirinto(int tamx, int tamy, int salas);
+
+Labirinto *CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas);
 

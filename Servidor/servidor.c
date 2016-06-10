@@ -34,8 +34,8 @@ JogoServidor *jogo;
 HANDLE memoria;
 HANDLE ticker;
 
-MemoriaPartilhada *ptrMapa;
-
+MemoriaPartilhada *ptrJogo;
+MemoriaPartilhada *tmppj;
 
 
 //int _tmain(int argc, LPTSTR argv[]) {
@@ -114,27 +114,27 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 			/////////////////////////Mapeamento de memória/////////////////////////////////////////////
 
-			memoria = CreateFileMapping(NULL, NULL, PAGE_READWRITE, 0, sizeof(MemoriaPartilhada), nomeMemoria);
+			memoria = CreateFileMapping(NULL, NULL, PAGE_READWRITE, 0, sizeof(Labirinto), nomeMemoria);
 
 			if (memoria == NULL) {
 				_tprintf(TEXT("[ERRO] Criação de handle de memória - %d"), GetLastError());
 				return -1;
 			}
 
-			ptrMapa = (MemoriaPartilhada *)MapViewOfFile(memoria, FILE_MAP_WRITE, 0, 0, sizeof(MemoriaPartilhada));
+			jogo->mapa = (Labirinto*)MapViewOfFile(memoria, FILE_MAP_WRITE, 0, 0, sizeof(Labirinto));
 
-			if (ptrMapa == NULL) {
-				//_tprintf(TEXT("[ERRO] Mapeamento de Memoria partilhada - %d"), GetLastError());
+			if (jogo->mapa == NULL) {
 				return -1;
 			}
 
-			//CopyMemory((PVOID)ptrMapa, &jogo, sizeof(MemoriaPartilhada));
+			tmppj = malloc(sizeof(Labirinto));
 
-			//jogo. = ptrMapa->map;
-			//game.monsters = ptrMapa->monsters;
-			//game.players = ptrMapa->players;
+			CopyMemory(jogo->mapa, tmppj, sizeof(Labirinto));
+
+			free(tmppj);
 
 			//////////////////////////////////////////////////////////////////////
+			
 
 			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)jogo->totalLigacoes, 0, NULL);
 
@@ -166,7 +166,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	}
 
-	UnmapViewOfFile(ptrMapa);
+	UnmapViewOfFile(ptrJogo);
 	CloseHandle(memoria);
 
 	free(jogo);

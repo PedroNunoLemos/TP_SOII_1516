@@ -19,7 +19,7 @@ int tamx;
 int tamy;
 int nSpaces;
 
-TCHAR procNome[buf]; 
+TCHAR procNome[buf];
 STARTUPINFO si;
 PROCESS_INFORMATION pi;
 
@@ -36,7 +36,7 @@ void abrirMemoriaPartilhada() {
 	{
 		_tprintf(TEXT("Could not open file mapping object (%d).\n"),
 			GetLastError());
-		return ;
+		return;
 	}
 
 	pBuf = (MemoriaPartilhada*)MapViewOfFile(hMapFile, // handle to map object
@@ -51,7 +51,7 @@ void abrirMemoriaPartilhada() {
 
 		CloseHandle(hMapFile);
 
-		return ;
+		return;
 	}
 }
 
@@ -104,62 +104,62 @@ DWORD WINAPI validaPosicao(LPVOID param)
 {
 	Jogador* sch;
 	Coordenada newMonster;
-	
-while (1) {
 
-		if (/* posicao jogador = monstro*/1) {
-			sch = pBuf->clientes;
-			for (; sch != &pBuf->clientes[MAXJOGADORES + 1];) {
-				if (sch->posicao.y == me.posicao.y && sch->posicao.x == me.posicao.x) {
-					sch->saude--;
-				}
-			}
-		}
+	while (1) {
 
-		if (me.energia >= (2 /* duplicatemonster*/ * SAUDE_MONSTRO_DIST) && me.tipo == 0) {
+		//	if (/* posicao jogador = monstro*/1) {
+		//		sch = pBuf->clientes;
+		//		for (; sch != &pBuf->clientes[MAXJOGADORES + 1];) {
+		//			if (sch->posicao.y == me.posicao.y && sch->posicao.x == me.posicao.x) {
+		//				sch->saude--;
+		//			}
+		//		}
+		//	}
 
-			newMonster.y = me.posicao.y;
+		//	if (me.energia >= (2 /* duplicatemonster*/ * SAUDE_MONSTRO_DIST) && me.tipo == 0) {
 
-			if (pBuf->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
-				pBuf->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
-				newMonster.x = me.posicao.x + 1;
-			}
-			else {
-				newMonster.x = me.posicao.x - 1;
-			}
+		//		newMonster.y = me.posicao.y;
 
-			me.energia *= .8;
+		//		if (pBuf->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
+		//			pBuf->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
+		//			newMonster.x = me.posicao.x + 1;
+		//		}
+		//		else {
+		//			newMonster.x = me.posicao.x - 1;
+		//		}
 
-			_stprintf_s(procNome, buf, TEXT("%s %d %d %d %d %d %d %d"),
-				TEXT("Monstro"), me.tipo, MAXTAMX, MAXTAMY, newMonster.y, newMonster.x, MAXINIMIGOS, me.energia);
+		//		me.energia *= .8;
 
-			ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
-			si.cb = sizeof(STARTUPINFO);
+		//		_stprintf_s(procNome, buf, TEXT("%s %d %d %d %d %d %d %d"),
+		//			TEXT("Monstro"), me.tipo, MAXTAMX, MAXTAMY, newMonster.y, newMonster.x, MAXINIMIGOS, me.energia);
 
-			CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
-		}
-		else if (me.energia >= (2 * SAUDE_MONSTRO_BULLY) && me.tipo == 1) {
-			newMonster.y = me.posicao.y;
-			if (pBuf->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
-				pBuf->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
-				newMonster.x = me.posicao.x + 1;
-			}
-			else {
-				newMonster.x = me.posicao.x - 1;
-			}
+		//		ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
+		//		si.cb = sizeof(STARTUPINFO);
 
-			me.energia *= .8;
+		//		CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
+		//	}
+		//	else if (me.energia >= (2 * SAUDE_MONSTRO_BULLY) && me.tipo == 1) {
+		//		newMonster.y = me.posicao.y;
+		//		if (pBuf->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
+		//			pBuf->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
+		//			newMonster.x = me.posicao.x + 1;
+		//		}
+		//		else {
+		//			newMonster.x = me.posicao.x - 1;
+		//		}
 
-			_stprintf_s(procNome, buf, TEXT("%s %d %d %d %d %d %d %d"),
-				TEXT("Monstro"), me.tipo, MAXTAMX, MAXTAMY, newMonster.y, newMonster.x, MAXINIMIGOS, me.energia);
+		//		me.energia *= .8;
 
-			ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
-			si.cb = sizeof(STARTUPINFO);
+		//		_stprintf_s(procNome, buf, TEXT("%s %d %d %d %d %d %d %d"),
+		//			TEXT("Monstro"), me.tipo, MAXTAMX, MAXTAMY, newMonster.y, newMonster.x, MAXINIMIGOS, me.energia);
 
-			CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
-		}
+		//		ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
+		//		si.cb = sizeof(STARTUPINFO);
 
-		Sleep(1 / 15 * me.lentidao * 1000);
+		//		CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
+		//	}
+
+		//	Sleep(1 / 15 * me.lentidao * 1000);
 	}
 
 
@@ -181,11 +181,11 @@ int _tmain(int argc, LPTSTR argv[]) {
 	me.posicao.x = _ttoi(argv[5]);
 
 	if (me.tipo == 0) {
-		wcscpy_s(me.descricao, 10,TEXT("Distracted"));
+		wcscpy_s(me.descricao, 10, TEXT("Distracted"));
 		me.lentidao = VELOCIDADE_MONSTRO_BULLY;
 	}
 	else {
-		wcscpy_s(me.descricao, 10,TEXT("Bully"));
+		wcscpy_s(me.descricao, 10, TEXT("Bully"));
 		me.lentidao = VELOCIDADE_MONSTRO_DIST;
 	}
 

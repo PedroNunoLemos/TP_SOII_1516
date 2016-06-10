@@ -20,4 +20,3 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt);
 
 void criaObjectosMapa(JogoServidor *serv);
 
-void iniciaMonstros(JogoServidor *serv);

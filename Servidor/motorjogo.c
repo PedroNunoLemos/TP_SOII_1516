@@ -381,10 +381,9 @@ void criaObjectosMapa(JogoServidor *serv) {
 void criaJogo(JogoServidor *jog)
 {
 
+	//fazer o malloc se n usar shared mem :)
 
-	Labirinto *lab = CriaLabirinto(200, 200, 10);
-
-	jog->mapa = lab;
+	jog->mapa = CriaLabirinto(jog->mapa, 200, 200, 10);
 
 
 	inicializaObjectos(jog);
@@ -427,32 +426,4 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 }
 
 
-void iniciaMonstros(JogoServidor *serv) {
-
-	for (int i = 0; i < MAXINIMIGOS; i++) {
-
-		serv->monstros[i]->id = i;
-
-		serv->monstros[i]->tipo = rand() % 2;
-
-		serv->monstros[i]->energia = serv->monstros[i]->tipo == 0 ?
-			SAUDE_MONSTRO_DIST : SAUDE_MONSTRO_BULLY;
-
-		serv->monstros[i]->lentidao = serv->monstros[i]->tipo == 0 ?
-			VELOCIDADE_MONSTRO_DIST : VELOCIDADE_MONSTRO_BULLY;
-
-		if (serv->monstros[i]->tipo == DISTRAIDO) {
-			_tcscpy(serv->monstros[i]->descricao, TEXT("Distraido"));
-		}
-		else {
-			_tcscpy(serv->monstros[i]->descricao, TEXT("Bully"));
-		}
-
-		serv->monstros[i]->posicao = PosicaoIniMonstro(serv);
-		
-		serv->mapa->celula[serv->monstros[i]->posicao.x][serv->monstros[i]->posicao.y].monstro
-			= serv->monstros[i]->tipo;
-	}
-
-}
 

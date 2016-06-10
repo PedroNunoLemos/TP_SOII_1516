@@ -179,7 +179,7 @@ Sala *criaSalaAdjacente(Sala *sala_ant, int lado) {
 }
 
 
-Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
+Labirinto *CriaLabirinto(Labirinto *lab,int tamx, int tamy, int salas) {
 
 	int x = 0;
 	int y = 0;
@@ -187,8 +187,8 @@ Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
 	int i = 0;
 	int cnt = 0;
 
-	Labirinto *lab;
-	lab = malloc(sizeof(Labirinto));
+	//Labirinto *lab;
+	//lab = malloc(sizeof(Labirinto));
 
 	
 	lab->tamsalas = salas;

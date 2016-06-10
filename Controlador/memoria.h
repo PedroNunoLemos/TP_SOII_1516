@@ -27,8 +27,7 @@
 
 typedef struct _memoriaPartilhada {
 
-	Cliente clientes[MAXJOGADORES];
-	Monstro monstros[MAXINIMIGOS];
+	//Monstro monstros[MAXINIMIGOS];
 	Celula mapa[MAXTAMX][MAXTAMY];
 
 } MemoriaPartilhada;
