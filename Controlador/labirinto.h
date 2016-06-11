@@ -40,7 +40,6 @@ typedef struct
 
 	Celula celula[MAXTAMX][MAXTAMY];
 	Sala salas[MAXSALAS];
-	Monstro monstros[MAXINIMIGOS];
 
 } Labirinto;
 
@@ -49,7 +48,6 @@ typedef struct
 
 //Cria Labirinto
 
-//Labirinto *CriaLabirinto(int tamx, int tamy, int salas);
+Labirinto *CriaLabirinto(int tamx, int tamy, int salas);
 
-Labirinto *CriaLabirinto(Labirinto *lab, int tamx, int tamy, int salas);
 

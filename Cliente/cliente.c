@@ -206,7 +206,7 @@ void jogar() {
 
 void impDados(JogoCliente *jogo) {
 
-	
+
 
 	setcolor(Color_BrightWhite);
 
@@ -223,14 +223,14 @@ void impDados(JogoCliente *jogo) {
 	_tprintf(TEXT("Cafeinas : %d"), jogo->jogador.efeitoCafeina);
 
 
-/*	GoToXY(8, 9);
-	_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.qtdOranges);
+	/*	GoToXY(8, 9);
+		_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.qtdOranges);
 
 
-	GoToXY(8, 10);
-	_tprintf(TEXT("Cafeina : %d"), jogo->jogador.qtdCafeinas);
-	
-	*/
+		GoToXY(8, 10);
+		_tprintf(TEXT("Cafeina : %d"), jogo->jogador.qtdCafeinas);
+
+		*/
 
 	GoToXY(8, 11);
 	_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
@@ -245,8 +245,8 @@ void impDados(JogoCliente *jogo) {
 void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
 	char tmp;
-	int res=0;
-	
+	int res = 0;
+
 	HANDLE cmdThread;
 
 	int ch;
@@ -272,9 +272,9 @@ void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 	impDados(jogo);
 
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
-	cmdThread=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ComandosCliente, (LPVOID)Hpipe, 0, NULL);
-	
-	WaitForSingleObject(cmdThread,INFINITE);
+	cmdThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ComandosCliente, (LPVOID)Hpipe, 0, NULL);
+
+	WaitForSingleObject(cmdThread, INFINITE);
 
 
 	setForeGroundAndBackGroundColor(Color_White, Color_Black);
@@ -297,7 +297,7 @@ DWORD WINAPI ComandosCliente(LPVOID param) {
 
 	int ch;
 
-	HANDLE Hpipe=(HANDLE)param;
+	HANDLE Hpipe = (HANDLE)param;
 
 
 	ch = '\0';
@@ -341,18 +341,26 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 		if (m->pidCliente == jogo->pidCliente)
 		{
 			if (m->respostaComando != 71) {
-			
+
+				WaitForSingleObject(hMutex, INFINITE);
+
 				jogo = m;
 
 				setcolor(Color_BrightWhite);
 
+
 				impDados(jogo);
+
+				ReleaseMutex(hMutex);
+
 			}
 
 			if (m->respostaComando == 71)
 			{
+				WaitForSingleObject(hMutex, INFINITE);
 				jogo->jogador.efeitoCafeina = m->jogador.efeitoCafeina;
 				jogo->jogador.lentidao = m->jogador.lentidao;
+				ReleaseMutex(hMutex);
 			}
 		}
 

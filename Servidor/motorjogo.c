@@ -385,9 +385,7 @@ void iniciaMonstros() {
 void criaJogo(JogoServidor *jog)
 {
 
-	//fazer o malloc se n usar shared mem :)
-
-	jog->mapa = CriaLabirinto(jog->mapa, 200, 200, 10);
+	jog->mapa = CriaLabirinto(200, 200, 10);
 
 
 	inicializaObjectos(jog);

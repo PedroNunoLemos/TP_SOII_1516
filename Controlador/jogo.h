@@ -70,6 +70,7 @@ typedef struct  _jogoservidor
 	DWORD instantes;
 
 	Cliente clientes[MAXJOGADORES];
+	Monstro monstros[MAXINIMIGOS];
 	HANDLE clientes_atualizar[MAXJOGADORES];
 
 	int JogoIniciado;

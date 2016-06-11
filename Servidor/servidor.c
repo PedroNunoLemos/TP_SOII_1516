@@ -30,12 +30,10 @@ STARTUPINFO si;
 PROCESS_INFORMATION pi;
 
 JogoServidor *jogo;
+MemoriaPartilhada *jogomem;
 
 HANDLE memoria;
 HANDLE ticker;
-
-MemoriaPartilhada *ptrJogo;
-MemoriaPartilhada *tmppj;
 
 
 //int _tmain(int argc, LPTSTR argv[]) {
@@ -52,7 +50,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
 	HANDLE hPipeRec = INVALID_HANDLE_VALUE;
 
-
+	MemoriaPartilhada *tmppj;
 
 
 	int i;
@@ -73,11 +71,34 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	}
 
+
+	/////////////////////////Mapeamento de memória/////////////////////////////////////////////
+
+	memoria = CreateFileMapping(NULL, NULL, PAGE_READWRITE, 0, sizeof(MemoriaPartilhada), nomeMemoria);
+
+	if (memoria == NULL) {
+		_tprintf(TEXT("[ERRO] Criação de handle de memória - %d"), GetLastError());
+		return -1;
+	}
+
+	jogomem = (MemoriaPartilhada*)MapViewOfFile(memoria, FILE_MAP_WRITE, 0, 0, sizeof(MemoriaPartilhada));
+
+	if (jogomem == NULL) {
+		return -1;
+	}
+
+	tmppj = malloc(sizeof(MemoriaPartilhada));
+
+	CopyMemory(jogomem, tmppj, sizeof(MemoriaPartilhada));
+
+	free(tmppj);
+
+	//////////////////////////////////////////////////////////////////////
+
 	jogo = malloc(sizeof(JogoServidor));
 	jogo->jogadoresLigados = 0;
 	jogo->totalLigacoes = 0;
 	jogo->instantes = 0;
-
 
 
 
@@ -112,30 +133,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 		if (pLigado) {
 
 
-			/////////////////////////Mapeamento de memória/////////////////////////////////////////////
-
-			memoria = CreateFileMapping(NULL, NULL, PAGE_READWRITE, 0, sizeof(Labirinto), nomeMemoria);
-
-			if (memoria == NULL) {
-				_tprintf(TEXT("[ERRO] Criação de handle de memória - %d"), GetLastError());
-				return -1;
-			}
-
-			jogo->mapa = (Labirinto*)MapViewOfFile(memoria, FILE_MAP_WRITE, 0, 0, sizeof(Labirinto));
-
-			if (jogo->mapa == NULL) {
-				return -1;
-			}
-
-			tmppj = malloc(sizeof(Labirinto));
-
-			CopyMemory(jogo->mapa, tmppj, sizeof(Labirinto));
-
-			free(tmppj);
-
-			//////////////////////////////////////////////////////////////////////
-			
-
 			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtendeCliente, (LPVOID)jogo->totalLigacoes, 0, NULL);
 
 			jogo->totalLigacoes++;
@@ -166,7 +163,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	}
 
-	UnmapViewOfFile(ptrJogo);
+	UnmapViewOfFile(jogo->mapa);
 	CloseHandle(memoria);
 
 	free(jogo);
@@ -265,16 +262,18 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				jog->respostaComando = 0;
 		}
 
-		else if (jog->comando == 5)
+		else if (jog->comando == 5)	
 		{
+
+			WaitForSingleObject(servidorMutex, INFINITE);
+
 
 			atualizaJogadorCliente(jogo, jog);
 
 			forcaDadosServidor(jogo, jog);
 
 
-			WaitForSingleObject(servidorMutex, INFINITE);
-
+	
 			if ((jogo->clientes[id].jogo.pode == 1))
 			{
 
@@ -317,8 +316,12 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		else if (jog->comando == 4) //escolher usar pedra / n Pedra
 		{
 
+			WaitForSingleObject(servidorMutex, INFINITE);
+
 			atualizaJogadorCliente(jogo, jog);
 			forcaDadosServidor(jogo, jog);
+
+			ReleaseMutex(servidorMutex);
 
 			jog->respostaComando = 1;
 
@@ -328,6 +331,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		{
 			if (JOGO_ONLINE == TRUE && JogoCliente_COMECOU == 1) {
 
+				WaitForSingleObject(servidorMutex, INFINITE);
 
 				jog->id = id;
 
@@ -358,6 +362,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				jogo->jogadoresLigados++;
 
+				ReleaseMutex(servidorMutex);
+
 				jog->respostaComando = 1;
 
 				jog->pode = 1;
@@ -369,6 +375,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		}
 
 
+		WaitForSingleObject(servidorMutex, INFINITE);
 
 		jogo->clientes[id].jogo = *jog;
 
@@ -384,9 +391,12 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				jogo->clientes[i].jogo.pidCliente != 0)
 			{
 
+
+
 				JogoCliente *tmp = &(jogo->clientes[i].jogo);
 
 				tmp->respostaComando = 51;
+
 
 				atualizaMapaCliente(jogo, tmp,
 					tmp->jogador.posicao.x - (MAXVISX / 2),
@@ -395,6 +405,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 				atualizaMapaEntreClientes(&(jogo->clientes[i].jogo), tmp);
+
 				escrevePipeJogoCliente(jogo->clientes_atualizar[i], tmp);
 
 
@@ -403,6 +414,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 		}
 
+
+		ReleaseMutex(servidorMutex);
 
 
 
@@ -416,12 +429,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		_tperror(TEXT("Erro ao desligar o pipe!"));
 		exit(-1);
 	}
-
-	//CloseHandle(cliente);
-	//CloseHandle(jogo->clientes_atualizar[id]);
-
-	//if (jogo->jogadoresLigados > 0)
-	//	jogo->jogadoresLigados--;
 
 	desligaJogador(id);
 
@@ -450,6 +457,7 @@ DWORD WINAPI Temporizador(LPVOID param) {
 		if (jogo->clientes[id].jogo.pidCliente != 0)
 		{
 
+
 			lent = jogo->clientes[id].jogo.jogador.lentidao;
 
 			temp = (1.00 / 15.00);
@@ -457,8 +465,11 @@ DWORD WINAPI Temporizador(LPVOID param) {
 
 			Sleep(temp);
 
+			WaitForSingleObject(servidorMutex, INFINITE);
+
 			jogo->clientes[id].jogo.pode = 1;
 
+			ReleaseMutex(servidorMutex);
 
 		}
 
@@ -477,6 +488,8 @@ DWORD WINAPI BonusCafeina(LPVOID param) {
 
 		Sleep(EFEITO_CAFEINA);
 
+		WaitForSingleObject(servidorMutex, INFINITE);
+
 		jogo->clientes[id].jogo.jogador.lentidao += 2;
 
 		if (jogo->clientes[id].jogo.jogador.lentidao >= LENTIDAO_JOG_INI)
@@ -486,9 +499,12 @@ DWORD WINAPI BonusCafeina(LPVOID param) {
 
 		jogo->clientes[id].jogo.respostaComando = 71;
 
+		
 		escrevePipeJogoCliente(jogo->clientes_atualizar[id],
 			&(jogo->clientes[id].jogo)
 			);
+
+		ReleaseMutex(servidorMutex);
 
 
 	}
@@ -505,6 +521,9 @@ void desligaJogador(int id) {
 	int del;
 
 	del = 0;
+
+	WaitForSingleObject(servidorMutex, INFINITE);
+
 
 	for (i = 0; i < jogo->jogadoresLigados; i++) {
 		if (i != id) {
@@ -547,6 +566,8 @@ void desligaJogador(int id) {
 	}
 
 	jogo->jogadoresLigados--;
+
+	ReleaseMutex(servidorMutex);
 }
 
 
@@ -560,10 +581,10 @@ void  lancaMonstros() {
 		_stprintf_s(procNome, 256,
 			TEXT("%s %d %d %d %d %d %d %d"),
 			TEXT("Monstro"),
-			jogo->mapa->monstros[i].tipo, MAXTAMX, MAXTAMY,
-			jogo->mapa->monstros[i].posicao.x,
-			jogo->mapa->monstros[i].posicao.y, i,
-			jogo->mapa->monstros[i].energia);
+			jogo->monstros[i].tipo, MAXTAMX, MAXTAMY,
+			jogo->monstros[i].posicao.x,
+			jogo->monstros[i].posicao.y, i,
+			jogo->monstros[i].energia);
 
 		ZeroMemory(&si, sizeof(STARTUPINFO));
 		si.cb = sizeof(STARTUPINFO);
