@@ -27,7 +27,12 @@
 
 typedef struct _memoriaPartilhada {
 
-	//Monstro monstros[MAXINIMIGOS];
-	Celula mapa[MAXTAMX][MAXTAMY];
+	Monstro monstros[MAXINIMIGOS];
+	Labirinto *mapa;
+	Cliente jogadores[MAXJOGADORES];
+
+	int jogadoresLigados;
+	int monstrosCriados;
+
 
 } MemoriaPartilhada;

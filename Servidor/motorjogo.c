@@ -73,33 +73,33 @@ int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 
 }
 
-int jogadorPosicaoAdj(JogoServidor *jogo, int id,int  x, int y) {
+int jogadorPosicaoAdj(JogoServidor *jogo, int id, int  x, int y) {
 
 
 	int i = 0;
 
 	for (i = 0; i < jogo->jogadoresLigados; i++) {
 
-		if (id!=i)
-		if (
-			(jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
-				y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
-			|| (jogo->clientes[i].jogo.jogador.posicao.x == x &&
-				y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
-			|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
-				y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
-			|| (jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
-				y == jogo->clientes[i].jogo.jogador.posicao.y)
-			|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
-				y == jogo->clientes[i].jogo.jogador.posicao.y)
-			|| (jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
-				y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
-			|| (jogo->clientes[i].jogo.jogador.posicao.x == x &&
-				y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
-			|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
-				y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
-			)
-			return  i;
+		if (id != i)
+			if (
+				(jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
+					y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
+				|| (jogo->clientes[i].jogo.jogador.posicao.x == x &&
+					y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
+				|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
+					y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
+				|| (jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
+					y == jogo->clientes[i].jogo.jogador.posicao.y)
+				|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
+					y == jogo->clientes[i].jogo.jogador.posicao.y)
+				|| (jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
+					y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
+				|| (jogo->clientes[i].jogo.jogador.posicao.x == x &&
+					y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
+				|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
+					y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
+				)
+				return  i;
 	}
 
 	return -1;
@@ -146,7 +146,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 
 			if (x == px && y == py)
 			{
-			
+
 				en = jogadorPosicaoAdj(serv, jogcl->id, px, py);
 				//combate
 				if (en >= 0)
@@ -274,8 +274,8 @@ Coordenada PosicaoIniMonstro(JogoServidor *serv) {
 
 	do {
 
-		int tx = aleatorio(1, serv->mapa->tamx, r);
-		int ty = aleatorio(1, serv->mapa->tamy, r + 1);
+		int tx = aleatorio(1, serv->mapa->tamx - 5, r);
+		int ty = aleatorio(1, serv->mapa->tamy - 5, r + 1);
 
 		if (
 			serv->mapa->celula[tx][ty].tipo == TipoCelula_CHAO &&
@@ -284,6 +284,7 @@ Coordenada PosicaoIniMonstro(JogoServidor *serv) {
 			res.x = tx;
 			res.y = ty;
 			val == 1;
+			break;
 		}
 
 		r++;
@@ -382,7 +383,6 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 
 			}
 
-
 		}
 	}
 
@@ -439,12 +439,6 @@ void criaObjectosMapa(JogoServidor *serv) {
 
 }
 
-void iniciaMonstros() {
-
-
-}
-
-
 void criaJogo(JogoServidor *jog)
 {
 
@@ -453,6 +447,7 @@ void criaJogo(JogoServidor *jog)
 
 	inicializaObjectos(jog);
 	criaObjectosMapa(jog);
+	criaMonstrosIniciais(jog);
 
 
 }
@@ -490,5 +485,57 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 
 }
 
+void criaMonstrosIniciais(JogoServidor *serv) {
+
+	int x = 0, y = 0, r = 0;
+	int tr = 0;
+	serv->monstrosCriados = 0;
+
+	for (int i = 0; i < MAXINIMIGOS / 2; i++) {
+
+		tr = aleatorio(0, 1, i);
+
+		switch (tr)
+		{
+		case DISTRAIDO:
+			swprintf(serv->monstros[i].descricao, 256, TEXT("%s"), "Distraido");
+
+			serv->monstros[i].energia = SAUDE_MONSTRO_DIST;
+			serv->monstros[i].id = i;
+			serv->monstros[i].posicao = PosicaoIniMonstro(serv);
+			serv->monstros[i].tipo = DISTRAIDO;
+
+			break;
+		case BULLY:
+
+			swprintf(serv->monstros[i].descricao, 256, TEXT("%s"), "Bully");
+
+			serv->monstros[i].energia = SAUDE_MONSTRO_BULLY;
+			serv->monstros[i].id = i;
+			serv->monstros[i].posicao = PosicaoIniMonstro(serv);
+			serv->monstros[i].tipo = BULLY;
 
 
+			break;
+		default:
+			break;
+		}
+
+		serv->monstrosCriados++;
+	}
+
+}
+
+void atualizaMonstroServidor(JogoServidor *serv, MemoriaPartilhada *mem) {
+
+	int x = 0;
+	int y = 0;
+
+	serv->monstrosCriados = mem->monstrosCriados;
+	//serv->jogadoresLigados = mem->jogadoresLigados;
+
+	for (int i = 0; i < serv->monstrosCriados; i++)
+		serv->monstros[i] = mem->monstros[i];
+
+
+}

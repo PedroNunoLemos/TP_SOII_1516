@@ -93,6 +93,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	free(tmppj);
 
+
+
 	//////////////////////////////////////////////////////////////////////
 
 	jogo = malloc(sizeof(JogoServidor));
@@ -100,7 +102,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	jogo->totalLigacoes = 0;
 	jogo->instantes = 0;
 
-
+	jogomem->mapa = jogo->mapa;
 
 	for (i = 0; i < MAXJOGADORES; i++) {
 
@@ -163,7 +165,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	}
 
-	UnmapViewOfFile(jogo->mapa);
+	UnmapViewOfFile(jogomem);
 	CloseHandle(memoria);
 
 	free(jogo);
@@ -222,6 +224,12 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 				criaJogo(jogo);
+
+
+
+				//lancaMonstros();
+				
+
 
 				jog->id = id;
 
@@ -475,9 +483,6 @@ DWORD WINAPI Temporizador(LPVOID param) {
 			ReleaseMutex(servidorMutex);
 
 
-			//escrevePipeJogoCliente(jogo->clientes_atualizar[id],
-			//	&(jogo->clientes[id].jogo)
-			//	);
 
 
 		}
@@ -584,19 +589,21 @@ void  lancaMonstros() {
 
 	int tr = 0;
 
-	for (int i = 0; i < MAXINIMIGOS; i++) {
+	for (int i = 0; i < MAXINIMIGOS/2; i++) {
 
 
 		_stprintf_s(procNome, 256,
-			TEXT("%s %d %d %d %d %d %d %d"),
-			TEXT("Monstro"),
-			jogo->monstros[i].tipo, MAXTAMX, MAXTAMY,
-			jogo->monstros[i].posicao.x,
-			jogo->monstros[i].posicao.y, i,
-			jogo->monstros[i].energia);
+			TEXT("%s %d %d %d %d %d"),
+			TEXT("Monstro"), //0
+			jogo->monstros[i].tipo, //1 
+			jogo->monstros[i].posicao.x, //2
+			jogo->monstros[i].posicao.y, //3
+			i,//4
+			jogo->monstros[i].energia); //5
 
 		ZeroMemory(&si, sizeof(STARTUPINFO));
 		si.cb = sizeof(STARTUPINFO);
+
 
 		CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
 

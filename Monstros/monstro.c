@@ -19,7 +19,7 @@
 HANDLE hMapFile;
 HANDLE moveMutex;
 HANDLE hThread;
-Labirinto *mapa;
+MemoriaPartilhada *mapa;
 
 Monstro me;
 int tamx;
@@ -60,6 +60,9 @@ void abrirMemoriaPartilhada() {
 
 		return;
 	}
+
+	mapa->mapa;
+
 }
 
 int validaJogadorposicao() {
@@ -113,6 +116,8 @@ DWORD WINAPI validaPosicao(LPVOID param)
 	Coordenada novoMonstro;
 
 	while (1) {
+
+		_tprintf(TEXT("%d \n"), mapa->mapa->celula[100][104].jogador);
 
 		//	if (/* posicao jogador = monstro*/1) {
 		//		sch = mapa->clientes;
@@ -175,29 +180,17 @@ DWORD WINAPI validaPosicao(LPVOID param)
 int _tmain(int argc, LPTSTR argv[]) {
 
 
-	if (argc != 8) {
-		return -1;
-	}
+	//if (argc != 6) {
+	//	return -1;
+	//}
 
 	srand(time(NULL));
 
 	me.tipo = _ttoi(argv[1]);
-	tamx = _ttoi(argv[2]);
-	tamy = _ttoi(argv[3]);
-	me.posicao.y = _ttoi(argv[4]);
-	me.posicao.x = _ttoi(argv[5]);
-
-	if (me.tipo == 0) {
-		wcscpy_s(me.descricao, 10, TEXT("Distracted"));
-		me.lentidao = VELOCIDADE_MONSTRO_BULLY;
-	}
-	else {
-		wcscpy_s(me.descricao, 10, TEXT("Bully"));
-		me.lentidao = VELOCIDADE_MONSTRO_DIST;
-	}
-
-
-	me.energia = _ttoi(argv[7]);
+	me.posicao.y = _ttoi(argv[2]);
+	me.posicao.x = _ttoi(argv[3]);
+	me.id = _ttoi(argv[4]);
+	me.energia = _ttoi(argv[5]);
 
 	moveMutex = CreateMutex(
 		NULL,

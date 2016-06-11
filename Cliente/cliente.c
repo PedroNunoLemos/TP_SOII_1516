@@ -207,7 +207,6 @@ void jogar() {
 void impDados(JogoCliente *jogo) {
 
 
-
 	setcolor(Color_BrightWhite);
 
 	GoToXY(8, 2);
@@ -359,16 +358,7 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 			}
 
-			if (m->respostaComando == 72)
-			{
-				WaitForSingleObject(hMutex, INFINITE);
-				jogo->jogador.qtdPedras = m->jogador.qtdPedras;
-				jogo->usarPedra = m->usarPedra;
-				jogo->jogador.saude = m->jogador.saude;
-				jogo->pode = m->pode;
-				ReleaseMutex(hMutex);
-			}
-
+	
 			if (m->respostaComando == 71)
 			{
 				WaitForSingleObject(hMutex, INFINITE);
