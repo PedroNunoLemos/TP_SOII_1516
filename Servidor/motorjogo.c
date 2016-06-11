@@ -146,9 +146,10 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 
 			if (x == px && y == py)
 			{
-
+			
+				en = jogadorPosicaoAdj(serv, jogcl->id, px, py);
 				//combate
-				if ((en = jogadorPosicaoAdj(serv,jogcl->id, px, py)) >= 0)
+				if (en >= 0)
 					combateJogvsJog(serv, jogcl->id, en);
 
 				//apanha objectos

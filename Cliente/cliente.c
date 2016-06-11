@@ -213,6 +213,10 @@ void impDados(JogoCliente *jogo) {
 	GoToXY(8, 2);
 	_tprintf(jogo->jogador.nome);
 
+
+	GoToXY(8, 4);
+	_tprintf(TEXT("Saude :   "));
+
 	GoToXY(8, 4);
 	_tprintf(TEXT("Saude : %d"), jogo->jogador.saude);
 
