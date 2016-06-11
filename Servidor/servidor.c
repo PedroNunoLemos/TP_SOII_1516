@@ -469,7 +469,16 @@ DWORD WINAPI Temporizador(LPVOID param) {
 
 			jogo->clientes[id].jogo.pode = 1;
 
+			jogo->clientes[id].jogo.respostaComando = 72;
+
+
 			ReleaseMutex(servidorMutex);
+
+
+			//escrevePipeJogoCliente(jogo->clientes_atualizar[id],
+			//	&(jogo->clientes[id].jogo)
+			//	);
+
 
 		}
 

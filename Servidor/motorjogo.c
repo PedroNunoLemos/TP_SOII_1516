@@ -73,13 +73,70 @@ int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 
 }
 
+int jogadorPosicaoAdj(JogoServidor *jogo, int id,int  x, int y) {
+
+
+	int i = 0;
+
+	for (i = 0; i < jogo->jogadoresLigados; i++) {
+
+		if (id!=i)
+		if (
+			(jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
+				y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
+			|| (jogo->clientes[i].jogo.jogador.posicao.x == x &&
+				y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
+			|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
+				y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
+			|| (jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
+				y == jogo->clientes[i].jogo.jogador.posicao.y)
+			|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
+				y == jogo->clientes[i].jogo.jogador.posicao.y)
+			|| (jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
+				y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
+			|| (jogo->clientes[i].jogo.jogador.posicao.x == x &&
+				y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
+			|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
+				y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
+			)
+			return  i;
+	}
+
+	return -1;
+}
+
+void combateJogvsJog(JogoServidor *jogo, int p1, int p2) {
+
+
+	int i = 0;
+
+	if (jogo->clientes[p1].jogo.usarPedra == 1) {
+
+
+		if (jogo->clientes[p2].jogo.jogador.saude - 2 <= 0)
+			jogo->clientes[p2].jogo.jogador.saude = 0;
+		else jogo->clientes[p2].jogo.jogador.saude -= 2;
+
+
+		jogo->clientes[p2].jogo.usarPedra = 0;
+
+	}
+	else
+		if (jogo->clientes[p2].jogo.jogador.saude - 1 <= 0)
+			jogo->clientes[p2].jogo.jogador.saude = 0;
+		else jogo->clientes[p2].jogo.jogador.saude -= 1;
+
+
+
+
+}
 
 
 void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 
 	int x = 0;
 	int y = 0;
-	float s = 0;
+	int en = -1;
 
 	for (x = 0; x < serv->mapa->tamx; x++)
 	{
@@ -90,6 +147,11 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 			if (x == px && y == py)
 			{
 
+				//combate
+				if ((en = jogadorPosicaoAdj(serv,jogcl->id, px, py)) >= 0)
+					combateJogvsJog(serv, jogcl->id, en);
+
+				//apanha objectos
 				switch (serv->mapa->celula[x][y].objeto)
 				{
 				case Tipo_Pedra:
@@ -141,7 +203,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 				default:
 					break;
 				}
-
+				//fim apanhar objectos
 
 			}
 		}

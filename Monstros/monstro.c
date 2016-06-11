@@ -8,7 +8,7 @@
 #include "../Controlador/constantes.h"
 #include "../Controlador/monstro.h"
 #include "../Controlador/coordenada.h"
-#include "../Controlador/labirinto.h"
+#include "../Controlador/memoria.h"
 
 
 #define QUEUE_SIZE 5
@@ -46,7 +46,7 @@ void abrirMemoriaPartilhada() {
 		return;
 	}
 
-	mapa = (Labirinto*)MapViewOfFile(hMapFile, // handle to map object
+	mapa = (MemoriaPartilhada*)MapViewOfFile(hMapFile, // handle to map object
 		FILE_MAP_ALL_ACCESS,  // read/write permission
 		0,
 		0,
