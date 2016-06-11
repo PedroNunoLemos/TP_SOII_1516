@@ -503,12 +503,13 @@ void criaMonstrosIniciais(JogoServidor *serv) {
 	int tr = 0;
 	serv->monstrosCriados = 0;
 
+	tr = 1;
 	for (int i = 0; i < MAXINIMIGOS / 2; i++) {
 
-		tr = aleatorio(0, 1, i);
 
-		switch (tr)
+		switch (tr % 2)
 		{
+
 		case DISTRAIDO:
 			swprintf(serv->monstros[i].descricao, 256, TEXT("%s"), "Distraido");
 
@@ -532,6 +533,8 @@ void criaMonstrosIniciais(JogoServidor *serv) {
 		default:
 			break;
 		}
+
+		tr++;
 
 		serv->monstros[i].n_casas = 0;
 		serv->monstrosCriados++;

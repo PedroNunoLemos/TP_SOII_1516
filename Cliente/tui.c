@@ -141,7 +141,7 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 					)
 				{
 					setForeGroundAndBackGroundColor(Color_LightYellow
-						+ (lab->mapa[ix][iy].tipoMonstro), 6);
+						- (lab->mapa[ix][iy].tipoMonstro), 6);
 					c = '*';
 				}
 
