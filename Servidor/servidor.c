@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 
 	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
-	servidorMutex = CreateMutex(NULL, FALSE, TEXT("_servidorMutex"));
+	servidorMutex = CreateMutex(NULL, FALSE, TEXT("ServidorMutex"));
 
 
 	if (GetLastError() == ERROR_ALREADY_EXISTS)
@@ -225,7 +225,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 
-				//lancaMonstros();
+				lancaMonstros();
 				
 
 
@@ -589,19 +589,28 @@ void  lancaMonstros() {
 
 	for (int i = 0; i < MAXINIMIGOS/2; i++) {
 
+		tr = aleatorio(1, N_CASAS, i);
+
+
+		//_stprintf_s(procNome, 256,
+		//	TEXT("%s %d %d %d %d %d %d"),
+		//	TEXT("Monstro"), //0
+		//	jogo->monstros[i].tipo, //1 
+		//	jogo->monstros[i].posicao.x, //2
+		//	jogo->monstros[i].posicao.y, //3
+		//	i,//4
+		//	jogo->monstros[i].energia
+		//	,tr); //5
 
 		_stprintf_s(procNome, 256,
-			TEXT("%s %d %d %d %d %d"),
+			TEXT("%s %d %d"),
 			TEXT("Monstro"), //0
-			jogo->monstros[i].tipo, //1 
-			jogo->monstros[i].posicao.x, //2
-			jogo->monstros[i].posicao.y, //3
-			i,//4
-			jogo->monstros[i].energia); //5
+			i,//1
+			tr); //2
 
 		ZeroMemory(&si, sizeof(STARTUPINFO));
 		si.cb = sizeof(STARTUPINFO);
-
+		
 
 		CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
 

@@ -242,7 +242,6 @@ Labirinto *CriaLabirinto(int tamx, int tamy, int salas) {
 			|| tmp->y + tmp->h >= lab->tamy - 5);
 
 		if (tmp)
-
 			lab->salas[r] = *tmp;
 	}
 

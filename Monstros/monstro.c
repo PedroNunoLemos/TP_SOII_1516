@@ -18,12 +18,13 @@
 
 HANDLE hMapFile;
 HANDLE moveMutex;
+HANDLE servidorMutex;
 HANDLE hThread;
-JogoServidor *mapa;
+JogoServidor *jogo;
 
-Monstro me;
-int tamx;
-int tamy;
+
+
+int mid;
 int nSpaces;
 
 TCHAR procNome[buf];
@@ -46,13 +47,13 @@ void abrirMemoriaPartilhada() {
 		return;
 	}
 
-	mapa = (JogoServidor*)MapViewOfFile(hMapFile, // handle to map object
+	jogo = (JogoServidor*)MapViewOfFile(hMapFile, // handle to map object
 		FILE_MAP_ALL_ACCESS,  // read/write permission
 		0,
 		0,
 		0); //all file is viewed
 
-	if (mapa == NULL)
+	if (jogo == NULL)
 	{
 		//_tprintf(TEXT("Could not map view of file (%d).\n"),GetLastError());
 
@@ -61,13 +62,42 @@ void abrirMemoriaPartilhada() {
 		return;
 	}
 
-	mapa->mapa;
+}
+
+void AtualizaMapaMonstro(int ox, int oy) {
+
+	int x = 0, y = 0;
+	int r = 0;
+
+	WaitForSingleObject(servidorMutex, INFINITE);
+
+	for (x = 0; x < jogo->mapa.tamx; x++)
+	{
+		for (y = 0; y < jogo->mapa.tamy; y++)
+		{
+
+			if (x == ox && y == oy && jogo->mapa.celula[x][y].monstro == mid) {
+				jogo->mapa.celula[x][y].tipoMonstro = -1;
+				jogo->mapa.celula[x][y].monstro = -1;
+			}
+
+			if (x == jogo->monstros[mid].posicao.x && y == jogo->monstros[mid].posicao.y) {
+				jogo->mapa.celula[x][y].tipoMonstro = jogo->monstros[mid].tipo;
+				jogo->mapa.celula[x][y].monstro = mid;
+			}
+
+		}
+	}
+
+	ReleaseMutex(servidorMutex);
 
 }
+
 
 int validaJogadorposicao() {
 
 	Coordenada centro;
+	Monstro me = jogo->monstros[mid];
 
 	centro.y = me.posicao.y - (VISAO_MONSTRO / 2);
 	centro.x = me.posicao.x - (VISAO_MONSTRO / 2);
@@ -110,14 +140,21 @@ void IniciaDistraido() {
 	}
 }
 
-DWORD WINAPI validaPosicao(LPVOID param)
+
+DWORD WINAPI atualizaMonstro(LPVOID param)
 {
 	Jogador* sch;
 	Coordenada novoMonstro;
 
-	while (1) {
+	while (1)
+	{
 
-		_tprintf(TEXT("%d \n"), mapa->mapa.celula[100][104].jogador);
+
+		AtualizaMapaMonstro(jogo->monstros[mid].posicao.x,
+			jogo->monstros[mid].posicao.y);
+
+		_tprintf(TEXT("%d/%d \n"), jogo->monstros[mid].posicao.x,
+			jogo->monstros[mid].posicao.y);
 
 		//	if (/* posicao jogador = monstro*/1) {
 		//		sch = mapa->clientes;
@@ -180,17 +217,26 @@ DWORD WINAPI validaPosicao(LPVOID param)
 int _tmain(int argc, LPTSTR argv[]) {
 
 
+	int tid = 0;
+
 	//if (argc != 6) {
 	//	return -1;
 	//}
 
+
+
+
+	mid = _ttoi(argv[1]);
+	nSpaces = _ttoi(argv[2]);
+
+
 	srand(time(NULL));
 
-	me.tipo = _ttoi(argv[1]);
-	me.posicao.y = _ttoi(argv[2]);
-	me.posicao.x = _ttoi(argv[3]);
-	me.id = _ttoi(argv[4]);
-	me.energia = _ttoi(argv[5]);
+
+	servidorMutex = OpenMutex(
+		MUTEX_ALL_ACCESS,            // request full access
+		FALSE,                       // handle not inheritable
+		TEXT("ServidorMutex"));  // object name
 
 	moveMutex = CreateMutex(
 		NULL,
@@ -205,14 +251,16 @@ int _tmain(int argc, LPTSTR argv[]) {
 	abrirMemoriaPartilhada();
 
 
-	if (mapa == NULL) {
+	if (jogo == NULL) {
 		_tprintf(TEXT("Error accessing mapped memory\n"));
 		return -1;
 	}
 
-	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)validaPosicao, (LPVOID)NULL, 0, NULL);
+	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)atualizaMonstro, (LPVOID)NULL, 0, NULL);
 
-	if (me.tipo == 0) {
+
+
+	if (jogo->monstros[mid].tipo == DISTRAIDO) {
 		IniciaDistraido();
 	}
 	else {
@@ -220,7 +268,8 @@ int _tmain(int argc, LPTSTR argv[]) {
 	}
 
 
-	UnmapViewOfFile(mapa);
+
+	UnmapViewOfFile(jogo);
 
 	CloseHandle(hMapFile);
 

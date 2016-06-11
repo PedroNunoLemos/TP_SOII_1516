@@ -32,7 +32,8 @@ typedef struct DLL_IMP_API _monstro
 	int id;
 	int energia;
 	int lentidao;
-	
+	int n_casas;
+
 	TipoMonstro tipo;
 	Coordenada posicao;
 	TCHAR descricao[10];

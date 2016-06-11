@@ -136,10 +136,13 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 				}
 
 
-				if (lab->mapa[ix][iy].monstro != 0)
+				if (lab->mapa[ix][iy].monstro != -1 &&
+					lab->mapa[ix][iy].monstro >= 0
+					)
 				{
-					setForeGroundAndBackGroundColor(Color_LightRed, 6);
-					c = '~';
+					setForeGroundAndBackGroundColor(Color_LightYellow
+						+ (lab->mapa[ix][iy].tipoMonstro), 6);
+					c = '*';
 				}
 
 				_tprintf(TEXT("%c"), c);

@@ -249,8 +249,8 @@ void inicializaObjectos(JogoServidor *jog) {
 
 			jog->mapa.celula[x][y].objeto = 0;
 			jog->mapa.celula[x][y].jogador = 0;
-			jog->mapa.celula[x][y].monstro = 0;
-			jog->mapa.celula[x][y].tipoMonstro = 0;
+			jog->mapa.celula[x][y].monstro = -1;
+			jog->mapa.celula[x][y].tipoMonstro = -1;
 
 		}
 
@@ -269,28 +269,38 @@ Coordenada PosicaoIniMonstro(JogoServidor *serv) {
 
 	int x = 0;
 	int y = 0;
+	int cnt = 0;
+	int tipo = 0;
+	int prob = 0;
 
-	int val = 0;
+	res.x = -1;
+	res.y = -1;
 
-	do {
+	for (r = 0; r < serv->mapa.tamsalas; r++) {
 
-		int tx = aleatorio(1, serv->mapa.tamx - 5, r);
-		int ty = aleatorio(1, serv->mapa.tamy - 5, r + 1);
+		x = serv->mapa.salas[r].porta.x;
+		y = serv->mapa.salas[r].porta.y;
 
-		if (
-			serv->mapa.celula[tx][ty].tipo == TipoCelula_CHAO &&
-			serv->mapa.celula[tx][ty].monstro == 0
+
+		cnt++;
+
+		prob = aleatorio(1, 100, y*cnt);
+
+
+		if (prob < 48 && serv->mapa.celula[x][y].monstro == -1
+			&& serv->mapa.celula[x][y].jogador == 0
 			) {
-			res.x = tx;
-			res.y = ty;
-			val == 1;
-			break;
-		}
+			res.x = x; res.y = y;
+			serv->mapa.celula[x][y].monstro = -2;
+			return res;
 
-		r++;
-	} while (val == 0);
+
+
+		}
+	}
 
 	return res;
+
 }
 
 
@@ -312,7 +322,9 @@ Coordenada PosicaoIniJog(JogoServidor *jog) {
 		x = jog->mapa.salas[r].porta.x;
 		y = jog->mapa.salas[r].porta.y;
 
-		if (!existeJogadorNaPosicao(jog, x, y))
+		if (!existeJogadorNaPosicao(jog, x, y)
+			&& jog->mapa.celula[x][y].monstro == -1
+			)
 		{
 			res.x = x;
 			res.y = y;
@@ -521,21 +533,8 @@ void criaMonstrosIniciais(JogoServidor *serv) {
 			break;
 		}
 
+		serv->monstros[i].n_casas = 0;
 		serv->monstrosCriados++;
 	}
-
-}
-
-void atualizaMonstroServidor(JogoServidor *serv, MemoriaPartilhada *mem) {
-
-	int x = 0;
-	int y = 0;
-
-	serv->monstrosCriados = mem->monstrosCriados;
-	//serv->jogadoresLigados = mem->jogadoresLigados;
-
-	for (int i = 0; i < serv->monstrosCriados; i++)
-		serv->monstros[i] = mem->monstros[i];
-
 
 }

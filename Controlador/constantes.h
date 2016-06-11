@@ -7,6 +7,7 @@
 //60000
 
 #define MAXOBJECTOS 5
+#define N_CASAS 5
 
 #define PERC_VITAMINAS 30
 #define PERC_ORANGE 14
