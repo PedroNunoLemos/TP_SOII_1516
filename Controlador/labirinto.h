@@ -3,6 +3,7 @@
 #include "celula.h"
 #include "uteis.h"
 #include "constantes.h"
+#include "monstro.h"
 
 #ifdef DLL_EXPORTS
 #define DLL_IMP_API __declspec(dllexport)
@@ -39,6 +40,7 @@ typedef struct
 
 	Celula celula[MAXTAMX][MAXTAMY];
 	Sala salas[MAXSALAS];
+	Monstro monstros[MAXINIMIGOS];
 
 } Labirinto;
 

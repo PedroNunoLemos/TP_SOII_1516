@@ -40,6 +40,7 @@ typedef struct DLL_IMP_API _jogoCliente
 	Celula mapa[15][15];
 
 	DWORD pidCliente;
+
 	Jogador jogador;
 
 	TCHAR mensagem[256];
@@ -61,6 +62,7 @@ typedef struct  _cliente
 typedef struct  _jogoservidor
 {
 
+	int monstrosCriados;
 	int jogadoresLigados;
 
 	Labirinto *mapa;
@@ -70,15 +72,10 @@ typedef struct  _jogoservidor
 	Cliente clientes[MAXJOGADORES];
 	HANDLE clientes_atualizar[MAXJOGADORES];
 
-	Monstro *monstros[MAXINIMIGOS];
-
 	int JogoIniciado;
 	int ClienteLigado;
 
-
-
 	DWORD totalLigacoes;
-
 
 } JogoServidor;
 

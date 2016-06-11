@@ -560,9 +560,10 @@ void  lancaMonstros() {
 		_stprintf_s(procNome, 256,
 			TEXT("%s %d %d %d %d %d %d %d"),
 			TEXT("Monstro"),
-			jogo->monstros[i]->tipo, MAXTAMX, MAXTAMY,
-			jogo->monstros[i]->posicao.x,
-			jogo->monstros[i]->posicao.y, i, jogo->monstros[i]->energia);
+			jogo->mapa->monstros[i].tipo, MAXTAMX, MAXTAMY,
+			jogo->mapa->monstros[i].posicao.x,
+			jogo->mapa->monstros[i].posicao.y, i,
+			jogo->mapa->monstros[i].energia);
 
 		ZeroMemory(&si, sizeof(STARTUPINFO));
 		si.cb = sizeof(STARTUPINFO);

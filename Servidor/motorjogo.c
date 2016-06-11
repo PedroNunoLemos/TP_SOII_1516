@@ -376,6 +376,10 @@ void criaObjectosMapa(JogoServidor *serv) {
 
 }
 
+void iniciaMonstros() {
+
+
+}
 
 
 void criaJogo(JogoServidor *jog)
