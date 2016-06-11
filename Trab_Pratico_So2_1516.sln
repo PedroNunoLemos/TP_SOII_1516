@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monstro", "Monstros\Monstro
 		{F6D3B8CF-D60E-43C5-B915-C81487EDD560} = {F6D3B8CF-D60E-43C5-B915-C81487EDD560}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClienteGui", "ClienteGui\ClienteGui.vcxproj", "{3FF953F3-C821-47E3-A2F7-1BCE7D9E3CAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -60,6 +62,14 @@ Global
 		{42F52863-59E2-40A5-9549-5DF50C22A20E}.Release|x64.Build.0 = Release|x64
 		{42F52863-59E2-40A5-9549-5DF50C22A20E}.Release|x86.ActiveCfg = Release|Win32
 		{42F52863-59E2-40A5-9549-5DF50C22A20E}.Release|x86.Build.0 = Release|Win32
+		{3FF953F3-C821-47E3-A2F7-1BCE7D9E3CAC}.Debug|x64.ActiveCfg = Debug|x64
+		{3FF953F3-C821-47E3-A2F7-1BCE7D9E3CAC}.Debug|x64.Build.0 = Debug|x64
+		{3FF953F3-C821-47E3-A2F7-1BCE7D9E3CAC}.Debug|x86.ActiveCfg = Debug|Win32
+		{3FF953F3-C821-47E3-A2F7-1BCE7D9E3CAC}.Debug|x86.Build.0 = Debug|Win32
+		{3FF953F3-C821-47E3-A2F7-1BCE7D9E3CAC}.Release|x64.ActiveCfg = Release|x64
+		{3FF953F3-C821-47E3-A2F7-1BCE7D9E3CAC}.Release|x64.Build.0 = Release|x64
+		{3FF953F3-C821-47E3-A2F7-1BCE7D9E3CAC}.Release|x86.ActiveCfg = Release|Win32
+		{3FF953F3-C821-47E3-A2F7-1BCE7D9E3CAC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
