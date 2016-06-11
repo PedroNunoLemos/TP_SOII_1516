@@ -20,8 +20,8 @@ int validaMovimentoBase(JogoServidor *serv, int x, int y) {
 
 
 	if ((
-		serv->mapa->celula[x][y].tipo == TipoCelula_CHAO ||
-		serv->mapa->celula[x][y].tipo == TipoCelula_PORTA))
+		serv->mapa.celula[x][y].tipo == TipoCelula_CHAO ||
+		serv->mapa.celula[x][y].tipo == TipoCelula_PORTA))
 		return 1; else return 0;
 
 
@@ -138,10 +138,10 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 	int y = 0;
 	int en = -1;
 
-	for (x = 0; x < serv->mapa->tamx; x++)
+	for (x = 0; x < serv->mapa.tamx; x++)
 	{
 
-		for (y = 0; y < serv->mapa->tamy; y++)
+		for (y = 0; y < serv->mapa.tamy; y++)
 		{
 
 			if (x == px && y == py)
@@ -153,7 +153,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 					combateJogvsJog(serv, jogcl->id, en);
 
 				//apanha objectos
-				switch (serv->mapa->celula[x][y].objeto)
+				switch (serv->mapa.celula[x][y].objeto)
 				{
 				case Tipo_Pedra:
 
@@ -161,7 +161,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 					if (jogcl->jogador.qtdPedras + 1 <= MAXPEDRAS) {
 
 						jogcl->jogador.qtdPedras++;
-						serv->mapa->celula[x][y].objeto = 0;
+						serv->mapa.celula[x][y].objeto = 0;
 
 					}
 
@@ -172,7 +172,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 					if ((jogcl->jogador.saude + 1) <= (SAUDE_JOG_INI * 2))
 						jogcl->jogador.saude++;
 
-					serv->mapa->celula[x][y].objeto = 0;
+					serv->mapa.celula[x][y].objeto = 0;
 
 					break;
 
@@ -186,7 +186,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 
 						jogcl->jogador.efeitoCafeina = 1;
 
-						serv->mapa->celula[x][y].objeto = 0;
+						serv->mapa.celula[x][y].objeto = 0;
 					}
 
 					break;
@@ -197,7 +197,7 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 					if ((jogcl->jogador.saude + 3) <= (SAUDE_JOG_INI * 2))
 						jogcl->jogador.saude += 3;
 
-					serv->mapa->celula[x][y].objeto = 0;
+					serv->mapa.celula[x][y].objeto = 0;
 
 					break;
 
@@ -240,17 +240,17 @@ void inicializaObjectos(JogoServidor *jog) {
 	int r = 0;
 
 
-	for (x = 0; x < jog->mapa->tamx; x++)
+	for (x = 0; x < jog->mapa.tamx; x++)
 	{
 
-		for (y = 0; y < jog->mapa->tamy; y++)
+		for (y = 0; y < jog->mapa.tamy; y++)
 		{
 
 
-			jog->mapa->celula[x][y].objeto = 0;
-			jog->mapa->celula[x][y].jogador = 0;
-			jog->mapa->celula[x][y].monstro = 0;
-			jog->mapa->celula[x][y].tipoMonstro = 0;
+			jog->mapa.celula[x][y].objeto = 0;
+			jog->mapa.celula[x][y].jogador = 0;
+			jog->mapa.celula[x][y].monstro = 0;
+			jog->mapa.celula[x][y].tipoMonstro = 0;
 
 		}
 
@@ -274,12 +274,12 @@ Coordenada PosicaoIniMonstro(JogoServidor *serv) {
 
 	do {
 
-		int tx = aleatorio(1, serv->mapa->tamx - 5, r);
-		int ty = aleatorio(1, serv->mapa->tamy - 5, r + 1);
+		int tx = aleatorio(1, serv->mapa.tamx - 5, r);
+		int ty = aleatorio(1, serv->mapa.tamy - 5, r + 1);
 
 		if (
-			serv->mapa->celula[tx][ty].tipo == TipoCelula_CHAO &&
-			serv->mapa->celula[tx][ty].monstro == 0
+			serv->mapa.celula[tx][ty].tipo == TipoCelula_CHAO &&
+			serv->mapa.celula[tx][ty].monstro == 0
 			) {
 			res.x = tx;
 			res.y = ty;
@@ -307,10 +307,10 @@ Coordenada PosicaoIniJog(JogoServidor *jog) {
 	res.x = -1;
 	res.y = -1;
 
-	for (r = 0; r < jog->mapa->tamsalas; r++) {
+	for (r = 0; r < jog->mapa.tamsalas; r++) {
 
-		x = jog->mapa->salas[r].porta.x;
-		y = jog->mapa->salas[r].porta.y;
+		x = jog->mapa.salas[r].porta.x;
+		y = jog->mapa.salas[r].porta.y;
 
 		if (!existeJogadorNaPosicao(jog, x, y))
 		{
@@ -343,7 +343,7 @@ void atualizaMapaCliente(JogoServidor *serv, JogoCliente *jogcl, int x1, int y1)
 			i = (x1 + MAXVISX) - x;
 			j = (y1 + MAXVISY) - y;
 
-			jogcl->mapa[i][j] = serv->mapa->celula[x][y];
+			jogcl->mapa[i][j] = serv->mapa.celula[x][y];
 
 		}
 	}
@@ -360,25 +360,25 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 	int r = 0;
 
 
-	for (x = 0; x < serv->mapa->tamx; x++)
+	for (x = 0; x < serv->mapa.tamx; x++)
 	{
 
-		for (y = 0; y < serv->mapa->tamy; y++)
+		for (y = 0; y < serv->mapa.tamy; y++)
 		{
 
-			serv->mapa->celula[x][y].jogador = 0;
+			serv->mapa.celula[x][y].jogador = 0;
 
 			for (r = 0; r < serv->jogadoresLigados; r++)
 			{
 
 				if (serv->clientes[r].jogo.pidCliente != jogcl->pidCliente) {
 					if (x == serv->clientes[r].jogo.jogador.posicao.x && y == serv->clientes[r].jogo.jogador.posicao.y)
-						serv->mapa->celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
+						serv->mapa.celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
 				}
 
 				if (serv->clientes[r].jogo.pidCliente == jogcl->pidCliente) {
 					if (x == jogcl->jogador.posicao.x && y == jogcl->jogador.posicao.y)
-						serv->mapa->celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
+						serv->mapa.celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
 				}
 
 			}
@@ -402,14 +402,14 @@ void criaObjectosMapa(JogoServidor *serv) {
 
 	for (int i = 0; i < MAXOBJECTOS; i++) {
 
-		for (x = 0; x < serv->mapa->tamx; x++)
+		for (x = 0; x < serv->mapa.tamx; x++)
 		{
 
-			for (y = 0; y < serv->mapa->tamy; y++)
+			for (y = 0; y < serv->mapa.tamy; y++)
 			{
 
 
-				if (serv->mapa->celula[x][y].tipo == TipoCelula_CHAO) {
+				if (serv->mapa.celula[x][y].tipo == TipoCelula_CHAO) {
 
 
 					r = rand() % 100;
@@ -427,7 +427,7 @@ void criaObjectosMapa(JogoServidor *serv) {
 					prob = aleatorio(1, 100, y*cnt);
 
 					if (prob < 8) {
-						serv->mapa->celula[x][y].objeto = tipo;
+						serv->mapa.celula[x][y].objeto = tipo;
 
 					}
 
@@ -442,7 +442,7 @@ void criaObjectosMapa(JogoServidor *serv) {
 void criaJogo(JogoServidor *jog)
 {
 
-	jog->mapa = CriaLabirinto(200, 200, 10);
+	jog->mapa = *CriaLabirinto(200, 200, 10);
 
 
 	inicializaObjectos(jog);

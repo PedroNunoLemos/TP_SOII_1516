@@ -65,7 +65,7 @@ typedef struct  _jogoservidor
 	int monstrosCriados;
 	int jogadoresLigados;
 
-	Labirinto *mapa;
+	Labirinto mapa;
 
 	DWORD instantes;
 

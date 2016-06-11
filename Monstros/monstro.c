@@ -19,7 +19,7 @@
 HANDLE hMapFile;
 HANDLE moveMutex;
 HANDLE hThread;
-MemoriaPartilhada *mapa;
+JogoServidor *mapa;
 
 Monstro me;
 int tamx;
@@ -46,7 +46,7 @@ void abrirMemoriaPartilhada() {
 		return;
 	}
 
-	mapa = (MemoriaPartilhada*)MapViewOfFile(hMapFile, // handle to map object
+	mapa = (JogoServidor*)MapViewOfFile(hMapFile, // handle to map object
 		FILE_MAP_ALL_ACCESS,  // read/write permission
 		0,
 		0,
@@ -117,7 +117,7 @@ DWORD WINAPI validaPosicao(LPVOID param)
 
 	while (1) {
 
-		_tprintf(TEXT("%d \n"), mapa->mapa->celula[100][104].jogador);
+		_tprintf(TEXT("%d \n"), mapa->mapa.celula[100][104].jogador);
 
 		//	if (/* posicao jogador = monstro*/1) {
 		//		sch = mapa->clientes;

@@ -30,7 +30,6 @@ STARTUPINFO si;
 PROCESS_INFORMATION pi;
 
 JogoServidor *jogo;
-MemoriaPartilhada *jogomem;
 
 HANDLE memoria;
 HANDLE ticker;
@@ -50,7 +49,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
 	HANDLE hPipeRec = INVALID_HANDLE_VALUE;
 
-	MemoriaPartilhada *tmppj;
+	JogoServidor *tmppj;
 
 
 	int i;
@@ -74,22 +73,22 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	/////////////////////////Mapeamento de memória/////////////////////////////////////////////
 
-	memoria = CreateFileMapping(NULL, NULL, PAGE_READWRITE, 0, sizeof(MemoriaPartilhada), nomeMemoria);
+	memoria = CreateFileMapping(NULL, NULL, PAGE_READWRITE, 0, sizeof(JogoServidor), nomeMemoria);
 
 	if (memoria == NULL) {
 		_tprintf(TEXT("[ERRO] Criação de handle de memória - %d"), GetLastError());
 		return -1;
 	}
 
-	jogomem = (MemoriaPartilhada*)MapViewOfFile(memoria, FILE_MAP_WRITE, 0, 0, sizeof(MemoriaPartilhada));
+	jogo  = (JogoServidor*)MapViewOfFile(memoria, FILE_MAP_WRITE, 0, 0, sizeof(JogoServidor));
 
-	if (jogomem == NULL) {
+	if (jogo == NULL) {
 		return -1;
 	}
 
-	tmppj = malloc(sizeof(MemoriaPartilhada));
+	tmppj = malloc(sizeof(JogoServidor));
 
-	CopyMemory(jogomem, tmppj, sizeof(MemoriaPartilhada));
+	CopyMemory(jogo, tmppj, sizeof(JogoServidor));
 
 	free(tmppj);
 
@@ -97,13 +96,12 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	//////////////////////////////////////////////////////////////////////
 
-	jogo = malloc(sizeof(JogoServidor));
+	//jogo = malloc(sizeof(JogoServidor));
 	jogo->jogadoresLigados = 0;
 	jogo->totalLigacoes = 0;
 	jogo->instantes = 0;
 
-	jogomem->mapa = jogo->mapa;
-
+	
 	for (i = 0; i < MAXJOGADORES; i++) {
 
 
@@ -165,7 +163,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	}
 
-	UnmapViewOfFile(jogomem);
+	UnmapViewOfFile(jogo);
 	CloseHandle(memoria);
 
 	free(jogo);
