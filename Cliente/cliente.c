@@ -248,7 +248,6 @@ void impDados(JogoCliente *jogo) {
 
 void mostraJogo(HANDLE Hpipe, JogoCliente *jogo) {
 
-	char tmp;
 	int res = 0;
 
 	HANDLE cmdThread;

@@ -5,14 +5,167 @@
 #include <stdio.h>
 #include <strsafe.h>
 
-#include "..\Controlador\pipes.h"
-#include "..\Controlador\constantes.h"
+
 #include "..\Controlador\memoria.h"
 #include "..\Controlador\jogo.h"
 #include "..\Controlador\uteis.h"
+#include "..\Controlador\pipes.h"
+#include "..\Controlador\constantes.h"
 
 
 #include "motorMonstro.h"
+
+
+
+Coordenada monstroPosicaoAdjLivre(JogoServidor *jogo, int mid) {
+
+	int i = 0;
+	int x = 0;
+	int y = 0;
+
+	Coordenada res;
+
+	Coordenada mp = jogo->monstros[mid].posicao;
+
+	res.x = -1;
+	res.x = -1;
+
+	for (x = 0; x < jogo->mapa.tamx; x++)
+	{
+		for (y = 0; y < jogo->mapa.tamy; y++)
+		{
+
+			Celula tc = jogo->mapa.celula[x][y];
+
+			if (mp.x == x && mp.y == y) {
+
+				if (jogo->mapa.celula[x - 1][y - 1].monstro == -1 &&
+					jogo->mapa.celula[x - 1][y - 1].jogador == 0 &&
+					(jogo->mapa.celula[x - 1][y - 1].tipo == TipoCelula_CHAO ||
+						jogo->mapa.celula[x - 1][y - 1].tipo == TipoCelula_PORTA
+						)
+					)
+				{
+					res.x = x - 1;
+					res.y = y - 1;
+
+					return res;
+
+				}
+
+
+				if (jogo->mapa.celula[x - 1][y].monstro == -1 &&
+					jogo->mapa.celula[x - 1][y].jogador == 0 &&
+					(jogo->mapa.celula[x - 1][y].tipo == TipoCelula_CHAO ||
+						jogo->mapa.celula[x - 1][y].tipo == TipoCelula_PORTA
+						))
+				{
+					res.x = x - 1;
+					res.y = y;
+
+					return res;
+
+				}
+
+				if (jogo->mapa.celula[x - 1][y + 1].monstro == -1 &&
+					jogo->mapa.celula[x - 1][y + 1].jogador == 0 &&
+					(jogo->mapa.celula[x - 1][y + 1].tipo == TipoCelula_CHAO ||
+						jogo->mapa.celula[x - 1][y + 1].tipo == TipoCelula_PORTA
+						)
+					)
+				{
+					res.x = x - 1;
+					res.y = y + 1;
+
+					return res;
+
+				}
+
+				if (jogo->mapa.celula[x][y - 1].monstro == -1 &&
+					jogo->mapa.celula[x][y - 1].jogador == 0 &&
+					(jogo->mapa.celula[x][y - 1].tipo == TipoCelula_CHAO ||
+						jogo->mapa.celula[x][y - 1].tipo == TipoCelula_PORTA
+						)
+					)
+				{
+					res.x = x;
+					res.y = y - 1;
+
+					return res;
+
+				}
+
+
+				if (jogo->mapa.celula[x + 1][y - 1].monstro == -1 &&
+					jogo->mapa.celula[x + 1][y - 1].jogador == 0 &&
+					(jogo->mapa.celula[x + 1][y - 1].tipo == TipoCelula_CHAO ||
+						jogo->mapa.celula[x + 1][y - 1].tipo == TipoCelula_PORTA
+						)
+					)
+				{
+					res.x = x + 1;
+					res.y = y - 1;
+
+					return res;
+
+				}
+
+
+
+
+				if (jogo->mapa.celula[x + 1][y].monstro == -1 &&
+					jogo->mapa.celula[x + 1][y].jogador == 0 &&
+					(jogo->mapa.celula[x + 1][y].tipo == TipoCelula_CHAO ||
+						jogo->mapa.celula[x + 1][y].tipo == TipoCelula_PORTA
+						)
+					)
+				{
+					res.x = x + 1;
+					res.y = y;
+
+					return res;
+
+				}
+
+
+				if (jogo->mapa.celula[x + 1][y + 1].monstro == -1 &&
+					jogo->mapa.celula[x + 1][y + 1].jogador == 0 &&
+					(jogo->mapa.celula[x + 1][y + 1].tipo == TipoCelula_CHAO ||
+						jogo->mapa.celula[x + 1][y + 1].tipo == TipoCelula_PORTA
+						)
+					)
+				{
+					res.x = x + 1;
+					res.y = y + 1;
+
+					return res;
+
+				}
+
+				if (jogo->mapa.celula[x][y + 1].monstro == -1 &&
+					jogo->mapa.celula[x][y + 1].jogador == 0 &&
+					(jogo->mapa.celula[x + 1][y - 1].tipo == TipoCelula_CHAO ||
+						jogo->mapa.celula[x + 1][y - 1].tipo == TipoCelula_PORTA
+						)
+					)
+				{
+					res.x = x + 1;
+					res.y = y - 1;
+
+					return res;
+
+				}
+
+
+			}
+		}
+	}
+
+	res = mp;
+
+	return res;
+
+}
 
 int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 
@@ -57,8 +210,9 @@ Coordenada PosicaoIniMonstro(JogoServidor *serv) {
 
 
 		if (prob < 48 && serv->mapa.celula[x][y].monstro == -1
-			&& !(existeJogadorNaPosicao(serv,x,y))
+			&& !(existeJogadorNaPosicao(serv, x, y))
 			) {
+			serv->mapa.celula[x][y].monstro = -2;
 			resM.x = x;
 			resM.y = y;
 			break;
@@ -72,7 +226,7 @@ Coordenada PosicaoIniMonstro(JogoServidor *serv) {
 
 
 
-int criaMonstro(JogoServidor *serv, int tipo, int energia, int n) {
+int criaMonstro(JogoServidor *serv, int tipo, int energia, int n, int dup) {
 
 	int x = 0, y = 0, r = 0;
 	int tr = 0;
@@ -82,7 +236,7 @@ int criaMonstro(JogoServidor *serv, int tipo, int energia, int n) {
 	pos.x = -1;
 	pos.y = -1;
 
-	if (serv->monstrosCriados == MAXINIMIGOS)
+	if (serv->monstrosCriados >= MAXINIMIGOS)
 		return -1;
 
 	i = serv->monstrosCriados;
@@ -104,7 +258,11 @@ int criaMonstro(JogoServidor *serv, int tipo, int energia, int n) {
 		break;
 	}
 
-	pos = PosicaoIniMonstro(serv);
+	if (dup>=0)
+		pos = monstroPosicaoAdjLivre(serv, dup);
+	else
+		pos = PosicaoIniMonstro(serv);
+
 
 	serv->monstros[i].id = i;
 	serv->monstros[i].posicao = pos;

@@ -24,7 +24,7 @@ HANDLE hThread;
 JogoServidor *jogo;
 
 
-
+int mdup;
 int mtipo;
 int menergia;
 int nSpaces;
@@ -76,7 +76,7 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 	Monstro novoMonstro;
 	Monstro me;
 	Jogador sch;
-
+	int nid = -1;
 	int pode = 0;
 
 	while (1)
@@ -99,9 +99,7 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 
 
 				if (jogo->clientes[i].jogo.jogador.posicao.y == me.posicao.y
-					&& jogo->clientes[i].jogo.jogador.posicao.x == me.posicao.x
-					&& pode == 1
-					)
+					&& jogo->clientes[i].jogo.jogador.posicao.x == me.posicao.x && pode == 1)
 				{
 
 					jogo->clientes[i].jogo.jogador.saude--;
@@ -113,62 +111,53 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 				}
 			}
 
+			if (jogo->monstrosCriados < MAXINIMIGOS)
+			{
+				if (me.energia >= (1.6  * SAUDE_MONSTRO_DIST) && me.tipo == DISTRAIDO)
+				{
 
-			//if (me.energia >= (2 /* duplicatemonster*/ * SAUDE_MONSTRO_DIST) && me.tipo == 0) {
+					jogo->monstros[me.id].energia = (SAUDE_MONSTRO_DIST*1.6) / 2;
 
-			//	novoMonstro.y = me.posicao.y;
-
-			//	if (mapa->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
-			//		mapa->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
-			//		novoMonstro.x = me.posicao.x + 1;
-			//	}
-			//	else {
-			//		novoMonstro.x = me.posicao.x - 1;
-			//	}
-
-			//	me.energia *= .8;
-
-			//	_stprintf_s(procNome, 256,
-			//		TEXT("%s %d %d"),
-			//		TEXT("Monstro"), //0
-			//		i,//1
-			//		tr); //2
-
-			//	ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
-			//	si.cb = sizeof(STARTUPINFO);
+					_stprintf_s(procNome, 256,
+						TEXT("%s %d %d %d %d"),
+						TEXT("Monstro"), //0
+						DISTRAIDO,// tipo Monstro
+						(SAUDE_MONSTRO_DIST*1.6) / 2, //Energia
+						me.n_casas, // valor de N,
+						me.id // se é criado de raiz ou Dup 
+						);
 
 
-			//	CreateProcess(NULL, procNome, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
-			//}
-			//else if (me.energia >= (2 * SAUDE_MONSTRO_BULLY) && me.tipo == 1) {
-			//	novoMonstro.y = me.posicao.y;
-
-			//	if (mapa->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
-			//		mapa->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
-			//		novoMonstro.x = me.posicao.x + 1;
-			//	}
-			//	else {
-			//		novoMonstro.x = me.posicao.x - 1;
-			//	}
-
-			//	me.energia *= .8;
-
-			//	_stprintf_s(procNome, 256,
-			//		TEXT("%s %d %d"),
-			//		TEXT("Monstro"), //0
-			//		i,//1
-			//		tr); //2
-
-			//	ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
-			//	si.cb = sizeof(STARTUPINFO);
-
-			//	CreateProcess(NULL, procNome, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
-
-			//}
-
-			//Sleep(1000);
+					ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
+					si.cb = sizeof(STARTUPINFO);
 
 
+					CreateProcess(NULL, procNome, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+				}
+
+				if (me.energia >= (1.6  * SAUDE_MONSTRO_BULLY) && me.tipo == BULLY)
+				{
+
+					jogo->monstros[me.id].energia = (SAUDE_MONSTRO_BULLY*1.6) / 2;
+
+					_stprintf_s(procNome, 256,
+						TEXT("%s %d %d %d %d"),
+						TEXT("Monstro"), //0
+						BULLY,// tipo Monstro
+						(SAUDE_MONSTRO_BULLY*1.6) / 2, //Energia
+						me.n_casas, // valor de N,
+						me.id // se é criado de raiz ou Dup 
+						);
+
+
+					ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
+					si.cb = sizeof(STARTUPINFO);
+
+
+					CreateProcess(NULL, procNome, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+				}
+
+			}
 		}
 
 
@@ -176,7 +165,7 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 
 	}//fim while(1);
 
-
+	return 0;
 }
 
 int _tmain(int argc, LPTSTR argv[]) {
@@ -193,6 +182,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	mtipo = _ttoi(argv[1]);
 	menergia = _ttoi(argv[2]);
 	nSpaces = _ttoi(argv[3]);
+	mdup = _ttoi(argv[4]);
 
 
 	srand(time(NULL));
@@ -222,7 +212,11 @@ int _tmain(int argc, LPTSTR argv[]) {
 		return -1;
 	}
 
-	tid = criaMonstro(jogo, mtipo, menergia, nSpaces);
+	WaitForSingleObject(servidorMutex, INFINITE);
+
+	tid = criaMonstro(jogo, mtipo, menergia, nSpaces,mdup);
+
+	ReleaseMutex(servidorMutex);
 
 	if (tid == -1)
 	{

@@ -28,6 +28,7 @@ TCHAR procNome[256];
 
 STARTUPINFO si;
 PROCESS_INFORMATION pi;
+HANDLE processos[MAXINIMIGOS / 2];
 
 JogoServidor *jogo;
 
@@ -165,6 +166,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	UnmapViewOfFile(jogo);
 	CloseHandle(memoria);
+
+	for (int i = 0; i < MAXINIMIGOS / 2; i++)
+		TerminateProcess(processos[i], 0);
 
 	free(jogo);
 	return 0;
@@ -611,31 +615,23 @@ void  lancaMonstros() {
 
 		tr = aleatorio(1, N_CASAS, i);
 
-
-		//_stprintf_s(procNome, 256,
-		//	TEXT("%s %d %d %d %d %d %d"),
-		//	TEXT("Monstro"), //0
-		//	jogo->monstros[i].tipo, //1 
-		//	jogo->monstros[i].posicao.x, //2
-		//	jogo->monstros[i].posicao.y, //3
-		//	i,//4
-		//	jogo->monstros[i].energia
-		//	,tr); //5
-
 		tipo = ((i + 1) % 2);
 
 		_stprintf_s(procNome, 256,
-			TEXT("%s %d %d %d "),
+			TEXT("%s %d %d %d %d"),
 			TEXT("Monstro"), //0
-			tipo,//1
-			tipo == 0 ? SAUDE_MONSTRO_DIST : SAUDE_MONSTRO_BULLY,
-			tr); //2
+			tipo,// tipo Monstro
+			tipo == 0 ? SAUDE_MONSTRO_DIST : SAUDE_MONSTRO_BULLY, //Energia
+			tr, // valor de N,
+			-1 // se é criado de raiz ou Dup 
+			); //2
 
 		ZeroMemory(&si, sizeof(STARTUPINFO));
 		si.cb = sizeof(STARTUPINFO);
 
-		CreateProcess(NULL, procNome, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
-		//CREATE_NO_WINDOW
+		CreateProcess(NULL, procNome, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+		processos[i] = pi.hProcess;
+
 	}
 }
 
