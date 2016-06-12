@@ -78,6 +78,7 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 	Jogador sch;
 	int nid = -1;
 	int pode = 0;
+	int tr = 0;
 
 	while (1)
 	{
@@ -106,6 +107,10 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 
 					jogo->monstros[mid].energia += 1;
 
+					_tprintf(TEXT("monstro..:  id:%d energia: %d \n "),mid,
+						jogo->monstros[mid].energia
+						);
+
 					pode = 0;
 
 				}
@@ -118,21 +123,29 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 
 					jogo->monstros[me.id].energia = (SAUDE_MONSTRO_DIST*1.6) / 2;
 
+					tr = aleatorio(1, N_CASAS, me.contadorMovimento);
+
+
 					_stprintf_s(procNome, 256,
 						TEXT("%s %d %d %d %d"),
 						TEXT("Monstro"), //0
-						DISTRAIDO,// tipo Monstro
-						(SAUDE_MONSTRO_DIST*1.6) / 2, //Energia
-						me.n_casas, // valor de N,
+						0,// tipo Monstro
+						jogo->monstros[me.id].energia, //Energia
+						tr, // valor de N,
 						me.id // se é criado de raiz ou Dup 
-						);
+						); //2
+
 
 
 					ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
 					si.cb = sizeof(STARTUPINFO);
 
+					_tprintf(TEXT("duplicando o monstro..: %d %d %d %d \n"), 0,
+						jogo->monstros[me.id].energia, tr, me.id);
 
-					CreateProcess(NULL, procNome, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+					_tprintf(procNome); _tprintf("\n");
+
+					CreateProcess(NULL, procNome, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
 				}
 
 				if (me.energia >= (1.6  * SAUDE_MONSTRO_BULLY) && me.tipo == BULLY)
@@ -140,21 +153,27 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 
 					jogo->monstros[me.id].energia = (SAUDE_MONSTRO_BULLY*1.6) / 2;
 
+					tr = aleatorio(1, N_CASAS, me.contadorMovimento);
+
 					_stprintf_s(procNome, 256,
 						TEXT("%s %d %d %d %d"),
 						TEXT("Monstro"), //0
-						BULLY,// tipo Monstro
-						(SAUDE_MONSTRO_BULLY*1.6) / 2, //Energia
-						me.n_casas, // valor de N,
+						1,// tipo Monstro
+						jogo->monstros[me.id].energia, //Energia
+						tr, // valor de N,
 						me.id // se é criado de raiz ou Dup 
-						);
+						); //2
 
 
 					ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
 					si.cb = sizeof(STARTUPINFO);
 
+					_tprintf(TEXT("duplicando o monstro..: %d %d %d %d \n"), 1,
+						jogo->monstros[me.id].energia, tr, me.id);
 
-					CreateProcess(NULL, procNome, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+					_tprintf(procNome); _tprintf("\n");
+
+					CreateProcess(NULL, procNome, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
 				}
 
 			}
@@ -183,6 +202,10 @@ int _tmain(int argc, LPTSTR argv[]) {
 	menergia = _ttoi(argv[2]);
 	nSpaces = _ttoi(argv[3]);
 	mdup = _ttoi(argv[4]);
+
+	_tprintf(TEXT("criado procid : %d parametros: tipo : %d ener: %d n: %d dup : %d \n"),
+		 GetCurrentProcessId(),_ttoi(argv[1]), _ttoi(argv[2]), _ttoi(argv[3]), _ttoi(argv[4]));
+
 
 
 	srand(time(NULL));
@@ -214,14 +237,28 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	WaitForSingleObject(servidorMutex, INFINITE);
 
-	tid = criaMonstro(jogo, mtipo, menergia, nSpaces,mdup);
+	tid = criaMonstro(jogo, mtipo, menergia, nSpaces, mdup);
+
+	_tprintf(TEXT("criando o monstro..: tipo : %d ener: %d n: %d dup : %d \n"), mtipo, menergia, nSpaces, mdup);
 
 	ReleaseMutex(servidorMutex);
 
 	if (tid == -1)
 	{
+		_tprintf(TEXT("Erro ao criar o monstro"));
+		_gettch();
 		return -1;
 	}
+
+
+	_tprintf(TEXT("Monstro Criado .: tipo %d dup: %d n %d x: %d y : %d \n"), 
+		jogo->monstros[tid].tipo,
+		mdup,
+		jogo->monstros[tid].n_casas,
+		jogo->monstros[tid].posicao.x,
+		jogo->monstros[tid].posicao.y
+		);
+
 
 	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)atualizaMonstro, (LPVOID)tid, 0, NULL);
 

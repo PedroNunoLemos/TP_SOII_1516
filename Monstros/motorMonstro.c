@@ -144,13 +144,13 @@ Coordenada monstroPosicaoAdjLivre(JogoServidor *jogo, int mid) {
 
 				if (jogo->mapa.celula[x][y + 1].monstro == -1 &&
 					jogo->mapa.celula[x][y + 1].jogador == 0 &&
-					(jogo->mapa.celula[x + 1][y - 1].tipo == TipoCelula_CHAO ||
-						jogo->mapa.celula[x + 1][y - 1].tipo == TipoCelula_PORTA
+					(jogo->mapa.celula[x][y + 1].tipo == TipoCelula_CHAO ||
+						jogo->mapa.celula[x][y + 1].tipo == TipoCelula_PORTA
 						)
 					)
 				{
-					res.x = x + 1;
-					res.y = y - 1;
+					res.x = x;
+					res.y = y + 1;
 
 					return res;
 

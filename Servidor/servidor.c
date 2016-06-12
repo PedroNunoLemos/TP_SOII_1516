@@ -168,7 +168,10 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	CloseHandle(memoria);
 
 	for (int i = 0; i < MAXINIMIGOS / 2; i++)
+	{
+		CloseHandle(processos[i]);
 		TerminateProcess(processos[i], 0);
+	}
 
 	free(jogo);
 	return 0;
@@ -232,7 +235,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Temporizador, (LPVOID)NULL, 0, NULL);
 
 
-				//lancaMonstros();
+				lancaMonstros();
 
 				jog->id = id;
 
@@ -629,9 +632,9 @@ void  lancaMonstros() {
 		ZeroMemory(&si, sizeof(STARTUPINFO));
 		si.cb = sizeof(STARTUPINFO);
 
-		CreateProcess(NULL, procNome, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+		CreateProcess(NULL, procNome, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
 		processos[i] = pi.hProcess;
-
+		//CREATE_NO_WINDOW
 	}
 }
 
