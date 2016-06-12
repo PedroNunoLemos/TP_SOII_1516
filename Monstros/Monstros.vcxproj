@@ -20,9 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="monstro.c" />
+    <ClCompile Include="motorMonstro.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="loc_monstro.h" />
+    <ClInclude Include="motorMonstro.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Debug\Controlador.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{42F52863-59E2-40A5-9549-5DF50C22A20E}</ProjectGuid>

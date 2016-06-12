@@ -41,6 +41,7 @@ void forcaDadosServidor(JogoServidor *serv, JogoCliente* jogcl) {
 	jogcl->jogador.saude = serv->clientes[jogcl->id].jogo.jogador.saude;
 	jogcl->jogador.lentidao = serv->clientes[jogcl->id].jogo.jogador.lentidao;
 	jogcl->jogador.qtdPedras = serv->clientes[jogcl->id].jogo.jogador.qtdPedras;
+	jogcl->jogador.contadorMovimento = serv->clientes[jogcl->id].jogo.jogador.contadorMovimento;
 
 
 
@@ -260,50 +261,6 @@ void inicializaObjectos(JogoServidor *jog) {
 }
 
 
-Coordenada PosicaoIniMonstro(JogoServidor *serv) {
-
-	Coordenada res;
-
-	int i = 0;
-	int r = 0;
-
-	int x = 0;
-	int y = 0;
-	int cnt = 0;
-	int tipo = 0;
-	int prob = 0;
-
-	res.x = -1;
-	res.y = -1;
-
-	for (r = 0; r < serv->mapa.tamsalas; r++) {
-
-		x = serv->mapa.salas[r].porta.x;
-		y = serv->mapa.salas[r].porta.y;
-
-
-		cnt++;
-
-		prob = aleatorio(1, 100, y*cnt);
-
-
-		if (prob < 48 && serv->mapa.celula[x][y].monstro == -1
-			&& serv->mapa.celula[x][y].jogador == 0
-			) {
-			res.x = x; res.y = y;
-			serv->mapa.celula[x][y].monstro = -2;
-			return res;
-
-
-
-		}
-	}
-
-	return res;
-
-}
-
-
 Coordenada PosicaoIniJog(JogoServidor *jog) {
 
 	Coordenada res;
@@ -459,7 +416,6 @@ void criaJogo(JogoServidor *jog)
 
 	inicializaObjectos(jog);
 	criaObjectosMapa(jog);
-	criaMonstrosIniciais(jog);
 
 
 }
@@ -473,14 +429,15 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 
 	clt->usarPedra = 0;
 	clt->jogador.efeitoCafeina = 0;
-	clt->pode = 0;
+
 
 	clt->jogador.qtdPedras = 0;
-
+	
 
 	clt->jogador.saude = SAUDE_JOG_INI;
 	clt->jogador.lentidao = LENTIDAO_JOG_INI;
-
+	clt->jogador.contadorMovimento = LENTIDAO_JOG_INI;
+	clt->jogador.podeMovimentar = 1;
 
 
 	clt->jogador.pidJogador = 0;
@@ -494,50 +451,5 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 	clt->jogador.pidJogador = clt->pidCliente;
 
 	swprintf(clt->jogador.nome, 256, TEXT("Jogador %d"), jogo->jogadoresLigados + 1);
-
-}
-
-void criaMonstrosIniciais(JogoServidor *serv) {
-
-	int x = 0, y = 0, r = 0;
-	int tr = 0;
-	serv->monstrosCriados = 0;
-
-	tr = 1;
-	for (int i = 0; i < MAXINIMIGOS / 2; i++) {
-
-
-		switch (tr % 2)
-		{
-
-		case DISTRAIDO:
-			swprintf(serv->monstros[i].descricao, 256, TEXT("%s"), "Distraido");
-
-			serv->monstros[i].energia = SAUDE_MONSTRO_DIST;
-			serv->monstros[i].id = i;
-			serv->monstros[i].posicao = PosicaoIniMonstro(serv);
-			serv->monstros[i].tipo = DISTRAIDO;
-
-			break;
-		case BULLY:
-
-			swprintf(serv->monstros[i].descricao, 256, TEXT("%s"), "Bully");
-
-			serv->monstros[i].energia = SAUDE_MONSTRO_BULLY;
-			serv->monstros[i].id = i;
-			serv->monstros[i].posicao = PosicaoIniMonstro(serv);
-			serv->monstros[i].tipo = BULLY;
-
-
-			break;
-		default:
-			break;
-		}
-
-		tr++;
-
-		serv->monstros[i].n_casas = 0;
-		serv->monstrosCriados++;
-	}
 
 }

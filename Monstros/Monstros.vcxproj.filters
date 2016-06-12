@@ -18,10 +18,19 @@
     <ClCompile Include="monstro.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="motorMonstro.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="loc_monstro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="motorMonstro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Debug\Controlador.lib" />
   </ItemGroup>
 </Project>

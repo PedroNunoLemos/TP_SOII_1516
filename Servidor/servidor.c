@@ -80,7 +80,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 		return -1;
 	}
 
-	jogo  = (JogoServidor*)MapViewOfFile(memoria, FILE_MAP_WRITE, 0, 0, sizeof(JogoServidor));
+	jogo = (JogoServidor*)MapViewOfFile(memoria, FILE_MAP_WRITE, 0, 0, sizeof(JogoServidor));
 
 	if (jogo == NULL) {
 		return -1;
@@ -101,8 +101,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	jogo->totalLigacoes = 0;
 	jogo->instantes = 0;
 
-
-	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Temporizador, (LPVOID)NULL, 0, NULL);
 
 	for (i = 0; i < MAXJOGADORES; i++) {
 
@@ -225,11 +223,12 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogo(jogo);
 
+				jogo->monstrosCriados = 0;
+
+				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Temporizador, (LPVOID)NULL, 0, NULL);
 
 
-				lancaMonstros();
-				
-
+				//lancaMonstros();
 
 				jog->id = id;
 
@@ -258,7 +257,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				jogo->jogadoresLigados++;
 
 				jog->respostaComando = 1;
-				jog->pode = 1;
 
 				JOGO_ONLINE = TRUE;
 
@@ -269,8 +267,9 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				jog->respostaComando = 0;
 		}
 
-		else if (jog->comando == 5)	
+		else if (jog->comando == 5)
 		{
+
 
 			WaitForSingleObject(servidorMutex, INFINITE);
 
@@ -279,10 +278,13 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			forcaDadosServidor(jogo, jog);
 
+			if (jog->jogador.podeMovimentar != 1) {
+				jog->respostaComando = 99;
+			}
 
-	
-	/*		if ((jogo->clientes[id].jogo.pode == 1))
-			{*/
+
+			if (jogo->clientes[id].jogo.jogador.contadorMovimento == 0)
+			{
 
 				x = jogo->clientes[id].jogo.jogador.posicao.x;
 				y = jogo->clientes[id].jogo.jogador.posicao.y;
@@ -309,11 +311,12 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				atualizaMapaCliente(jogo, jog, x - (MAXVISX / 2), y - (MAXVISX / 2));
 
-				jog->pode = 0;
+				jog->respostaComando = 51;
 
-			//}
+				jog->jogador.contadorMovimento = LENTIDAO_JOG_INI;
 
-			jog->respostaComando = 51;
+			}
+
 
 			ReleaseMutex(servidorMutex);
 
@@ -347,7 +350,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				jogo->clientes[id].jogo = *jog;
 
 				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
-				
+
 				atualizaJogadorCliente(jogo, jog);
 
 				atualizaMapaServidor(jogo, jog,
@@ -371,8 +374,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				ReleaseMutex(servidorMutex);
 
 				jog->respostaComando = 1;
-
-				jog->pode = 1;
 
 			}
 
@@ -454,38 +455,52 @@ DWORD WINAPI Temporizador(LPVOID param) {
 
 	//int id = (int)param;
 
-	//int lent = LENTIDAO_JOG_INI;
-	//float temp = 0.000;
-
-	//while (1)
-	//{
-
-	//	if (jogo->clientes[id].jogo.pidCliente != 0)
-	//	{
+	int i = 0;
+	float temp = 0.000;
 
 
-	//		lent = jogo->clientes[id].jogo.jogador.lentidao;
-
-	//		temp = (1.00 / 15.00);
-	//		temp = temp*10.00 / lent;
-
-	//		Sleep(temp);
-
-	//		WaitForSingleObject(servidorMutex, INFINITE);
-
-	//		jogo->clientes[id].jogo.pode = 1;
-
-	//		jogo->clientes[id].jogo.respostaComando = 72;
+	temp = (1.00 / 15.00);
+	temp = temp * 1000;
 
 
-	//		ReleaseMutex(servidorMutex);
+	while (1)
+	{
+
+		Sleep(temp);
+
+		WaitForSingleObject(servidorMutex, INFINITE);
 
 
+		for (i = 0; i < jogo->jogadoresLigados; i++)
+		{
+			if (jogo->clientes[i].jogo.jogador.saude <= 0)
+			{
+				jogo->clientes[i].jogo.jogador.saude = 0;
+				jogo->clientes[i].jogo.jogador.podeMovimentar = 0;
+			}
+
+			jogo->clientes[i].jogo.jogador.contadorMovimento--;
+
+			if (jogo->clientes[i].jogo.jogador.contadorMovimento <= 0)
+				jogo->clientes[i].jogo.jogador.contadorMovimento = 0;
+		}
 
 
-	//	}
+		for (i = 0; i < jogo->monstrosCriados; i++)
+		{
 
-	//}
+			jogo->monstros[i].contadorMovimento--;
+
+			if (jogo->monstros[i].contadorMovimento <= 0)
+				jogo->monstros[i].contadorMovimento = 0;
+		}
+
+
+		ReleaseMutex(servidorMutex);
+
+
+	}
+
 	return 0;
 
 }
@@ -503,6 +518,7 @@ DWORD WINAPI BonusCafeina(LPVOID param) {
 		WaitForSingleObject(servidorMutex, INFINITE);
 
 		jogo->clientes[id].jogo.jogador.lentidao += 2;
+		jogo->clientes[id].jogo.jogador.contadorMovimento -= 2;
 
 		if (jogo->clientes[id].jogo.jogador.lentidao >= LENTIDAO_JOG_INI)
 			jogo->clientes[id].jogo.jogador.lentidao = LENTIDAO_JOG_INI;
@@ -511,7 +527,7 @@ DWORD WINAPI BonusCafeina(LPVOID param) {
 
 		jogo->clientes[id].jogo.respostaComando = 71;
 
-		
+
 		escrevePipeJogoCliente(jogo->clientes_atualizar[id],
 			&(jogo->clientes[id].jogo)
 			);
@@ -586,8 +602,12 @@ void desligaJogador(int id) {
 void  lancaMonstros() {
 
 	int tr = 0;
+	int tipo = 0;
 
-	for (int i = 0; i < MAXINIMIGOS/2; i++) {
+	jogo->monstrosCriados = 0;
+
+	for (int i = 0; i < MAXINIMIGOS / 2; i++) {
+
 
 		tr = aleatorio(1, N_CASAS, i);
 
@@ -602,18 +622,20 @@ void  lancaMonstros() {
 		//	jogo->monstros[i].energia
 		//	,tr); //5
 
+		tipo = ((i + 1) % 2);
+
 		_stprintf_s(procNome, 256,
-			TEXT("%s %d %d"),
+			TEXT("%s %d %d %d "),
 			TEXT("Monstro"), //0
-			i,//1
+			tipo,//1
+			tipo == 0 ? SAUDE_MONSTRO_DIST : SAUDE_MONSTRO_BULLY,
 			tr); //2
 
 		ZeroMemory(&si, sizeof(STARTUPINFO));
 		si.cb = sizeof(STARTUPINFO);
-		
 
-		CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
-
+		CreateProcess(NULL, procNome, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+		//CREATE_NO_WINDOW
 	}
 }
 

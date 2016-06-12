@@ -10,6 +10,7 @@
 #include "../Controlador/coordenada.h"
 #include "../Controlador/memoria.h"
 
+#include "motorMonstro.h"
 
 #define QUEUE_SIZE 5
 #define buf 256
@@ -24,7 +25,8 @@ JogoServidor *jogo;
 
 
 
-int mid;
+int mtipo;
+int menergia;
 int nSpaces;
 
 TCHAR procNome[buf];
@@ -64,43 +66,18 @@ void abrirMemoriaPartilhada() {
 
 }
 
-void AtualizaMapaMonstro(int ox, int oy) {
-
-	int x = 0, y = 0;
-	int r = 0;
-
-	WaitForSingleObject(servidorMutex, INFINITE);
-
-	for (x = 0; x < jogo->mapa.tamx; x++)
-	{
-		for (y = 0; y < jogo->mapa.tamy; y++)
-		{
-
-			if (x == ox && y == oy && jogo->mapa.celula[x][y].monstro == mid) {
-				jogo->mapa.celula[x][y].tipoMonstro = -1;
-				jogo->mapa.celula[x][y].monstro = -1;
-			}
-
-			if (x == jogo->monstros[mid].posicao.x && y == jogo->monstros[mid].posicao.y) {
-				jogo->mapa.celula[x][y].tipoMonstro = jogo->monstros[mid].tipo;
-				jogo->mapa.celula[x][y].monstro = mid;
-			}
-
-		}
-	}
-
-	ReleaseMutex(servidorMutex);
-
-}
-
 
 
 DWORD WINAPI atualizaMonstro(LPVOID param)
 {
 
-	Coordenada novoMonstro;
+	int mid = (int)param;
+
+	Monstro novoMonstro;
 	Monstro me;
 	Jogador sch;
+
+	int pode = 0;
 
 	while (1)
 	{
@@ -109,67 +86,93 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 
 		me = jogo->monstros[mid];
 
-		AtualizaMapaMonstro(me.posicao.x, me.posicao.y);
+		if (me.contadorMovimento == 0) {
+
+			AtualizaMapaMonstro(jogo, mid, me.posicao.x, me.posicao.y);
 
 
-		for (int i = 0; i < jogo->jogadoresLigados; i++) {
+			for (int i = 0; i < jogo->jogadoresLigados; i++) {
+
+				if (jogo->clientes[i].jogo.jogador.posicao.y != me.posicao.y
+					|| jogo->clientes[i].jogo.jogador.posicao.x != me.posicao.x)
+					pode = 1;
 
 
-			if (jogo->clientes[i].jogo.jogador.posicao.y == me.posicao.y
-				&& jogo->clientes[i].jogo.jogador.posicao.x == me.posicao.x) {
-				jogo->clientes[i].jogo.jogador.saude--;
+				if (jogo->clientes[i].jogo.jogador.posicao.y == me.posicao.y
+					&& jogo->clientes[i].jogo.jogador.posicao.x == me.posicao.x
+					&& pode == 1
+					)
+				{
+
+					jogo->clientes[i].jogo.jogador.saude--;
+
+					jogo->monstros[mid].energia += 1;
+
+					pode = 0;
+
+				}
 			}
+
+
+			//if (me.energia >= (2 /* duplicatemonster*/ * SAUDE_MONSTRO_DIST) && me.tipo == 0) {
+
+			//	novoMonstro.y = me.posicao.y;
+
+			//	if (mapa->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
+			//		mapa->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
+			//		novoMonstro.x = me.posicao.x + 1;
+			//	}
+			//	else {
+			//		novoMonstro.x = me.posicao.x - 1;
+			//	}
+
+			//	me.energia *= .8;
+
+			//	_stprintf_s(procNome, 256,
+			//		TEXT("%s %d %d"),
+			//		TEXT("Monstro"), //0
+			//		i,//1
+			//		tr); //2
+
+			//	ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
+			//	si.cb = sizeof(STARTUPINFO);
+
+
+			//	CreateProcess(NULL, procNome, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+			//}
+			//else if (me.energia >= (2 * SAUDE_MONSTRO_BULLY) && me.tipo == 1) {
+			//	novoMonstro.y = me.posicao.y;
+
+			//	if (mapa->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
+			//		mapa->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
+			//		novoMonstro.x = me.posicao.x + 1;
+			//	}
+			//	else {
+			//		novoMonstro.x = me.posicao.x - 1;
+			//	}
+
+			//	me.energia *= .8;
+
+			//	_stprintf_s(procNome, 256,
+			//		TEXT("%s %d %d"),
+			//		TEXT("Monstro"), //0
+			//		i,//1
+			//		tr); //2
+
+			//	ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
+			//	si.cb = sizeof(STARTUPINFO);
+
+			//	CreateProcess(NULL, procNome, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+
+			//}
+
+			//Sleep(1000);
+
+
 		}
 
+
 		ReleaseMutex(servidorMutex);
-
-
-		//	if (me.energia >= (2 /* duplicatemonster*/ * SAUDE_MONSTRO_DIST) && me.tipo == 0) {
-
-		//		novoMonstro.y = me.posicao.y;
-
-		//		if (mapa->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
-		//			mapa->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
-		//			novoMonstro.x = me.posicao.x + 1;
-		//		}
-		//		else {
-		//			novoMonstro.x = me.posicao.x - 1;
-		//		}
-
-		//		me.energia *= .8;
-
-		//		_stprintf_s(procNome, buf, TEXT("%s %d %d %d %d %d %d %d"),
-		//			TEXT("Monstro"), me.tipo, MAXTAMX, MAXTAMY, novoMonstro.y, novoMonstro.x, MAXINIMIGOS, me.energia);
-
-		//		ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
-		//		si.cb = sizeof(STARTUPINFO);
-
-		//		CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
-		//	}
-		//	else if (me.energia >= (2 * SAUDE_MONSTRO_BULLY) && me.tipo == 1) {
-		//		novoMonstro.y = me.posicao.y;
-
-		//		if (mapa->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
-		//			mapa->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
-		//			novoMonstro.x = me.posicao.x + 1;
-		//		}
-		//		else {
-		//			novoMonstro.x = me.posicao.x - 1;
-		//		}
-
-		//		me.energia *= .8;
-
-		//		_stprintf_s(procNome, buf, TEXT("%s %d %d %d %d %d %d %d"),
-		//			TEXT("Monstro"), me.tipo, MAXTAMX, MAXTAMY, novoMonstro.y, novoMonstro.x, MAXINIMIGOS, me.energia);
-
-		//		ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
-		//		si.cb = sizeof(STARTUPINFO);
-
-		//		CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
-		//	}
-
-		Sleep(250);
-
 
 	}//fim while(1);
 
@@ -187,11 +190,13 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 
 
-	mid = _ttoi(argv[1]);
-	nSpaces = _ttoi(argv[2]);
+	mtipo = _ttoi(argv[1]);
+	menergia = _ttoi(argv[2]);
+	nSpaces = _ttoi(argv[3]);
 
 
 	srand(time(NULL));
+
 
 
 	servidorMutex = OpenMutex(
@@ -217,7 +222,14 @@ int _tmain(int argc, LPTSTR argv[]) {
 		return -1;
 	}
 
-	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)atualizaMonstro, (LPVOID)NULL, 0, NULL);
+	tid = criaMonstro(jogo, mtipo, menergia, nSpaces);
+
+	if (tid == -1)
+	{
+		return -1;
+	}
+
+	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)atualizaMonstro, (LPVOID)tid, 0, NULL);
 
 	WaitForSingleObject(hThread, INFINITE);
 

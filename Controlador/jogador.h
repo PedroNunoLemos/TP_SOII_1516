@@ -20,15 +20,6 @@
 #endif
 
 
-typedef struct DLL_IMP_API _posicao_JogadorMapa
-{
-	DWORD cor;
-	DWORD pidCliente;
-	DWORD posicaoOcupada;
-
-}PosicaoJogadorMapa;
-
-
 typedef struct DLL_IMP_API _jogador
 {
 
@@ -41,9 +32,8 @@ typedef struct DLL_IMP_API _jogador
 	Coordenada posicao;
 	DWORD pidJogador;
 
-	//int qtdVitaminas;
-	//int qtdOranges;
-	//int qtdCafeinas;
+	int podeMovimentar;
+	int contadorMovimento;
 
 	int qtdPedras;
 

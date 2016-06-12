@@ -35,8 +35,6 @@ typedef struct DLL_IMP_API _jogoCliente
 	int moveuDirecao;
 	int usarPedra;
 
-	int pode;
-
 	Celula mapa[15][15];
 
 	DWORD pidCliente;

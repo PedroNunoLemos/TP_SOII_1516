@@ -38,6 +38,6 @@ typedef struct DLL_IMP_API _monstro
 	Coordenada posicao;
 	TCHAR descricao[10];
 
-
+	int contadorMovimento;
 
 } Monstro;

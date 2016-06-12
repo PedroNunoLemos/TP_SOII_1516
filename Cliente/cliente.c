@@ -226,14 +226,15 @@ void impDados(JogoCliente *jogo) {
 	_tprintf(TEXT("Cafeinas : %d"), jogo->jogador.efeitoCafeina);
 
 
-	/*	GoToXY(8, 9);
-		_tprintf(TEXT("OrangeBull : %d"), jogo->jogador.qtdOranges);
+	GoToXY(8, 9);
+	_tprintf(TEXT("Contador : %d"), jogo->jogador.contadorMovimento);
+	
+	/*
 
+			GoToXY(8, 10);
+			_tprintf(TEXT("Cafeina : %d"), jogo->jogador.qtdCafeinas);
 
-		GoToXY(8, 10);
-		_tprintf(TEXT("Cafeina : %d"), jogo->jogador.qtdCafeinas);
-
-		*/
+			*/
 
 	GoToXY(8, 11);
 	_tprintf(TEXT("Pedras : %d"), jogo->jogador.qtdPedras);
@@ -307,12 +308,20 @@ DWORD WINAPI ComandosCliente(LPVOID param) {
 
 	while (ch != key_ESCAPE)
 	{
+
+
+		if (jogo->jogador.podeMovimentar == 0)
+		{
+			break;
+		}
+
 		ch = _gettch();
 
 		if (ch == key_DOWN) moverJogador(Hpipe, jogo, 1); //Dir 1
 		if (ch == key_UP) moverJogador(Hpipe, jogo, 2); //Dir 2 
 		if (ch == key_LEFT) moverJogador(Hpipe, jogo, 3); //Dir 3
 		if (ch == key_RIGHT) moverJogador(Hpipe, jogo, 4); //Dir 4
+
 
 		impDados(jogo);
 
@@ -358,7 +367,7 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 			}
 
-	
+
 			if (m->respostaComando == 71)
 			{
 				WaitForSingleObject(hMutex, INFINITE);
