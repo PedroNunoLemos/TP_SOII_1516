@@ -105,9 +105,10 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 
 					jogo->clientes[i].jogo.jogador.saude--;
 
-					jogo->monstros[mid].energia += 1;
+					if (jogo->monstrosCriados < MAXINIMIGOS)
+						jogo->monstros[mid].energia += 1;
 
-					_tprintf(TEXT("monstro..:  id:%d energia: %d \n "),mid,
+					_tprintf(TEXT("monstro..:  id:%d energia: %d \n "), mid,
 						jogo->monstros[mid].energia
 						);
 
@@ -204,7 +205,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	mdup = _ttoi(argv[4]);
 
 	_tprintf(TEXT("criado procid : %d parametros: tipo : %d ener: %d n: %d dup : %d \n"),
-		 GetCurrentProcessId(),_ttoi(argv[1]), _ttoi(argv[2]), _ttoi(argv[3]), _ttoi(argv[4]));
+		GetCurrentProcessId(), _ttoi(argv[1]), _ttoi(argv[2]), _ttoi(argv[3]), _ttoi(argv[4]));
 
 
 
@@ -251,7 +252,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	}
 
 
-	_tprintf(TEXT("Monstro Criado .: tipo %d dup: %d n %d x: %d y : %d \n"), 
+	_tprintf(TEXT("Monstro Criado .: tipo %d dup: %d n %d x: %d y : %d \n"),
 		jogo->monstros[tid].tipo,
 		mdup,
 		jogo->monstros[tid].n_casas,
