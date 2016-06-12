@@ -101,7 +101,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	jogo->totalLigacoes = 0;
 	jogo->instantes = 0;
 
-	
+
+	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Temporizador, (LPVOID)NULL, 0, NULL);
+
 	for (i = 0; i < MAXJOGADORES; i++) {
 
 
@@ -236,7 +238,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				jogo->clientes[id].jogo = *jog;
 
 				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
-				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Temporizador, (LPVOID)id, 0, NULL);
 
 				atualizaJogadorCliente(jogo, jog);
 
@@ -280,8 +281,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 	
-			if ((jogo->clientes[id].jogo.pode == 1))
-			{
+	/*		if ((jogo->clientes[id].jogo.pode == 1))
+			{*/
 
 				x = jogo->clientes[id].jogo.jogador.posicao.x;
 				y = jogo->clientes[id].jogo.jogador.posicao.y;
@@ -310,7 +311,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				jog->pode = 0;
 
-			}
+			//}
 
 			jog->respostaComando = 51;
 
@@ -346,8 +347,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				jogo->clientes[id].jogo = *jog;
 
 				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
-				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Temporizador, (LPVOID)id, 0, NULL);
-
+				
 				atualizaJogadorCliente(jogo, jog);
 
 				atualizaMapaServidor(jogo, jog,
@@ -452,40 +452,40 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 DWORD WINAPI Temporizador(LPVOID param) {
 
-	int id = (int)param;
+	//int id = (int)param;
 
-	int lent = LENTIDAO_JOG_INI;
-	float temp = 0.000;
+	//int lent = LENTIDAO_JOG_INI;
+	//float temp = 0.000;
 
-	while (1)
-	{
+	//while (1)
+	//{
 
-		if (jogo->clientes[id].jogo.pidCliente != 0)
-		{
-
-
-			lent = jogo->clientes[id].jogo.jogador.lentidao;
-
-			temp = (1.00 / 15.00);
-			temp = temp*10.00 / lent;
-
-			Sleep(temp);
-
-			WaitForSingleObject(servidorMutex, INFINITE);
-
-			jogo->clientes[id].jogo.pode = 1;
-
-			jogo->clientes[id].jogo.respostaComando = 72;
+	//	if (jogo->clientes[id].jogo.pidCliente != 0)
+	//	{
 
 
-			ReleaseMutex(servidorMutex);
+	//		lent = jogo->clientes[id].jogo.jogador.lentidao;
+
+	//		temp = (1.00 / 15.00);
+	//		temp = temp*10.00 / lent;
+
+	//		Sleep(temp);
+
+	//		WaitForSingleObject(servidorMutex, INFINITE);
+
+	//		jogo->clientes[id].jogo.pode = 1;
+
+	//		jogo->clientes[id].jogo.respostaComando = 72;
+
+
+	//		ReleaseMutex(servidorMutex);
 
 
 
 
-		}
+	//	}
 
-	}
+	//}
 	return 0;
 
 }

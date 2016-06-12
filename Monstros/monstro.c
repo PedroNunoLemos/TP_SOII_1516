@@ -94,76 +94,35 @@ void AtualizaMapaMonstro(int ox, int oy) {
 }
 
 
-int validaJogadorposicao() {
-
-	Coordenada centro;
-	Monstro me = jogo->monstros[mid];
-
-	centro.y = me.posicao.y - (VISAO_MONSTRO / 2);
-	centro.x = me.posicao.x - (VISAO_MONSTRO / 2);
-
-	for (int i = 0; i < VISAO_MONSTRO; i++) {
-		for (int j = 0; j < VISAO_MONSTRO; j++) {
-
-
-		}
-	}
-
-	return 0;
-}
-
-void IniciaBully() {
-
-
-	int r = rand() % 100;
-	int before = 0;
-	int Jogadorposicao;
-
-	while (1) {
-
-		Jogadorposicao = validaJogadorposicao();
-
-	}
-}
-
-void IniciaDistraido() {
-
-
-	int r = rand() % 100;
-	int before = 0;
-	int Jogadorposicao;
-
-	while (1) {
-
-		Jogadorposicao = validaJogadorposicao();
-
-	}
-}
-
 
 DWORD WINAPI atualizaMonstro(LPVOID param)
 {
-	Jogador* sch;
+
 	Coordenada novoMonstro;
+	Monstro me;
+	Jogador sch;
 
 	while (1)
 	{
 
+		WaitForSingleObject(servidorMutex, INFINITE);
 
-		AtualizaMapaMonstro(jogo->monstros[mid].posicao.x,
-			jogo->monstros[mid].posicao.y);
+		me = jogo->monstros[mid];
 
-		_tprintf(TEXT("%d/%d \n"), jogo->monstros[mid].posicao.x,
-			jogo->monstros[mid].posicao.y);
+		AtualizaMapaMonstro(me.posicao.x, me.posicao.y);
 
-		//	if (/* posicao jogador = monstro*/1) {
-		//		sch = mapa->clientes;
-		//		for (; sch != &mapa->clientes[MAXJOGADORES + 1];) {
-		//			if (sch->posicao.y == me.posicao.y && sch->posicao.x == me.posicao.x) {
-		//				sch->saude--;
-		//			}
-		//		}
-		//	}
+
+		for (int i = 0; i < jogo->jogadoresLigados; i++) {
+
+
+			if (jogo->clientes[i].jogo.jogador.posicao.y == me.posicao.y
+				&& jogo->clientes[i].jogo.jogador.posicao.x == me.posicao.x) {
+				jogo->clientes[i].jogo.jogador.saude--;
+			}
+		}
+
+		ReleaseMutex(servidorMutex);
+
 
 		//	if (me.energia >= (2 /* duplicatemonster*/ * SAUDE_MONSTRO_DIST) && me.tipo == 0) {
 
@@ -189,6 +148,7 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 		//	}
 		//	else if (me.energia >= (2 * SAUDE_MONSTRO_BULLY) && me.tipo == 1) {
 		//		novoMonstro.y = me.posicao.y;
+
 		//		if (mapa->mapa[me.posicao.y][me.posicao.x + 1].monstro != 0 &&
 		//			mapa->mapa[me.posicao.y][me.posicao.x + 1].jogador != 0) {
 		//			novoMonstro.x = me.posicao.x + 1;
@@ -208,8 +168,10 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 		//		CreateProcess(NULL, procNome, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
 		//	}
 
-		//	Sleep(1 / 15 * me.lentidao * 1000);
-	}
+		Sleep(250);
+
+
+	}//fim while(1);
 
 
 }
@@ -222,7 +184,6 @@ int _tmain(int argc, LPTSTR argv[]) {
 	//if (argc != 6) {
 	//	return -1;
 	//}
-
 
 
 
@@ -258,20 +219,12 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)atualizaMonstro, (LPVOID)NULL, 0, NULL);
 
+	WaitForSingleObject(hThread, INFINITE);
 
 
-	if (jogo->monstros[mid].tipo == DISTRAIDO) {
-		IniciaDistraido();
-	}
-	else {
-		IniciaBully();
-	}
+	//UnmapViewOfFile(jogo);
 
-
-
-	UnmapViewOfFile(jogo);
-
-	CloseHandle(hMapFile);
+	//CloseHandle(hMapFile);
 
 
 	return 0;
