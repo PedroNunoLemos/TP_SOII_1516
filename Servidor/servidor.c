@@ -237,7 +237,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Temporizador, (LPVOID)NULL, 0, NULL);
 
 
-				//lancaMonstros();
+				lancaMonstros();
 
 				jog->id = id;
 
@@ -481,7 +481,7 @@ DWORD WINAPI Temporizador(LPVOID param) {
 
 
 	temp = (1.00 / 15.00);
-	temp = temp * 100*10;
+	temp = temp * 100;
 
 
 	while (1)

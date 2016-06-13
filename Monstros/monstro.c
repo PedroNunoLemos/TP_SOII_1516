@@ -189,6 +189,9 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 
 			MovimentaMontro(jogo, mid);
 
+			_tprintf(TEXT("monstro (%d)  pos x:%d y:%d \n"), mid, jogo->monstros[mid].posicao.x,
+				jogo->monstros[mid].posicao.y);
+
 			AtualizaMapaMonstro(jogo, mid, me.posicao.x, me.posicao.y);
 
 			//atualiza contacto com jogador
