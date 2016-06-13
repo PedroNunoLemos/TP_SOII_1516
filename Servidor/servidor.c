@@ -58,19 +58,15 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 
 	int i;
 
-	Utilizador ut;
+	UtilizadorHist ut;
 
 	swprintf(ut.nome, 50, TEXT("Jogador 1"));
-	swprintf(ut.password, 20, TEXT("12345678"));
-	swprintf(ut.util, 50, TEXT("pl1"));
-	
-	for (i = 0; i <10; i++)
-	{
-		ut.derrotas[i] = 0;
-		ut.vitorias[i] = 0;
-	}
 
-	adicionaJogador(ut);
+	ut.derrota = 0;
+	ut.vitoria = 0;
+	ut.desistencia = 0;
+
+	AdicionaHist(ut);
 
 	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
 	servidorMutex = CreateMutex(NULL, FALSE, TEXT("ServidorMutex"));
@@ -242,7 +238,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			if (JOGO_ONLINE == FALSE && JogoCliente_COMECOU == FALSE)
 			{
-				
+
 				if (jog->labDefeito == 0)
 					criaJogo(jogo);
 				else

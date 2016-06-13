@@ -15,12 +15,13 @@
 #include "login.h"
 
 
-int adicionaJogador(Utilizador util)
+
+int AdicionaHist(UtilizadorHist util)
 {
 
 	FILE *fp;
 
-	fp = fopen("bd.dat", "wb");
+	fopen_s(&fp, "hist.dat", "wb");
 
 	if (fp == NULL)
 	{
@@ -28,52 +29,47 @@ int adicionaJogador(Utilizador util)
 	}
 
 
-	fwrite(&util, sizeof(Utilizador), 1, fp);
+	fwrite(&util, sizeof(UtilizadorHist), 1, fp);
 
 
 	fclose(fp);
 
+	return 1;
 
 }
 
 
-int autenticaUtilizador(TCHAR *util, TCHAR *pass)
+void AtualizaHistorico(Historico *hist)
 {
 	FILE *fp;
-	Utilizador ut;
+	Historico ut;
+	UtilizadorHist ht;
+	int i = 0;
 
-	fp = fopen("bd.dat", "rb");
+	fopen_s(&fp,"hist.dat", "rb");
 
 	if (fp == NULL)
 	{
-		return -1;
+		return;
 	}
 
 
-	while (fread(&ut, sizeof(Utilizador), 1, fp) == 1)
+	while (fread(&ht, sizeof(UtilizadorHist), 1, fp) == 1)
 	{
-		
-		if (_tcscmp(util, ut.nome) == 0 && _tcscmp(pass, ut.password) == 0) {
-		
+		ut.registo[i] = ht;
 
-
-
-		}
-
+		if (i < 5)i++;
 	}
 
+	for (int j = i; j < 5; j++)
+	{
+		ut.registo[i].derrota = 0;
+		swprintf(ut.registo[i].nome, 50, TEXT(""));
 
-}
+		ut.registo[i].vitoria = 0;
+		ut.registo[i].desistencia = 0;
+	}
 
-int verificaUtilizador(TCHAR *util)
-{
-	TCHAR key[TAM] = REGISTRY_KEY;
-	HKEY hKey;
+	hist = &ut;
 
-	wcscat_s(key, _tcslen(util)*sizeof(TCHAR), util);
-
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, key, 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
-		return 0;
-
-	return 1;
 }

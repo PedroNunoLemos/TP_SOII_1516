@@ -3,18 +3,23 @@
 #include <Windows.h>
 
 
-typedef struct utilizador
+typedef struct utilizadorhist
 {
-	TCHAR nome[50];
-	TCHAR password[20];
-	TCHAR util[50];
-
-	int derrotas[10];
-	int vitorias[10];
+	TCHAR nome[200];
 
 
-} Utilizador;
+	int derrota;
+	int vitoria;
+	int desistencia;
 
-int adicionaJogador(Utilizador util);
-int autenticaUtilizador(TCHAR *util, TCHAR *pass);
-int verificaUtilizador(TCHAR *util);
+} UtilizadorHist;
+
+
+typedef struct historico
+{
+	UtilizadorHist registo[5];
+
+} Historico;
+
+int AdicionaHist(UtilizadorHist util);
+void AtualizaHistorico(Historico *hist);
