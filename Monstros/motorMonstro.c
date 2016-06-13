@@ -17,6 +17,9 @@
 
 
 
+
+
+
 Coordenada monstroPosicaoAdjLivre(JogoServidor *jogo, int mid) {
 
 	int i = 0;
@@ -226,6 +229,175 @@ Coordenada PosicaoIniMonstro(JogoServidor *serv) {
 
 }
 
+int celulaVaziaMapa(JogoServidor *jogo, int tx, int ty) {
+
+	return  (jogo->mapa.celula[tx][ty].tipo == TipoCelula_CHAO ||
+		jogo->mapa.celula[tx][ty].tipo == TipoCelula_PORTA);
+
+}
+
+//   N	     W	   S	  E	
+// (0 -1) (-1 0) (0 1)	(1 0)
+
+Coordenada devolveCelulaAdjVazia4(JogoServidor *jogo, int x, int y, int dir) {
+
+	Coordenada res;
+
+	int tx = -1;
+	int ty = -1;
+
+	struct {
+		int dx;
+		int dy;
+	} direcao[] =
+	{ { 0,-1 },{ -1,0, },{ 0,1 },{ 1,0 } };
+
+	if (dir >= 4) dir = 4;
+	if (dir <= 1) dir = 1;
+
+	res.x = -1;
+	res.y = -1;
+
+	tx = x + direcao[dir - 1].dx;
+	ty = x + direcao[dir - 1].dy;
+
+	if (celulaVaziaMapa(jogo, tx, ty)) {
+
+		res.x = tx;
+		res.y = ty;
+	}
+
+
+	return res;
+}
+
+
+//   N	     W	   S	  E		NW		 NE     SW	   SE
+// (0 -1) (-1 0) (0 1)	(1 0) (-1 -1)  (1 -1) (-1 1) (1  1)
+
+
+Coordenada devolveCelulaAdjVazia8(JogoServidor *jogo, int x, int y, int dir) {
+
+	Coordenada res;
+
+	int tx = -1;
+	int ty = -1;
+
+	struct {
+		int dx;
+		int dy;
+	} direcao[] =
+	{ { 0,-1 },{ -1,0, },{ 0,1 },{ 1,0 },{ -1,-1 },{1,-1 },{-1,1 },{ 1,1 } };
+
+	if (dir >= 8) dir = 8;
+	if (dir <= 1) dir = 1;
+
+
+	res.x = -1;
+	res.y = -1;
+
+	tx = x + direcao[dir - 1].dx;
+	ty = x + direcao[dir - 1].dy;
+
+	if (celulaVaziaMapa(jogo, tx, ty)) {
+
+		res.x = tx;
+		res.y = ty;
+	}
+
+
+	return res;
+}
+
+void MovimentaMontro(JogoServidor *jogo, int mid) {
+
+	int dir = 0;
+	int odir = -1;
+	int tipo = 0;
+	int cnt = 0;
+	int i = 0;
+
+	int prob = 0;
+
+	Coordenada adj;
+
+	adj.x = -1;
+	adj.y = -1;
+
+	if (mid < jogo->monstrosCriados)
+	{
+		if (jogo->monstros[mid].tipo == BULLY) {
+
+
+
+		}
+
+		if (jogo->monstros[mid].tipo == DISTRAIDO) {
+
+			cnt = 0;
+			//escolhemos uma direção aleatoria
+			do {
+
+				dir = aleatorio(1, 4, GetCurrentTime());
+
+				adj = devolveCelulaAdjVazia4(jogo, jogo->monstros[mid].posicao.x, jogo->monstros[mid].posicao.y, dir);
+
+				cnt++;
+
+			} while ((adj.x != -1 && adj.y != -1) || cnt == 4);
+
+			// não ha celulas livres aguardamos
+			if (cnt == 4)
+				return;
+
+			//movimento n_casas numa direção
+			for (i = 0; i < jogo->monstros[mid].n_casas; i++)
+			{
+				//   N	     W	   S	  E	
+				if (dir == 1 && celulaVaziaMapa(jogo, adj.x, adj.y - 1) == 1) adj.y--;
+				if (dir == 2 && celulaVaziaMapa(jogo, adj.x - 1, adj.y) == 1) adj.x--;
+				if (dir == 3 && celulaVaziaMapa(jogo, adj.x, adj.y + 1) == 1) adj.y++;
+				if (dir == 4 && celulaVaziaMapa(jogo, adj.x + 1, adj.y) == 1) adj.x++;
+
+
+				jogo->monstros[mid].posicao = adj;
+
+				Sleep(500);
+			}
+
+			prob = aleatorio(1, 100, GetCurrentTime());
+
+			if (prob < 75) {
+
+				//guardamos o ultimo sentido do movimento
+				odir = dir;
+
+				cnt = 0;
+				//escolhemos uma direção aleatoria
+				do {
+
+					dir = aleatorio(1, 4, GetCurrentTime());
+
+					adj = devolveCelulaAdjVazia4(jogo, jogo->monstros[mid].posicao.x, jogo->monstros[mid].posicao.y, dir);
+
+					cnt++;
+
+				} while ((adj.x != -1 && adj.y != -1 && odir != dir) || cnt == 4);
+			
+				// não ha celulas livres aguardamos
+				if (cnt == 4)
+					return;
+
+				jogo->monstros[mid].posicao = adj;
+
+				Sleep(500);
+
+			} // fim prob mudar de direção
+
+		}
+
+	}
+}
 
 
 
@@ -261,7 +433,7 @@ int criaMonstro(JogoServidor *serv, int tipo, int energia, int n, int dup) {
 		break;
 	}
 
-	if (dup>=0)
+	if (dup >= 0)
 		pos = monstroPosicaoAdjLivre(serv, dup);
 	else
 		pos = PosicaoIniMonstro(serv);

@@ -237,7 +237,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Temporizador, (LPVOID)NULL, 0, NULL);
 
 
-				lancaMonstros();
+				//lancaMonstros();
 
 				jog->id = id;
 
@@ -450,7 +450,11 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	WaitForSingleObject(servidorMutex, INFINITE);
 
+
+
 	desligaJogador(id);
+
+
 
 	ReleaseMutex(servidorMutex);
 

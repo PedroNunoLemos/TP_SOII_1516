@@ -107,6 +107,17 @@ void imprimeLabirinto(int x, int y, JogoCliente *lab) {
 					c = 'p';
 					break;
 
+				case Tipo_SacoPedra:
+					setForeGroundAndBackGroundColor(Color_LightBlue, 6);
+					c = 'p';
+					break;
+
+				case Tipo_Pocao:
+
+					setForeGroundAndBackGroundColor(Color_Black, 6);
+					c = 'ª';
+					break;
+
 				case Tipo_Vitamina:
 					setForeGroundAndBackGroundColor(Color_LightRed, 6);
 					c = 'v';

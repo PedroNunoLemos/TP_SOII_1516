@@ -11,6 +11,7 @@
 #include "../Controlador/memoria.h"
 
 #include "motorMonstro.h"
+#include "loc_monstro.h"
 
 #define QUEUE_SIZE 5
 #define buf 256
@@ -34,8 +35,7 @@ STARTUPINFO si;
 PROCESS_INFORMATION pi;
 
 
-
-void abrirMemoriaPartilhada() {
+int AbrirMemoriaPartilhada() {
 
 	hMapFile = OpenFileMapping(
 		FILE_MAP_ALL_ACCESS,   // read/write access
@@ -46,7 +46,7 @@ void abrirMemoriaPartilhada() {
 	{
 		_tprintf(TEXT("Could not open file mapping object (%d).\n"),
 			GetLastError());
-		return;
+		return 0;
 	}
 
 	jogo = (JogoServidor*)MapViewOfFile(hMapFile, // handle to map object
@@ -61,145 +61,12 @@ void abrirMemoriaPartilhada() {
 
 		CloseHandle(hMapFile);
 
-		return;
+		return 0;
 	}
 
+	return 1;
 }
 
-
-
-DWORD WINAPI atualizaMonstro(LPVOID param)
-{
-
-	int mid = (int)param;
-
-	Monstro novoMonstro;
-	Monstro me;
-	Jogador sch;
-	int nid = -1;
-	int pode[MAXJOGADORES];
-	int tr = 0;
-
-	for (int i = 0; i < MAXJOGADORES; i++)
-		pode[i] = 1;
-
-	while (1)
-	{
-
-
-
-		WaitForSingleObject(servidorMutex, INFINITE);
-
-		if (jogo->JogoTerminado == 1)
-		{
-			ExitProcess(0);
-		}
-
-		me = jogo->monstros[mid];
-
-		if (me.contadorMovimento == 0) {
-
-			AtualizaMapaMonstro(jogo, mid, me.posicao.x, me.posicao.y);
-
-
-			for (int i = 0; i < jogo->jogadoresLigados; i++) {
-				if (jogo->clientes[i].jogo.id >= 0)
-				{
-
-					if (jogo->clientes[i].jogo.jogador.posicao.y != me.posicao.y
-						|| jogo->clientes[i].jogo.jogador.posicao.x != me.posicao.x)
-						pode[i] = 1;
-
-
-					if (jogo->clientes[i].jogo.jogador.posicao.y == me.posicao.y
-						&& jogo->clientes[i].jogo.jogador.posicao.x == me.posicao.x && pode[i] == 1)
-					{
-
-						jogo->clientes[i].jogo.jogador.saude--;
-
-						if (jogo->monstrosCriados < MAXINIMIGOS)
-							jogo->monstros[mid].energia += 1;
-
-						_tprintf(TEXT("monstro..:  id:%d energia: %d \n "), mid,
-							jogo->monstros[mid].energia
-							);
-
-						pode[i] = 0;
-
-					}
-				}
-			}
-
-			if (jogo->monstrosCriados < MAXINIMIGOS)
-			{
-				if (me.energia >= (1.6  * SAUDE_MONSTRO_DIST) && me.tipo == DISTRAIDO)
-				{
-
-					jogo->monstros[me.id].energia = (SAUDE_MONSTRO_DIST*1.6) / 2;
-
-					tr = aleatorio(1, N_CASAS, me.contadorMovimento);
-
-
-					_stprintf_s(procNome, 256,
-						TEXT("%s %d %d %d %d"),
-						TEXT("Monstro"), //0
-						0,// tipo Monstro
-						jogo->monstros[me.id].energia, //Energia
-						tr, // valor de N,
-						me.id // se é criado de raiz ou Dup 
-						); //2
-
-
-
-					ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
-					si.cb = sizeof(STARTUPINFO);
-
-					_tprintf(TEXT("duplicando o monstro..: %d %d %d %d \n"), 0,
-						jogo->monstros[me.id].energia, tr, me.id);
-
-					_tprintf(procNome); _tprintf("\n");
-
-					CreateProcess(NULL, procNome, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
-				}
-
-				if (me.energia >= (1.6  * SAUDE_MONSTRO_BULLY) && me.tipo == BULLY)
-				{
-
-					jogo->monstros[me.id].energia = (SAUDE_MONSTRO_BULLY*1.6) / 2;
-
-					tr = aleatorio(1, N_CASAS, me.contadorMovimento);
-
-					_stprintf_s(procNome, 256,
-						TEXT("%s %d %d %d %d"),
-						TEXT("Monstro"), //0
-						1,// tipo Monstro
-						jogo->monstros[me.id].energia, //Energia
-						tr, // valor de N,
-						me.id // se é criado de raiz ou Dup 
-						); //2
-
-
-					ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
-					si.cb = sizeof(STARTUPINFO);
-
-					_tprintf(TEXT("duplicando o monstro..: %d %d %d %d \n"), 1,
-						jogo->monstros[me.id].energia, tr, me.id);
-
-					_tprintf(procNome); _tprintf("\n");
-
-					CreateProcess(NULL, procNome, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
-				}
-
-			}
-		}
-
-
-		ReleaseMutex(servidorMutex);
-
-	}//fim while(1);
-
-	return 0;
-}
 
 int _tmain(int argc, LPTSTR argv[]) {
 
@@ -241,7 +108,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 		return 1;
 	}
 
-	abrirMemoriaPartilhada();
+	AbrirMemoriaPartilhada();
 
 
 	if (jogo == NULL) {
@@ -271,7 +138,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 		jogo->monstros[tid].n_casas,
 		jogo->monstros[tid].posicao.x,
 		jogo->monstros[tid].posicao.y
-		);
+	);
 
 
 	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)atualizaMonstro, (LPVOID)tid, 0, NULL);
@@ -283,6 +150,146 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	//CloseHandle(hMapFile);
 
+
+	return 0;
+}
+
+
+
+DWORD WINAPI atualizaMonstro(LPVOID param)
+{
+
+	int mid = (int)param;
+
+	Monstro novoMonstro;
+	Monstro me;
+	Jogador sch;
+	int nid = -1;
+	int pode[MAXJOGADORES];
+	int tr = 0;
+
+	for (int i = 0; i < MAXJOGADORES; i++)
+		pode[i] = 1;
+
+	while (1)
+	{
+
+
+
+		WaitForSingleObject(servidorMutex, INFINITE);
+
+		if (jogo->JogoTerminado == 1)
+		{
+			ExitProcess(0);
+		}
+
+		me = jogo->monstros[mid];
+
+		if (me.contadorMovimento == 0) {
+
+			MovimentaMontro(jogo, mid);
+
+			AtualizaMapaMonstro(jogo, mid, me.posicao.x, me.posicao.y);
+
+			//atualiza contacto com jogador
+			for (int i = 0; i < jogo->jogadoresLigados; i++) {
+				if (jogo->clientes[i].jogo.id >= 0)
+				{
+
+					if (jogo->clientes[i].jogo.jogador.posicao.y != me.posicao.y
+						|| jogo->clientes[i].jogo.jogador.posicao.x != me.posicao.x)
+						pode[i] = 1;
+
+
+					if (jogo->clientes[i].jogo.jogador.posicao.y == me.posicao.y
+						&& jogo->clientes[i].jogo.jogador.posicao.x == me.posicao.x && pode[i] == 1)
+					{
+
+						jogo->clientes[i].jogo.jogador.saude--;
+
+						if (jogo->monstrosCriados < MAXINIMIGOS)
+							jogo->monstros[mid].energia += 1;
+
+						_tprintf(TEXT("monstro..:  id:%d energia: %d \n "), mid,
+							jogo->monstros[mid].energia
+						);
+
+						pode[i] = 0;
+
+					}
+				}
+			}
+
+			//duplica monstro caso atinja 160% nominal
+			if (jogo->monstrosCriados < MAXINIMIGOS)
+			{
+				if (me.energia >= (1.6  * SAUDE_MONSTRO_DIST) && me.tipo == DISTRAIDO)
+				{
+
+					jogo->monstros[me.id].energia = (SAUDE_MONSTRO_DIST*1.6) / 2;
+
+					tr = aleatorio(1, N_CASAS, me.contadorMovimento);
+
+
+					_stprintf_s(procNome, 256,
+						TEXT("%s %d %d %d %d"),
+						TEXT("Monstro"), //0
+						0,// tipo Monstro
+						jogo->monstros[me.id].energia, //Energia
+						tr, // valor de N,
+						me.id // se é criado de raiz ou Dup 
+					); //2
+
+
+
+					ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
+					si.cb = sizeof(STARTUPINFO);
+
+					_tprintf(TEXT("duplicando o monstro..: %d %d %d %d \n"), 0,
+						jogo->monstros[me.id].energia, tr, me.id);
+
+					_tprintf(procNome); _tprintf("\n");
+
+					CreateProcess(NULL, procNome, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+				}
+
+				if (me.energia >= (1.6  * SAUDE_MONSTRO_BULLY) && me.tipo == BULLY)
+				{
+
+					jogo->monstros[me.id].energia = (SAUDE_MONSTRO_BULLY*1.6) / 2;
+
+					tr = aleatorio(1, N_CASAS, me.contadorMovimento);
+
+					_stprintf_s(procNome, 256,
+						TEXT("%s %d %d %d %d"),
+						TEXT("Monstro"), //0
+						1,// tipo Monstro
+						jogo->monstros[me.id].energia, //Energia
+						tr, // valor de N,
+						me.id // se é criado de raiz ou Dup 
+					); //2
+
+
+					ZeroMemory(&si, sizeof(STARTUPINFO)); //Set data to 0
+					si.cb = sizeof(STARTUPINFO);
+
+					_tprintf(TEXT("duplicando o monstro..: %d %d %d %d \n"), 1,
+						jogo->monstros[me.id].energia, tr, me.id);
+
+					_tprintf(procNome); _tprintf("\n");
+
+					CreateProcess(NULL, procNome, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+				}
+
+			}
+		
+
+		}
+
+
+		ReleaseMutex(servidorMutex);
+
+	}//fim while(1);
 
 	return 0;
 }

@@ -9,3 +9,6 @@
 #include <fcntl.h>
 #include <io.h>
 #include <stdio.h>
+
+
+DWORD WINAPI atualizaMonstro(LPVOID param);

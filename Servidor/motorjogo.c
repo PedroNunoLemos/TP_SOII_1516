@@ -179,10 +179,31 @@ void atualizaPosicao(JogoServidor *serv, JogoCliente *jogcl, int px, int py) {
 
 					break;
 
+				case Tipo_SacoPedra:
+
+					//apanha pedra se puder carregar
+					if (jogcl->jogador.qtdPedras + 5 <= MAXPEDRAS) {
+
+						jogcl->jogador.qtdPedras += 5;
+						serv->mapa.celula[x][y].objeto = 0;
+
+					}
+
+					break;
+
 				case Tipo_Vitamina:
 
 					if ((jogcl->jogador.saude + 1) <= (SAUDE_JOG_INI * 2))
 						jogcl->jogador.saude++;
+
+					serv->mapa.celula[x][y].objeto = 0;
+
+					break;
+
+				case Tipo_Pocao:
+
+
+					jogcl->jogador.saude = SAUDE_JOG_INI;
 
 					serv->mapa.celula[x][y].objeto = 0;
 
@@ -381,6 +402,7 @@ void criaObjectosMapa(JogoServidor *serv) {
 	int y = 0;
 	int prob = 0;
 	int r = 0;
+	int cp = 0;
 
 	for (int i = 0; i < MAXOBJECTOS; i++) {
 
@@ -399,9 +421,18 @@ void criaObjectosMapa(JogoServidor *serv) {
 					if (r < PERC_VITAMINAS) tipo = Tipo_Vitamina;
 					else if (r >= PERC_VITAMINAS && r < PERC_ORANGE + PERC_VITAMINAS)
 						tipo = Tipo_OrangeBull;
+
 					else if (r >= PERC_ORANGE + PERC_VITAMINAS &&
 						r < PERC_ORANGE + PERC_VITAMINAS + PERC_PEDRA)
 						tipo = Tipo_Pedra;
+
+					else if (r >= PERC_ORANGE + PERC_VITAMINAS &&
+						r < PERC_ORANGE + PERC_PEDRA / 4)
+						tipo = Tipo_SacoPedra;
+
+					else if (r < PERC_VITAMINAS && cp )
+						tipo = Tipo_Pocao;
+
 					else
 						tipo = Tipo_Cafeina;
 

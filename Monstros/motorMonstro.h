@@ -6,7 +6,10 @@
 #include "..\Controlador\jogo.h"
 #include "..\Controlador\uteis.h"
 
+
 int criaMonstro(JogoServidor *serv, int tipo, int energia, int n, int dup);
 void AtualizaMapaMonstro(JogoServidor *jogo, int mid, int ox, int oy);
 
 Coordenada monstroPosicaoAdjLivre(JogoServidor *jogo, int mid);
+
+void MovimentaMontro(JogoServidor *jogo, int mid);
