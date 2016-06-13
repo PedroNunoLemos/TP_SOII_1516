@@ -173,9 +173,12 @@ int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 	int i = 0;
 
 	for (i = 0; i < jogo->jogadoresLigados; i++) {
+		if (jogo->clientes[i].jogo.id >= 0)
+		{
 
-		if (jogo->clientes[i].jogo.jogador.posicao.x == x && jogo->clientes[i].jogo.jogador.posicao.y == y)
-			return 1;
+			if (jogo->clientes[i].jogo.jogador.posicao.x == x && jogo->clientes[i].jogo.jogador.posicao.y == y)
+				return 1;
+		}
 	}
 
 	return 0;

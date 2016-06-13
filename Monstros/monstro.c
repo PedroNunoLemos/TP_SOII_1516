@@ -77,13 +77,23 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 	Monstro me;
 	Jogador sch;
 	int nid = -1;
-	int pode = 0;
+	int pode[MAXJOGADORES];
 	int tr = 0;
+
+	for (int i = 0; i < MAXJOGADORES; i++)
+		pode[i] = 1;
 
 	while (1)
 	{
 
+
+
 		WaitForSingleObject(servidorMutex, INFINITE);
+
+		if (jogo->JogoTerminado == 1)
+		{
+			ExitProcess(0);
+		}
 
 		me = jogo->monstros[mid];
 
@@ -93,27 +103,30 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 
 
 			for (int i = 0; i < jogo->jogadoresLigados; i++) {
-
-				if (jogo->clientes[i].jogo.jogador.posicao.y != me.posicao.y
-					|| jogo->clientes[i].jogo.jogador.posicao.x != me.posicao.x)
-					pode = 1;
-
-
-				if (jogo->clientes[i].jogo.jogador.posicao.y == me.posicao.y
-					&& jogo->clientes[i].jogo.jogador.posicao.x == me.posicao.x && pode == 1)
+				if (jogo->clientes[i].jogo.id >= 0)
 				{
 
-					jogo->clientes[i].jogo.jogador.saude--;
+					if (jogo->clientes[i].jogo.jogador.posicao.y != me.posicao.y
+						|| jogo->clientes[i].jogo.jogador.posicao.x != me.posicao.x)
+						pode[i] = 1;
 
-					if (jogo->monstrosCriados < MAXINIMIGOS)
-						jogo->monstros[mid].energia += 1;
 
-					_tprintf(TEXT("monstro..:  id:%d energia: %d \n "), mid,
-						jogo->monstros[mid].energia
-						);
+					if (jogo->clientes[i].jogo.jogador.posicao.y == me.posicao.y
+						&& jogo->clientes[i].jogo.jogador.posicao.x == me.posicao.x && pode[i] == 1)
+					{
 
-					pode = 0;
+						jogo->clientes[i].jogo.jogador.saude--;
 
+						if (jogo->monstrosCriados < MAXINIMIGOS)
+							jogo->monstros[mid].energia += 1;
+
+						_tprintf(TEXT("monstro..:  id:%d energia: %d \n "), mid,
+							jogo->monstros[mid].energia
+							);
+
+						pode[i] = 0;
+
+					}
 				}
 			}
 

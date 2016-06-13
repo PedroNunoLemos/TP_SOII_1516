@@ -65,14 +65,11 @@ typedef struct  _jogoservidor
 
 	Labirinto mapa;
 
-	DWORD instantes;
-
 	Cliente clientes[MAXJOGADORES];
 	Monstro monstros[MAXINIMIGOS];
 	HANDLE clientes_atualizar[MAXJOGADORES];
 
-	int JogoIniciado;
-	int ClienteLigado;
+	int JogoTerminado;
 
 	DWORD totalLigacoes;
 

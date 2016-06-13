@@ -66,8 +66,11 @@ int existeJogadorNaPosicao(JogoServidor *jogo, int  x, int y) {
 
 	for (i = 0; i < jogo->jogadoresLigados; i++) {
 
-		if (jogo->clientes[i].jogo.jogador.posicao.x == x && jogo->clientes[i].jogo.jogador.posicao.y == y)
-			return 1;
+		if (jogo->clientes[i].jogo.id >= 0)
+		{
+			if (jogo->clientes[i].jogo.jogador.posicao.x == x && jogo->clientes[i].jogo.jogador.posicao.y == y)
+				return 1;
+		}
 	}
 
 	return 0;
@@ -81,27 +84,32 @@ int jogadorPosicaoAdj(JogoServidor *jogo, int id, int  x, int y) {
 
 	for (i = 0; i < jogo->jogadoresLigados; i++) {
 
-		if (id != i)
-			if (
-				(jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
-					y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
-				|| (jogo->clientes[i].jogo.jogador.posicao.x == x &&
-					y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
-				|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
-					y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
-				|| (jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
-					y == jogo->clientes[i].jogo.jogador.posicao.y)
-				|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
-					y == jogo->clientes[i].jogo.jogador.posicao.y)
-				|| (jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
-					y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
-				|| (jogo->clientes[i].jogo.jogador.posicao.x == x &&
-					y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
-				|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
-					y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
-				)
-				return  i;
+		if (jogo->clientes[i].jogo.id >= 0)
+		{
+
+			if (id != i)
+				if (
+					(jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
+						y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
+					|| (jogo->clientes[i].jogo.jogador.posicao.x == x &&
+						y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
+					|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
+						y == jogo->clientes[i].jogo.jogador.posicao.y - 1)
+					|| (jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
+						y == jogo->clientes[i].jogo.jogador.posicao.y)
+					|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
+						y == jogo->clientes[i].jogo.jogador.posicao.y)
+					|| (jogo->clientes[i].jogo.jogador.posicao.x - 1 == x &&
+						y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
+					|| (jogo->clientes[i].jogo.jogador.posicao.x == x &&
+						y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
+					|| (jogo->clientes[i].jogo.jogador.posicao.x + 1 == x &&
+						y == jogo->clientes[i].jogo.jogador.posicao.y + 1)
+					)
+					return  i;
+		}
 	}
+
 
 	return -1;
 }
@@ -111,24 +119,27 @@ void combateJogvsJog(JogoServidor *jogo, int p1, int p2) {
 
 	int i = 0;
 
-	if (jogo->clientes[p1].jogo.usarPedra == 1) {
+	if (jogo->clientes[p1].jogo.id >= 0)
+	{
+
+		if (jogo->clientes[p1].jogo.usarPedra == 1) {
 
 
-		if (jogo->clientes[p2].jogo.jogador.saude - 2 <= 0)
-			jogo->clientes[p2].jogo.jogador.saude = 0;
-		else jogo->clientes[p2].jogo.jogador.saude -= 2;
+			if (jogo->clientes[p2].jogo.jogador.saude - 2 <= 0)
+				jogo->clientes[p2].jogo.jogador.saude = 0;
+			else jogo->clientes[p2].jogo.jogador.saude -= 2;
 
 
-		jogo->clientes[p2].jogo.usarPedra = 0;
+			jogo->clientes[p2].jogo.usarPedra = 0;
+
+		}
+		else
+			if (jogo->clientes[p2].jogo.jogador.saude - 1 <= 0)
+				jogo->clientes[p2].jogo.jogador.saude = 0;
+			else jogo->clientes[p2].jogo.jogador.saude -= 1;
+
 
 	}
-	else
-		if (jogo->clientes[p2].jogo.jogador.saude - 1 <= 0)
-			jogo->clientes[p2].jogo.jogador.saude = 0;
-		else jogo->clientes[p2].jogo.jogador.saude -= 1;
-
-
-
 
 }
 
@@ -337,19 +348,22 @@ void atualizaMapaServidor(JogoServidor *serv, JogoCliente *jogcl, int oldx, int 
 
 			serv->mapa.celula[x][y].jogador = 0;
 
+
 			for (r = 0; r < serv->jogadoresLigados; r++)
 			{
+				if (serv->clientes[r].jogo.id >= 0)
+				{
 
-				if (serv->clientes[r].jogo.pidCliente != jogcl->pidCliente) {
-					if (x == serv->clientes[r].jogo.jogador.posicao.x && y == serv->clientes[r].jogo.jogador.posicao.y)
-						serv->mapa.celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
+					if (serv->clientes[r].jogo.pidCliente != jogcl->pidCliente) {
+						if (x == serv->clientes[r].jogo.jogador.posicao.x && y == serv->clientes[r].jogo.jogador.posicao.y)
+							serv->mapa.celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
+					}
+
+					if (serv->clientes[r].jogo.pidCliente == jogcl->pidCliente) {
+						if (x == jogcl->jogador.posicao.x && y == jogcl->jogador.posicao.y)
+							serv->mapa.celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
+					}
 				}
-
-				if (serv->clientes[r].jogo.pidCliente == jogcl->pidCliente) {
-					if (x == jogcl->jogador.posicao.x && y == jogcl->jogador.posicao.y)
-						serv->mapa.celula[x][y].jogador = serv->clientes[r].jogo.pidCliente;
-				}
-
 			}
 
 		}
@@ -432,7 +446,7 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 
 
 	clt->jogador.qtdPedras = 0;
-	
+
 
 	clt->jogador.saude = SAUDE_JOG_INI;
 	clt->jogador.lentidao = LENTIDAO_JOG_INI;

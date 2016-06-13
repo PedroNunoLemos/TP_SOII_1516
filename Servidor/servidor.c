@@ -35,6 +35,8 @@ JogoServidor *jogo;
 HANDLE memoria;
 HANDLE ticker;
 
+int desligados = 0;
+
 
 //int _tmain(int argc, LPTSTR argv[]) {
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int nCmdShow) {
@@ -100,7 +102,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	//jogo = malloc(sizeof(JogoServidor));
 	jogo->jogadoresLigados = 0;
 	jogo->totalLigacoes = 0;
-	jogo->instantes = 0;
+	jogo->JogoTerminado = 0;
 
 
 	for (i = 0; i < MAXJOGADORES; i++) {
@@ -399,33 +401,35 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		for (i = 0; i < jogo->jogadoresLigados; i++)
 		{
 
-
-			if (
-				jogo->clientes[i].jogo.pidCliente != jog->pidCliente &&
-				jogo->clientes[i].jogo.pidCliente != 0)
+			if (jogo->clientes[i].jogo.id >= 0)
 			{
 
+				if (
+					jogo->clientes[i].jogo.pidCliente != jog->pidCliente &&
+					jogo->clientes[i].jogo.pidCliente != 0)
+				{
 
 
-				JogoCliente *tmp = &(jogo->clientes[i].jogo);
 
-				tmp->respostaComando = 51;
+					JogoCliente *tmp = &(jogo->clientes[i].jogo);
 
-
-				atualizaMapaCliente(jogo, tmp,
-					tmp->jogador.posicao.x - (MAXVISX / 2),
-					tmp->jogador.posicao.y - (MAXVISY / 2)
-					);
+					tmp->respostaComando = 51;
 
 
-				atualizaMapaEntreClientes(&(jogo->clientes[i].jogo), tmp);
+					atualizaMapaCliente(jogo, tmp,
+						tmp->jogador.posicao.x - (MAXVISX / 2),
+						tmp->jogador.posicao.y - (MAXVISY / 2)
+						);
 
-				escrevePipeJogoCliente(jogo->clientes_atualizar[i], tmp);
 
+					atualizaMapaEntreClientes(&(jogo->clientes[i].jogo), tmp);
+
+					escrevePipeJogoCliente(jogo->clientes_atualizar[i], tmp);
+
+
+				}
 
 			}
-
-
 		}
 
 
@@ -444,11 +448,17 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		exit(-1);
 	}
 
+	WaitForSingleObject(servidorMutex, INFINITE);
+
 	desligaJogador(id);
 
-	if (JOGO_ONLINE == TRUE && jogo->jogadoresLigados == 0)
+	ReleaseMutex(servidorMutex);
+
+	if (JOGO_ONLINE == TRUE && jogo->JogoTerminado == 1)
 	{
+
 		free(jog);
+
 		exit(-1);
 	}
 
@@ -480,18 +490,21 @@ DWORD WINAPI Temporizador(LPVOID param) {
 
 		for (i = 0; i < jogo->jogadoresLigados; i++)
 		{
-			if (jogo->clientes[i].jogo.jogador.saude <= 0)
+			if (jogo->clientes[i].jogo.id >= 0)
 			{
-				jogo->clientes[i].jogo.jogador.saude = 0;
-				jogo->clientes[i].jogo.jogador.podeMovimentar = 0;
+
+				if (jogo->clientes[i].jogo.jogador.saude <= 0)
+				{
+					jogo->clientes[i].jogo.jogador.saude = 0;
+					jogo->clientes[i].jogo.jogador.podeMovimentar = 0;
+				}
+
+				jogo->clientes[i].jogo.jogador.contadorMovimento--;
+
+				if (jogo->clientes[i].jogo.jogador.contadorMovimento <= 0)
+					jogo->clientes[i].jogo.jogador.contadorMovimento = 0;
 			}
-
-			jogo->clientes[i].jogo.jogador.contadorMovimento--;
-
-			if (jogo->clientes[i].jogo.jogador.contadorMovimento <= 0)
-				jogo->clientes[i].jogo.jogador.contadorMovimento = 0;
 		}
-
 
 		for (i = 0; i < jogo->monstrosCriados; i++)
 		{
@@ -553,56 +566,65 @@ DWORD WINAPI BonusCafeina(LPVOID param) {
 void desligaJogador(int id) {
 
 	int i;
-	int del;
-
-	del = 0;
+	int oid = -1;
 
 	WaitForSingleObject(servidorMutex, INFINITE);
 
 
 	for (i = 0; i < jogo->jogadoresLigados; i++) {
-		if (i != id) {
+		if (jogo->clientes[i].jogo.id >= 0)
+		{
+			if (i != id) {
 
-			_stprintf(jogo->clientes[i].jogo.mensagem,
-				TEXT("Utilizador %s Saiu!"), jogo->clientes[id].jogo.jogador.nome);
+				_stprintf(jogo->clientes[i].jogo.mensagem,
+					TEXT("Utilizador %s Saiu!"), jogo->clientes[id].jogo.jogador.nome);
 
-			escrevePipeJogoCliente(jogo->clientes_atualizar[i],
-				&(jogo->clientes[i].jogo)
-				);
+				escrevePipeJogoCliente(jogo->clientes_atualizar[i],
+					&(jogo->clientes[i].jogo)
+					);
 
+			}
 		}
 	}
 
 	for (i = 0; i < jogo->jogadoresLigados; i++) {
+		if (jogo->clientes[i].jogo.id >= 0)
+		{
 
-		if (i == id) {
+			if (i == id) {
 
-			if (jogo->jogadoresLigados > 1) {
+				if (jogo->jogadoresLigados >= 1) {
 
-				CloseHandle(jogo->clientes_atualizar[i]);
-				CloseHandle(jogo->clientes[i].ligacao);
+					CloseHandle(jogo->clientes_atualizar[i]);
+					CloseHandle(jogo->clientes[i].ligacao);
 
 
-				jogo->clientes[i] = jogo->clientes[i + 1];
-				jogo->clientes_atualizar[i] = jogo->clientes_atualizar[i + 1];
+					jogo->clientes[i].jogo.id = -1;
 
-				del = 1;
+					desligados++;
+				}continue;
 			}
-			continue;
-		}
-
-		if (del) {
-
-			jogo->clientes[i] = jogo->clientes[i + 1];
-			jogo->clientes_atualizar[i] = jogo->clientes_atualizar[i + 1];
-
 		}
 
 	}
 
-	jogo->jogadoresLigados--;
+	//jogo->jogadoresLigados--;
 
 	ReleaseMutex(servidorMutex);
+
+
+	if (desligados == jogo->jogadoresLigados)	
+	{
+		WaitForSingleObject(servidorMutex,INFINITE);
+		
+		jogo->JogoTerminado = 1;
+	
+		ReleaseMutex(servidorMutex);
+
+		Sleep(1000);
+
+
+	}
 }
 
 
