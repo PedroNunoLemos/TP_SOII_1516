@@ -24,6 +24,9 @@
     <ClCompile Include="motorjogo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="login.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="JogoServidor.h">
@@ -35,10 +38,18 @@
     <ClInclude Include="motorjogo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="login.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\Debug\Controlador.lib">
       <Filter>Source Files</Filter>
     </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lab.dat">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

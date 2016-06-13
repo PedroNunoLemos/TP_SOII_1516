@@ -1,6 +1,9 @@
 #pragma once
 
 
+#define TAM 1024
+#define REGISTRY_KEY TEXT("Software\\DUNGEON_SO2\\")
+
 
 #define VISAO_MONSTRO 5
 #define EFEITO_CAFEINA 5000

@@ -1,5 +1,7 @@
 #pragma once
 
+int carregaLabirintoDefeito(JogoServidor *jog);
+
 void forcaDadosServidor(JogoServidor *serv, JogoCliente* jogcl);
 
 int validaMovimentoJogador(JogoServidor *serv, JogoCliente *jog, int nx, int ny);

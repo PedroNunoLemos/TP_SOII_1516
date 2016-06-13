@@ -12,6 +12,7 @@
 #include "JogoServidor.h"
 #include "servidor.h"
 #include "motorjogo.h"
+#include "login.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -34,6 +35,7 @@ JogoServidor *jogo;
 
 HANDLE memoria;
 HANDLE ticker;
+HANDLE fich;
 
 int desligados = 0;
 
@@ -51,12 +53,24 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	DWORD dwThreadID = 0;
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
 	HANDLE hPipeRec = INVALID_HANDLE_VALUE;
-
 	JogoServidor *tmppj;
 
 
 	int i;
 
+	Utilizador ut;
+
+	swprintf(ut.nome, 50, TEXT("Jogador 1"));
+	swprintf(ut.password, 20, TEXT("12345678"));
+	swprintf(ut.util, 50, TEXT("pl1"));
+	
+	for (i = 0; i <10; i++)
+	{
+		ut.derrotas[i] = 0;
+		ut.vitorias[i] = 0;
+	}
+
+	adicionaJogador(ut);
 
 	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
 	servidorMutex = CreateMutex(NULL, FALSE, TEXT("ServidorMutex"));
@@ -228,9 +242,11 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			if (JOGO_ONLINE == FALSE && JogoCliente_COMECOU == FALSE)
 			{
-
-
-				criaJogo(jogo);
+				
+				if (jog->labDefeito == 0)
+					criaJogo(jogo);
+				else
+					carregaLabirintoDefeito(jogo);
 
 				jogo->monstrosCriados = 0;
 
@@ -261,7 +277,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
-				);
+					);
 
 				jogo->jogadoresLigados++;
 
@@ -376,7 +392,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
-				);
+					);
 
 				jogo->jogadoresLigados++;
 
@@ -419,7 +435,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					atualizaMapaCliente(jogo, tmp,
 						tmp->jogador.posicao.x - (MAXVISX / 2),
 						tmp->jogador.posicao.y - (MAXVISY / 2)
-					);
+						);
 
 
 					atualizaMapaEntreClientes(&(jogo->clientes[i].jogo), tmp);
@@ -577,7 +593,7 @@ DWORD WINAPI BonusCafeina(LPVOID param) {
 
 		escrevePipeJogoCliente(jogo->clientes_atualizar[id],
 			&(jogo->clientes[id].jogo)
-		);
+			);
 
 		ReleaseMutex(servidorMutex);
 
@@ -608,7 +624,7 @@ void desligaJogador(int id) {
 
 				escrevePipeJogoCliente(jogo->clientes_atualizar[i],
 					&(jogo->clientes[i].jogo)
-				);
+					);
 
 			}
 		}
@@ -676,7 +692,7 @@ void  lancaMonstros() {
 			tipo == 0 ? SAUDE_MONSTRO_DIST : SAUDE_MONSTRO_BULLY, //Energia
 			tr, // valor de N,
 			-1 // se é criado de raiz ou Dup 
-		); //2
+			); //2
 
 		ZeroMemory(&si, sizeof(STARTUPINFO));
 		si.cb = sizeof(STARTUPINFO);

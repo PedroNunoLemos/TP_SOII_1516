@@ -462,8 +462,49 @@ void criaJogo(JogoServidor *jog)
 	criaObjectosMapa(jog);
 
 
+	/*FILE *fp;
+
+	fp = fopen("bd.dat", "wb");
+
+	if (fp == NULL)
+	{
+		return 0;
+	}
+
+
+	fwrite(&jog->mapa, sizeof(Labirinto), 1, fp);
+
+
+	fclose(fp);
+*/
+
 }
 
+int carregaLabirintoDefeito(JogoServidor *jog) {
+
+
+	FILE *fp;
+	Labirinto lab;
+
+
+
+	fp = fopen("lab.dat", "rb");
+
+	if (fp == NULL)
+	{
+		return -1;
+	}
+
+
+	while (fread(&lab, sizeof(Labirinto), 1, fp) == 1);
+
+	jog->mapa = lab;
+
+	fclose(fp);
+
+	return 1;
+
+}
 
 void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 

@@ -69,9 +69,12 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 		switch (opcao) {
 		case '1':
+			jogo->labDefeito = 0;
 			jogar();
 			break;
 		case '2':
+			jogo->labDefeito = 1;
+			jogar();
 			//historico();
 			break;
 		case '3':

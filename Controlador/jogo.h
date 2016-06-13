@@ -34,6 +34,7 @@ typedef struct DLL_IMP_API _jogoCliente
 	int respostaComando;
 	int moveuDirecao;
 	int usarPedra;
+	int labDefeito;
 
 	Celula mapa[15][15];
 
@@ -42,6 +43,9 @@ typedef struct DLL_IMP_API _jogoCliente
 	Jogador jogador;
 
 	TCHAR mensagem[256];
+	TCHAR util[256];
+	TCHAR pass[256];
+
 
 
 } JogoCliente;

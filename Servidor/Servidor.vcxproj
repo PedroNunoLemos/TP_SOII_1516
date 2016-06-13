@@ -19,17 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="login.c" />
     <ClCompile Include="labirinto.c" />
     <ClCompile Include="motorjogo.c" />
     <ClCompile Include="servidor.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="JogoServidor.h" />
+    <ClInclude Include="login.h" />
     <ClInclude Include="motorjogo.h" />
     <ClInclude Include="servidor.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\Debug\Controlador.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lab.dat">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ADF43E2A-6826-4280-ACEE-E4F454B69F2C}</ProjectGuid>
