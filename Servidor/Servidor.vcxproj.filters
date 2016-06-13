@@ -24,7 +24,7 @@
     <ClCompile Include="motorjogo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="login.c">
+    <ClCompile Include="hist.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClInclude Include="motorjogo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="login.h">
+    <ClInclude Include="hist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

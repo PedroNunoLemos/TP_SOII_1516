@@ -19,14 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="login.c" />
+    <ClCompile Include="hist.c" />
     <ClCompile Include="labirinto.c" />
     <ClCompile Include="motorjogo.c" />
     <ClCompile Include="servidor.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="JogoServidor.h" />
-    <ClInclude Include="login.h" />
+    <ClInclude Include="hist.h" />
     <ClInclude Include="motorjogo.h" />
     <ClInclude Include="servidor.h" />
   </ItemGroup>

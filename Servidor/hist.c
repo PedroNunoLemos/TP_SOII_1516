@@ -12,7 +12,7 @@
 #include "JogoServidor.h"
 #include "servidor.h"
 #include "motorjogo.h"
-#include "login.h"
+#include "hist.h"
 
 
 
