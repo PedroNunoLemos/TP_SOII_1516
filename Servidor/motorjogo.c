@@ -13,6 +13,21 @@
 #include "motorjogo.h"
 
 
+int JogadoresOnline(JogoServidor *jogo) {
+
+	int i = 0;
+	int cnt = 0;
+	for (i = 0; i < jogo->jogadoresLigados; i++)
+	{
+
+		if (jogo->clientes[i].jogo.id >= 0)
+		{
+			cnt++;
+		}
+	}
+
+	return cnt;
+}
 
 int validaMovimentoBase(JogoServidor *serv, int x, int y) {
 

@@ -1,5 +1,7 @@
 #pragma once
 
+int JogadoresOnline(JogoServidor *jogo);
+
 int carregaLabirintoDefeito(JogoServidor *jog);
 
 void forcaDadosServidor(JogoServidor *serv, JogoCliente* jogcl);

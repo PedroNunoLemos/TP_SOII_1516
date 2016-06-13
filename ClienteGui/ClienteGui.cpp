@@ -8,6 +8,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include "resource.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -267,11 +268,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		SetWindowPos(hWnd, HWND_TOP, 0, 0, maxX, maxY, SWP_SHOWWINDOW);
 
-		/*initialImage = (HBITMAP)LoadImage(NULL, TEXT("wallpaper.bmp"), IMAGE_BITMAP, maxX, maxY, LR_LOADFROMFILE);
+		initialImage = (HBITMAP)LoadImage(NULL, TEXT("wallpaper.bmp"), IMAGE_BITMAP, maxX, maxY, LR_LOADFROMFILE);
 
 		if (initialImage == NULL) {
-		exit(1);
-		}*/
+			exit(1);
+		}
 
 		break;
 
@@ -281,15 +282,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// Parse the menu selections:
 		switch (wmId)
 		{
-			/*	case IDM_ABOUT:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+		case ID_JOGO_NOVO:
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGOSERVIDOR), hWnd, About);
 			break;
-			case IDM_EXIT:
+
+		case ID_JOGO_SAIR:
 			DestroyWindow(hWnd);
-			break;
-			case ID_NEWGAME:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, startNewGame);
-			*/
+			ExitProcess(0);
+
 			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);

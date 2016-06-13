@@ -55,18 +55,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszCmdLine, int 
 	HANDLE hPipeRec = INVALID_HANDLE_VALUE;
 	JogoServidor *tmppj;
 
-
-	int i;
-
-	UtilizadorHist ut;
-
-	swprintf(ut.nome, 50, TEXT("Jogador 1"));
-
-	ut.derrota = 0;
-	ut.vitoria = 0;
-	ut.desistencia = 0;
-
-	AdicionaHist(ut);
+	int i = 0;
 
 	HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("SERVIDORDUNGEON"));
 	servidorMutex = CreateMutex(NULL, FALSE, TEXT("ServidorMutex"));
@@ -464,7 +453,18 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 
 
+
 	desligaJogador(id);
+
+	UtilizadorHist ut;
+
+	swprintf(ut.nome, 50, jog->jogador.nome);
+
+	ut.derrota = (JogadoresOnline(jogo) == 1) ? 0 : 1;
+	ut.vitoria = !ut.derrota;
+	ut.desistencia = (jog->jogador.saude == 0) ? 0 : 1;
+
+	AdicionaHist(ut);
 
 
 
@@ -476,6 +476,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		free(jog);
 
 		exit(-1);
+
 	}
 
 
