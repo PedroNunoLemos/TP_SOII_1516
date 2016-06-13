@@ -428,7 +428,6 @@ int PersegueJogador(JogoServidor *jogo, int mid) {
 
 void MovimentaMonstro(JogoServidor *jogo, int mid) {
 
-
 	if (mid < jogo->monstrosCriados)
 	{
 		if (jogo->monstros[mid].tipo == BULLY) {
