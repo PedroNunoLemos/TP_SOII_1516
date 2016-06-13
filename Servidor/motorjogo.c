@@ -258,7 +258,6 @@ void inicializaObjectos(JogoServidor *jog) {
 		for (y = 0; y < jog->mapa.tamy; y++)
 		{
 
-
 			jog->mapa.celula[x][y].objeto = 0;
 			jog->mapa.celula[x][y].jogador = 0;
 			jog->mapa.celula[x][y].monstro = -1;

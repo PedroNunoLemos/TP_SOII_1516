@@ -261,7 +261,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
-					);
+				);
 
 				jogo->jogadoresLigados++;
 
@@ -322,7 +322,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				jog->respostaComando = 51;
 
-				jog->jogador.contadorMovimento = LENTIDAO_JOG_INI;
+				jog->jogador.contadorMovimento = jog->jogador.lentidao;
 
 			}
 
@@ -376,7 +376,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 				atualizaMapaCliente(jogo, jog,
 					jogo->clientes[id].jogo.jogador.posicao.x - (MAXVISX / 2),
 					jogo->clientes[id].jogo.jogador.posicao.y - (MAXVISY / 2)
-					);
+				);
 
 				jogo->jogadoresLigados++;
 
@@ -419,7 +419,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 					atualizaMapaCliente(jogo, tmp,
 						tmp->jogador.posicao.x - (MAXVISX / 2),
 						tmp->jogador.posicao.y - (MAXVISY / 2)
-						);
+					);
 
 
 					atualizaMapaEntreClientes(&(jogo->clientes[i].jogo), tmp);
@@ -477,13 +477,12 @@ DWORD WINAPI Temporizador(LPVOID param) {
 
 
 	temp = (1.00 / 15.00);
-	temp = temp * 1000;
+	temp = temp * 100*10;
 
 
 	while (1)
 	{
 
-		Sleep(temp);
 
 		WaitForSingleObject(servidorMutex, INFINITE);
 
@@ -518,6 +517,7 @@ DWORD WINAPI Temporizador(LPVOID param) {
 
 		ReleaseMutex(servidorMutex);
 
+		Sleep(temp);
 
 	}
 
@@ -538,7 +538,6 @@ DWORD WINAPI BonusCafeina(LPVOID param) {
 		WaitForSingleObject(servidorMutex, INFINITE);
 
 		jogo->clientes[id].jogo.jogador.lentidao += 2;
-		jogo->clientes[id].jogo.jogador.contadorMovimento -= 2;
 
 		if (jogo->clientes[id].jogo.jogador.lentidao >= LENTIDAO_JOG_INI)
 			jogo->clientes[id].jogo.jogador.lentidao = LENTIDAO_JOG_INI;
@@ -550,7 +549,7 @@ DWORD WINAPI BonusCafeina(LPVOID param) {
 
 		escrevePipeJogoCliente(jogo->clientes_atualizar[id],
 			&(jogo->clientes[id].jogo)
-			);
+		);
 
 		ReleaseMutex(servidorMutex);
 
@@ -581,7 +580,7 @@ void desligaJogador(int id) {
 
 				escrevePipeJogoCliente(jogo->clientes_atualizar[i],
 					&(jogo->clientes[i].jogo)
-					);
+				);
 
 			}
 		}
@@ -613,12 +612,12 @@ void desligaJogador(int id) {
 	ReleaseMutex(servidorMutex);
 
 
-	if (desligados == jogo->jogadoresLigados)	
+	if (desligados == jogo->jogadoresLigados)
 	{
-		WaitForSingleObject(servidorMutex,INFINITE);
-		
+		WaitForSingleObject(servidorMutex, INFINITE);
+
 		jogo->JogoTerminado = 1;
-	
+
 		ReleaseMutex(servidorMutex);
 
 		Sleep(1000);
@@ -649,7 +648,7 @@ void  lancaMonstros() {
 			tipo == 0 ? SAUDE_MONSTRO_DIST : SAUDE_MONSTRO_BULLY, //Energia
 			tr, // valor de N,
 			-1 // se é criado de raiz ou Dup 
-			); //2
+		); //2
 
 		ZeroMemory(&si, sizeof(STARTUPINFO));
 		si.cb = sizeof(STARTUPINFO);
