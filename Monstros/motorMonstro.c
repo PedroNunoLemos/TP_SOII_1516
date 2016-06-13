@@ -408,7 +408,6 @@ void MovimentaMontro(JogoServidor *jogo, int mid) {
 
 	}
 
-	Sleep((1 / 15) * 1000 * jogo->monstros[mid].lentidao);
 }
 
 

@@ -351,7 +351,7 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 		if (m->pidCliente == jogo->pidCliente)
 		{
-			if (m->respostaComando != 71) {
+			if (m->respostaComando  == 51) {
 
 				WaitForSingleObject(hMutex, INFINITE);
 
@@ -368,6 +368,15 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 
 
 			if (m->respostaComando == 71)
+			{
+				WaitForSingleObject(hMutex, INFINITE);
+				jogo->jogador.efeitoCafeina = m->jogador.efeitoCafeina;
+				jogo->jogador.lentidao = m->jogador.lentidao;
+				ReleaseMutex(hMutex);
+			}
+
+
+			if (m->respostaComando == 61)
 			{
 				WaitForSingleObject(hMutex, INFINITE);
 				jogo->jogador.efeitoCafeina = m->jogador.efeitoCafeina;

@@ -519,6 +519,30 @@ DWORD WINAPI Temporizador(LPVOID param) {
 		}
 
 
+
+		for (i = 0; i < jogo->jogadoresLigados; i++)
+		{
+
+			if (jogo->clientes[i].jogo.id >= 0)
+			{
+
+
+
+
+				JogoCliente *tmp = &(jogo->clientes[i].jogo);
+
+				tmp->respostaComando = 61;
+
+
+				atualizaMapaEntreClientes(&(jogo->clientes[i].jogo), tmp);
+
+				escrevePipeJogoCliente(jogo->clientes_atualizar[i], tmp);
+
+			}
+		}
+
+
+
 		ReleaseMutex(servidorMutex);
 
 		Sleep(temp);
