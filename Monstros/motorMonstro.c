@@ -312,7 +312,7 @@ int celulaVaziaMapa(JogoServidor *jogo, int tx, int ty) {
 
 }
 
-void MovimentaMontro(JogoServidor *jogo, int mid) {
+void AndarAoCalhas(JogoServidor *jogo, int mid) {
 
 	int dir = 0;
 	int odir = -1;
@@ -327,84 +327,124 @@ void MovimentaMontro(JogoServidor *jogo, int mid) {
 	adj.x = -1;
 	adj.y = -1;
 
+	cnt = 0;
+	//escolhemos uma direção aleatoria
+	do {
+
+		dir = aleatorio(1, 4, GetCurrentTime());
+
+		adj = monstroPosicaoMovAdjLivre(jogo, mid, dir);
+
+		cnt++;
+
+	} while ((adj.x == -1 || adj.y == -1) && cnt < 4);
+
+	// não ha celulas livres aguardamos
+	if (cnt == 4)
+		return;
+
+	//movimento n_casas numa direção
+	for (i = 0; i < jogo->monstros[mid].n_casas; i++)
+	{
+
+		//   N	     W	   S	  E	
+		if (dir == 1 && celulaVaziaMapa(jogo, adj.x, adj.y - 1) == 1) adj.y--;
+		if (dir == 2 && celulaVaziaMapa(jogo, adj.x - 1, adj.y) == 1) adj.x--;
+		if (dir == 3 && celulaVaziaMapa(jogo, adj.x, adj.y + 1) == 1) adj.y++;
+		if (dir == 4 && celulaVaziaMapa(jogo, adj.x + 1, adj.y) == 1) adj.x++;
+
+
+		jogo->monstros[mid].posicao.x = adj.x;
+		jogo->monstros[mid].posicao.y = adj.y;
+
+
+	}
+
+	prob = aleatorio(1, 100, GetCurrentTime());
+
+	if (prob < 75) {
+
+		//guardamos o ultimo sentido do movimento
+		odir = dir;
+
+		cnt = 0;
+		//escolhemos uma direção aleatoria
+		do {
+
+			dir = aleatorio(1, 4, GetCurrentTime());
+
+			//   N	     W	   S	  E	
+			if (dir == 1 && celulaVaziaMapa(jogo, adj.x, adj.y - 1) == 1) adj.y--;
+			if (dir == 2 && celulaVaziaMapa(jogo, adj.x - 1, adj.y) == 1) adj.x--;
+			if (dir == 3 && celulaVaziaMapa(jogo, adj.x, adj.y + 1) == 1) adj.y++;
+			if (dir == 4 && celulaVaziaMapa(jogo, adj.x + 1, adj.y) == 1) adj.x++;
+
+
+			cnt++;
+
+		} while (odir == dir);
+
+
+		// não ha celulas livres aguardamos
+		if (cnt == 4)
+			return;
+
+		jogo->monstros[mid].posicao = adj;
+
+
+	} // fim prob mudar de direção
+
+
+
+}
+int PersegueJogador(JogoServidor *jogo, int mid) {
+
+	int res = 0;
+
+	int x = 0;
+	int y = 0;
+
+
+	for (x = jogo->monstros[mid].posicao.x - VISAO_MONSTRO; x < jogo->monstros[mid].posicao.x + VISAO_MONSTRO; x++)
+	{
+		for (y = jogo->monstros[mid].posicao.y - VISAO_MONSTRO; y < jogo->monstros[mid].posicao.y + VISAO_MONSTRO; y++)
+		{
+			if (existeJogadorNaPosicao(jogo, x, y)) {
+
+				res = 1;
+
+				if (jogo->monstros[mid].posicao.x > x && celulaVaziaMapa(jogo, x - 1, y)) { jogo->monstros[mid].posicao.x--; continue; }
+				if (jogo->monstros[mid].posicao.x < x && celulaVaziaMapa(jogo, x + 1, y)) { jogo->monstros[mid].posicao.x++; continue; }
+				if (jogo->monstros[mid].posicao.y > y && celulaVaziaMapa(jogo, x, y - 1)) { jogo->monstros[mid].posicao.y--; continue; }
+				if (jogo->monstros[mid].posicao.y < y && celulaVaziaMapa(jogo, x, y + 1)) { jogo->monstros[mid].posicao.y++; continue; }
+
+			}
+
+		}
+	}
+
+	return res;
+}
+
+void MovimentaMonstro(JogoServidor *jogo, int mid) {
+
+
 	if (mid < jogo->monstrosCriados)
 	{
 		if (jogo->monstros[mid].tipo == BULLY) {
 
+			if (!PersegueJogador(jogo, mid)) {
+				AndarAoCalhas(jogo, mid);
+			}
 
 
 		}
 
 		if (jogo->monstros[mid].tipo == DISTRAIDO) {
 
-			cnt = 0;
-			//escolhemos uma direção aleatoria
-			do {
+			AndarAoCalhas(jogo, mid);
 
-				dir = aleatorio(1, 4, GetCurrentTime());
-
-				adj = monstroPosicaoMovAdjLivre(jogo, mid, dir);
-
-				cnt++;
-
-			} while ((adj.x == -1 || adj.y == -1) && cnt < 4);
-
-			// não ha celulas livres aguardamos
-			if (cnt == 4)
-				return;
-
-			//movimento n_casas numa direção
-			for (i = 0; i < jogo->monstros[mid].n_casas; i++)
-			{
-
-				//   N	     W	   S	  E	
-				if (dir == 1 && celulaVaziaMapa(jogo, adj.x, adj.y - 1) == 1) adj.y--;
-				if (dir == 2 && celulaVaziaMapa(jogo, adj.x - 1, adj.y) == 1) adj.x--;
-				if (dir == 3 && celulaVaziaMapa(jogo, adj.x, adj.y + 1) == 1) adj.y++;
-				if (dir == 4 && celulaVaziaMapa(jogo, adj.x + 1, adj.y) == 1) adj.x++;
-
-
-				jogo->monstros[mid].posicao.x = adj.x;
-				jogo->monstros[mid].posicao.y = adj.y;
-
-
-			}
-
-			prob = aleatorio(1, 100, GetCurrentTime());
-
-			if (prob < 75) {
-
-				//guardamos o ultimo sentido do movimento
-				odir = dir;
-
-				cnt = 0;
-				//escolhemos uma direção aleatoria
-				do {
-
-					dir = aleatorio(1, 4, GetCurrentTime());
-
-					//   N	     W	   S	  E	
-					if (dir == 1 && celulaVaziaMapa(jogo, adj.x, adj.y - 1) == 1) adj.y--;
-					if (dir == 2 && celulaVaziaMapa(jogo, adj.x - 1, adj.y) == 1) adj.x--;
-					if (dir == 3 && celulaVaziaMapa(jogo, adj.x, adj.y + 1) == 1) adj.y++;
-					if (dir == 4 && celulaVaziaMapa(jogo, adj.x + 1, adj.y) == 1) adj.x++;
-
-
-					cnt++;
-
-				} while (odir == dir);
-
-
-				// não ha celulas livres aguardamos
-				if (cnt == 4)
-					return;
-
-				jogo->monstros[mid].posicao = adj;
-
-
-			} // fim prob mudar de direção
-
-		}
+		} // fim dist
 
 	}
 

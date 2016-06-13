@@ -141,7 +141,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	);
 
 
-	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)atualizaMonstro, (LPVOID)tid, 0, NULL);
+	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaMonstro, (LPVOID)tid, 0, NULL);
 
 	WaitForSingleObject(hThread, INFINITE);
 
@@ -156,7 +156,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 
 
-DWORD WINAPI atualizaMonstro(LPVOID param)
+DWORD WINAPI AtualizaMonstro(LPVOID param)
 {
 
 	int mid = (int)param;
@@ -187,7 +187,7 @@ DWORD WINAPI atualizaMonstro(LPVOID param)
 
 		if (me.contadorMovimento == 0) {
 
-			MovimentaMontro(jogo, mid);
+			MovimentaMonstro(jogo, mid);
 
 			_tprintf(TEXT("monstro (%d)  pos x:%d y:%d \n"), mid, jogo->monstros[mid].posicao.x,
 				jogo->monstros[mid].posicao.y);
