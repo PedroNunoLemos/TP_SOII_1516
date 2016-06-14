@@ -27,6 +27,8 @@ int logado = 0;
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
+HANDLE servHandler;
+
 HBITMAP initialImage;
 HDC memdc;
 HBITMAP hbit;
@@ -49,7 +51,7 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-int WINAPI _tAWinMain(_In_ HINSTANCE hInstance,
+int WINAPI _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
 	_In_ int       nCmdShow)
@@ -99,48 +101,7 @@ int WINAPI _tAWinMain(_In_ HINSTANCE hInstance,
 	return (int)msg.wParam;
 }
 
-// le servidor
-DWORD WINAPI readFromServer(LPVOID param) {
 
-	HANDLE hPipeReadFromServer = (HANDLE)param;
-
-
-	//int i, j;
-
-	//while (1) {
-
-
-	//	if () {
-	//		}
-	//	}
-	//	else {
-	//		if (_tcscmp() == 0) {
-
-	//			Button_Enable(GetDlgItem(actualhWnd, IDREGISTER), false);
-	//			GetDlgItemText(actualhWnd, IDC_EDITLog, log, kBufferSize);
-	//			//_tcscat(log, TEXT("\n"));
-	//			//_tcscat(log, answerFromServer.answer);
-	//			SetDlgItemText(actualhWnd, IDC_EDITLog, log);
-	//		}
-	//		else if (_tcsstr(answerFromServer.answer, TEXT("NEW GAME"))) {
-	//			//EndDialog(actualhWnd, 0);
-	//		}
-	//		else {
-	//			GetDlgItemText(actualhWnd, IDC_EDITLog, log, kBufferSize);
-	//			_tcscat(log, TEXT("\n"));
-	//			_tcscat(log, answerFromServer.answer);
-	//			SetDlgItemText(actualhWnd, IDC_EDITLog, log);
-	//		}
-	//	}
-
-	//}
-
-
-	//desliga pipe
-
-	return 0;
-
-}
 
 // regista classe
 ATOM MyRegisterClass(HINSTANCE hInstance)
@@ -206,49 +167,43 @@ INT_PTR CALLBACK iniciaJogo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 	case WM_INITDIALOG:
 		return (INT_PTR)TRUE;
 	case WM_COMMAND:
-		//
-		//if (LOWORD(wParam) == IDREGISTER && !loggedIn)
-		//{
-		//	_tcscpy(buf, TEXT("REGISTER "));
-		//	GetDlgItemText(hDlg, IDC_NAMEBOX, namePlayer, kBufferSize);
-		//	_tcscat(buf, namePlayer);
-		//	WriteFile(hPipeWriteServerConnection, buf, _tcslen(buf) * sizeof(TCHAR), &n, NULL);
-		//	return (INT_PTR)TRUE;
-		//}
-		/*else if (LOWORD(wParam) == IDCANCEL) {
-		EndDialog(hDlg, LOWORD(wParam));
-		return (INT_PTR)TRUE;
+		if (LOWORD(wParam) == IDC_BTLIGAR) {
+
+
+
+			if ((servHandler = ligarServidor()) != INVALID_HANDLE_VALUE) {
+			} else
+			MessageBox(NULL, _T("Hello world!"), _T("My program"), MB_OK);
+			EndDialog(hDlg, 0);
 		}
-		else if (LOWORD(wParam) == IDNEWGAME) {
-		_tcscpy(buf, TEXT("NEW GAME"));
-		WriteFile(hPipeWriteServerConnection, buf, _tcslen(buf) * sizeof(TCHAR), &n, NULL);
-		return (INT_PTR)TRUE;
-		}*/
+	
 		break;
 	}
 	//EndDialog(hDlg, 0);
 	return (INT_PTR)FALSE;
 }
 
-// Message handler for about box.
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
-	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
 
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		break;
-	}
-	return (INT_PTR)FALSE;
-}
+//
+//// Message handler for about box.
+//INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+//{
+//	UNREFERENCED_PARAMETER(lParam);
+//	switch (message)
+//	{
+//	case WM_INITDIALOG:
+//		return (INT_PTR)TRUE;
+//
+//	case WM_COMMAND:
+//		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+//		{
+//			EndDialog(hDlg, LOWORD(wParam));
+//			return (INT_PTR)TRUE;
+//		}
+//		break;
+//	}
+//	return (INT_PTR)FALSE;
+//}
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

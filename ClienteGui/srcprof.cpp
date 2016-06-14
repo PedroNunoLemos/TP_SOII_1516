@@ -247,12 +247,12 @@ HDC ElemMemDC[MAXTIPOS];
 HBITMAP OrigDCBMP[MAXTIPOS];
 
 TCHAR	*  ElemImagens[MAXTIPOS] = {
-	TEXT("c:\\exemplo\\elem0.bmp"),
-	TEXT("c:\\exemplo\\eleml.bmp"),
-	TEXT("c:\\exemplo\\elem2.bmp"),
-	TEXT("c:\\exemplo\\elem3.bmp"),
-	TEXT("c:\\exemplo\\elem4.bmp"),
-	TEXT("c:\\exemplo\\elem5.bmp")
+	TEXT("elem0.bmp"),
+	TEXT("eleml.bmp"),
+	TEXT("elem2.bmp"),
+	TEXT("elem3.bmp"),
+	TEXT("elem4.bmp"),
+	TEXT("elem5.bmp")
 };
 
 HDC DBuf;
@@ -304,7 +304,7 @@ void CreateAndSelectAllDC(HDC orig) {
 	}
 }
 
-int	WINAPI	_tWinMain(HINSTANCE  hThisInst, HINSTANCE hPrevInst, TCHAR *lpszCmdLine, int nwinMode) {
+int	WINAPI	_tAWinMain(HINSTANCE  hThisInst, HINSTANCE hPrevInst, TCHAR *lpszCmdLine, int nwinMode) {
 
 	UNREFERENCED_PARAMETER(hPrevInst);
 	UNREFERENCED_PARAMETER(lpszCmdLine);
