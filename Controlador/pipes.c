@@ -6,6 +6,7 @@
 #include "pipes.h"
 #include "jogo.h"
 #include "constantes.h"
+#include "servidorinfo.h"
 
 TCHAR pipeEnvio[256];
 TCHAR pipeRececao[256];
@@ -192,5 +193,32 @@ void usaPedra(HANDLE hPipe, JogoCliente *jogo, int usar) {
 	//return jogo;
 
 }
+
+
+ServidorInfo *ObterInfoServidor(HANDLE hPipe, JogoCliente *jogo) {
+
+
+
+	BOOL ret;
+	DWORD nlidos;
+
+	ServidorInfo *srv;
+
+	jogo->comando = 66;
+
+	escrevePipeJogoCliente(hPipe, jogo);
+
+	////Recebe resposta
+
+	ret = ReadFile(hPipe, srv, sizeof(ServidorInfo), &nlidos, NULL);
+
+
+	if (nlidos > 0)
+		return srv; else
+		return NULL;
+
+
+}
+
 
 

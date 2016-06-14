@@ -8,6 +8,8 @@
 #include "..\Controlador\pipes.h"
 #include "..\Controlador\constantes.h"
 #include "..\Controlador\memoria.h"
+#include "..\Controlador\servidorinfo.h"
+
 
 #include "JogoServidor.h"
 #include "servidor.h"
@@ -396,7 +398,30 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 		jogo->clientes[id].jogo = *jog;
 
+		if (jog->comando == 66) {
+
+			DWORD n;
+
+			ServidorInfo serv;
+
+			Historico *hist;
+			AtualizaHistorico(hist);
+
+			serv.hist = *hist;
+
+			for (int k = 0; k < jogo->jogadoresLigados; k++)
+				if (jogo->clientes[i].jogo.id >= 0)
+					serv.jogadores[i] = jogo->clientes[i].jogo.jogador;
+
+			serv.jogoIniciado = (int)JOGO_ONLINE;
+
+			WriteFile(cliente, &serv, sizeof(ServidorInfo), &n, NULL);
+
+		}
+
 		escrevePipeJogoCliente(cliente, jog);
+
+
 
 
 		for (i = 0; i < jogo->jogadoresLigados; i++)

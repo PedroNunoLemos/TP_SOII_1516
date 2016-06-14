@@ -45,12 +45,6 @@ DWORD tot;
 HANDLE hMutex;
 
 
-// Forward declarations of functions included in this code module:
-ATOM                MyRegisterClass(HINSTANCE hInstance);
-BOOL                InitInstance(HINSTANCE, int);
-LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-
 int WINAPI _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -154,7 +148,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	return TRUE;
 }
 
-INT_PTR CALLBACK iniciaJogo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK LigaServidorDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 
 	UNREFERENCED_PARAMETER(lParam);
 
@@ -162,21 +156,46 @@ INT_PTR CALLBACK iniciaJogo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 	TCHAR namePlayer[256];
 	DWORD n;
 	actualhWnd = hDlg;
+
+	DWORD dwAddr;
+
+	LPTSTR szText = new TCHAR[50];
+
+
 	switch (message)
 	{
+
 	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
+
+		swprintf(szText, 50, TEXT("127.0.0.1"));
+		SetDlgItemText(hDlg, IDC_IPSERVIDOR, szText);
+
+		break;
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDC_BTLIGAR) {
 
+			GetDlgItemText(hDlg, IDC_IPSERVIDOR, szText, 50);
 
+			if ((servHandler = ligarServidor(szText)) != INVALID_HANDLE_VALUE) {
 
-			if ((servHandler = ligarServidor()) != INVALID_HANDLE_VALUE) {
-			} else
-			MessageBox(NULL, _T("Hello world!"), _T("My program"), MB_OK);
-			EndDialog(hDlg, 0);
+				//MessageBox(NULL, _T("Hello server!"), _T("Dungeon RPG"), MB_OK);
+
+				EndDialog(hDlg, 0);
+
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_SERVIDORINFO), hWnd, ServidorInfoDLG);
+
+			}
+			else {
+
+				MessageBox(NULL, _T("Não me Consegui Ligar ao servidor!"), _T("Dungeon RPG"), MB_OK);
+				EndDialog(hDlg, 0);
+			}
 		}
-	
+
+		break;
+
+	case WM_CLOSE:
+		EndDialog(hDlg, 0);
 		break;
 	}
 	//EndDialog(hDlg, 0);
@@ -184,26 +203,51 @@ INT_PTR CALLBACK iniciaJogo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 }
 
 
-//
-//// Message handler for about box.
-//INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-//{
-//	UNREFERENCED_PARAMETER(lParam);
-//	switch (message)
-//	{
-//	case WM_INITDIALOG:
-//		return (INT_PTR)TRUE;
-//
-//	case WM_COMMAND:
-//		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-//		{
-//			EndDialog(hDlg, LOWORD(wParam));
-//			return (INT_PTR)TRUE;
-//		}
-//		break;
-//	}
-//	return (INT_PTR)FALSE;
-//}
+INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+
+	UNREFERENCED_PARAMETER(lParam);
+
+	TCHAR buf[256];
+	TCHAR namePlayer[256];
+	DWORD n;
+	actualhWnd = hDlg;
+
+	DWORD dwAddr;
+	HWND hWndList;
+
+	int i = 0;
+
+	switch (message)
+	{
+
+	case WM_INITDIALOG:
+
+		hWndList = GetDlgItem(hDlg, IDC_LISTJOGADORES2);
+		
+		
+		SendMessage(hWndList, LB_ADDSTRING, 0, (LPARAM)TEXT("Jogador"));
+
+		break;
+	case WM_COMMAND:
+		//if (LOWORD(wParam) == IDC_BTLIGAR) {
+
+
+		//}
+
+		break;
+
+
+	case WM_CLOSE:
+		EndDialog(hDlg, 0);
+		break;
+	}
+	
+	//EndDialog(hDlg, 0);
+	return (INT_PTR)FALSE;
+}
+
+
+
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -238,7 +282,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wmId)
 		{
 		case ID_JOGO_NOVO:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGOSERVIDOR), hWnd, About);
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_LIGASERVIDOR), hWnd, LigaServidorDLG);
 			break;
 
 		case ID_JOGO_SAIR:

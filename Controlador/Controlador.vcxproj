@@ -36,6 +36,7 @@
     <ClInclude Include="objecto.h" />
     <ClInclude Include="pipes.h" />
     <ClInclude Include="principal.h" />
+    <ClInclude Include="servidorinfo.h" />
     <ClInclude Include="uteis.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

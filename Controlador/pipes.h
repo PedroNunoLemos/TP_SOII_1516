@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include "jogo.h"
+#include "servidorinfo.h"
 
 #define PIPE_ENVIO TEXT("\\\\.\\pipe\\servidor")
 #define PIPE_RECECAO TEXT("\\\\.\\pipe\\clientes")
@@ -45,7 +46,7 @@ extern "C" {  // only need to export C interface if
 	_declspec(dllexport)	int registarJogador(TCHAR nome[], HANDLE hPipe, JogoCliente *jogo);
 	_declspec(dllexport)	void moverJogador(HANDLE hPipe, JogoCliente *jogo, int dir);
 	_declspec(dllexport)	void usaPedra(HANDLE hPipe, JogoCliente *jogo, int usar);
-	
+	_declspec(dllexport)	ServidorInfo *ObterInfoServidor(HANDLE hPipe, JogoCliente *jogo);
 	
 #ifdef __cplusplus
 }

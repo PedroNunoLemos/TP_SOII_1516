@@ -43,9 +43,6 @@ typedef struct DLL_IMP_API _jogoCliente
 	Jogador jogador;
 
 	TCHAR mensagem[256];
-	TCHAR util[256];
-	TCHAR pass[256];
-
 
 
 } JogoCliente;

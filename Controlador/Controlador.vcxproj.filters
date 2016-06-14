@@ -65,5 +65,8 @@
     <ClInclude Include="labirinto.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="servidorinfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

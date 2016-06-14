@@ -21,6 +21,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monstro", "Monstros\Monstro
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClienteGui", "ClienteGui\ClienteGui.vcxproj", "{3FF953F3-C821-47E3-A2F7-1BCE7D9E3CAC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F6D3B8CF-D60E-43C5-B915-C81487EDD560} = {F6D3B8CF-D60E-43C5-B915-C81487EDD560}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
