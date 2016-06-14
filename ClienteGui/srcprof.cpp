@@ -1,12 +1,18 @@
-﻿#include	<Windows.h>
+﻿
+
+#include "stdafx.h"
+#include	<Windows.h>
 #include	<tchar.h>
 #include	<math.h>
+#include <iostream>
 
 
-LRESULT  CALLBACK WindowFunc(HWND  hwnd, UINT  message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK WindowFunc(HWND, UINT, WPARAM, LPARAM);
 
 ATOM  RegistaClasse(HINSTANCE  hThislnst, TCHAR 	*  szWinName);
-HWND  Criarlanela(HINSTANCE  hThisInst, TCHAR *  szWinName);
+
+HWND CriarJanela(HINSTANCE hThisInst, TCHAR	*  szWinName);
+
 void notificaVistas();
 
 
@@ -255,6 +261,10 @@ HBITMAP hOrigDBBmp;
 
 HWND vista;
 
+HBRUSH hbAndar = (HBRUSH)GetStockObject(WHITE_BRUSH);   //fundo jogo a decorrer
+HBRUSH hbParado = (HBRUSH)GetStockObject(DKGRAY_BRUSH);	 // fundo jogo parou
+
+
 void notificaVistas() {
 	InvalidateRect(vista, NULL, FALSE);
 }
@@ -309,8 +319,6 @@ int	WINAPI	_tWinMain(HINSTANCE  hThisInst, HINSTANCE hPrevInst, TCHAR *lpszCmdLi
 
 	loadAllBitmaps();
 
-	HGDIOBJ hbAndar = GetStockObject(WHITE_BRUSH);   //fundo jogo a decorrer
-	HGDIOBJ hbParado = GetStockObject(DKGRAY_BRUSH);	 // fundo jogo parou
 
 	if (!RegistaClasse(hThisInst, JanelaPrinc))
 		return	0;
@@ -359,6 +367,9 @@ int	WINAPI	_tWinMain(HINSTANCE  hThisInst, HINSTANCE hPrevInst, TCHAR *lpszCmdLi
 
 }
 
+
+
+
 ATOM	RegistaClasse(HINSTANCE hThisInst, TCHAR	* szWinName) {
 
 	WNDCLASSEX wcl;
@@ -380,7 +391,7 @@ ATOM	RegistaClasse(HINSTANCE hThisInst, TCHAR	* szWinName) {
 
 }
 
-HWND	CriarJanela(HINSTANCE hThisInst, TCHAR	*  szWinName) {
+HWND CriarJanela(HINSTANCE hThisInst, TCHAR	*  szWinName) {
 
 	return CreateWindow(
 		szWinName,
@@ -518,12 +529,4 @@ LRESULT CALLBACK WindowFunc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 		return	0;
 
 	}
-
-
-
-
-
-
-
-
-
+}
