@@ -163,9 +163,9 @@
     <ResourceCompile Include="ClienteGui.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\wallpaper.jpg" />
     <Image Include="ClienteGui.ico" />
     <Image Include="small.ico" />
+    <Image Include="wallpaper.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

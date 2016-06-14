@@ -51,7 +51,7 @@
     <Image Include="ClienteGui.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="..\..\wallpaper.jpg">
+    <Image Include="wallpaper.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

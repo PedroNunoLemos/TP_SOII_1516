@@ -268,7 +268,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		SetWindowPos(hWnd, HWND_TOP, 0, 0, maxX, maxY, SWP_SHOWWINDOW);
 
-		initialImage = (HBITMAP)LoadImage(NULL, TEXT("wallpaper.jpg"), IMAGE_BITMAP, maxX, maxY, LR_LOADFROMFILE);
+		initialImage = (HBITMAP)LoadImage(NULL, TEXT("wallpaper.bmp"), IMAGE_BITMAP, maxX, maxY, LR_LOADFROMFILE);
 
 		if (initialImage == NULL) {
 			exit(1);
