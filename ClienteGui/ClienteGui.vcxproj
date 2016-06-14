@@ -163,6 +163,7 @@
     <ResourceCompile Include="ClienteGui.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\wallpaper.jpg" />
     <Image Include="ClienteGui.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
