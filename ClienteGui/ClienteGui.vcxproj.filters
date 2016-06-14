@@ -38,6 +38,9 @@
     <ClCompile Include="ClienteGui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="srcprof.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ClienteGui.rc">
