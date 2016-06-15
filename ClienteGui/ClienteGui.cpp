@@ -264,8 +264,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 
 	LPTSTR szText = new TCHAR[254];
-	TCHAR szText2[MAX_PATH];
-
+	
 
 	int res = 0;
 	int i = 0;
@@ -281,7 +280,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 	case WM_INITDIALOG:
 
-		hWndListHist = GetDlgItem(hDlg, IDC_LISTHIST);
+	
 
 		swprintf(jogo->jogador.nome, 10, TEXT("Jogador ---"));
 
@@ -295,21 +294,23 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		}
 		else
 		{
+			hWndListHist = GetDlgItem(hDlg, IDC_HIST);
 			
-			swprintf(szText, 50, TEXT("hist"));
+			
+
 
 			for (int i = 0; i < info->hist.totReg; i++)
 			{
+				swprintf(szText, 80, TEXT("%s vit: %d der: %d des:%d "),
+					info->hist.registo[i].nome, info->hist.registo[i].vitoria
+					, info->hist.registo[i].derrota, info->hist.registo[i].desistencia
+					);
 				
-
+				SendMessage(hWndListHist, WM_SETTEXT, 0, (LPARAM)szText);
 			}
-		}
 
 
-		if (info == NULL)
-		{
 		}
-		else {
 
 			if (info->jogadoresOnline > 0)
 			{
@@ -337,9 +338,8 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 				EnableWindow(selmp, TRUE);
 
 			}
-		}
 
-
+		
 		CenterWindow(hDlg);
 
 		break;
