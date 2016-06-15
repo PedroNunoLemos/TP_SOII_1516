@@ -497,13 +497,18 @@ void criaJogo(JogoServidor *jog)
 
 int carregaLabirintoDefeito(JogoServidor *jog) {
 
-
+	TCHAR Buffer[256];
+	TCHAR file[256];
+	DWORD dwRet;
 	FILE *fp;
 	Labirinto lab;
 
 
+	dwRet = GetCurrentDirectory(256, Buffer);
 
-	fp = fopen("lab.dat", "rb");
+	swprintf(file, 256, TEXT("%s\\lab.dat"), Buffer);
+
+	fp = _tfopen(file, TEXT("rb"));
 
 	if (fp == NULL)
 	{

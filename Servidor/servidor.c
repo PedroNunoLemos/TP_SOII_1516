@@ -413,7 +413,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 		if (jog->comando == 66) {
 
 
-			AtualizaHistorico(hist);
+			hist = AtualizaHistorico();
 
 			serv.hist = *hist;
 

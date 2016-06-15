@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "ClienteGui.h"
 #include <windows.h>
+#include <CommCtrl.h>
 #include <tchar.h>
 #include <io.h>
 #include <fcntl.h>
@@ -151,10 +152,20 @@ INT_PTR CALLBACK PedeNomeDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		CenterWindow(hDlg);
 
 		break;
+	case WM_COMMAND:
 
+		if (LOWORD(wParam) == OKNOME) {
+
+			GetDlgItemText(hDlg, IDC_ENOME, jogo->jogador.nome, 50);
+			EndDialog(hDlg, 0);
+
+		}
+
+
+		break;
 	case WM_CLOSE:
 
-		GetDlgItemText(hDlg, IDC_IPSERVIDOR, jogo->jogador.nome, 50);
+		GetDlgItemText(hDlg, IDC_ENOME, jogo->jogador.nome, 50);
 		EndDialog(hDlg, 0);
 
 		break;
@@ -195,6 +206,7 @@ INT_PTR CALLBACK LigaServidorDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		break;
 	case WM_COMMAND:
+
 		if (LOWORD(wParam) == IDC_BTLIGAR) {
 
 			GetDlgItemText(hDlg, IDC_IPSERVIDOR, szText, 50);
@@ -249,15 +261,23 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 	ServidorInfo *info;
 	LPTSTR szText = new TCHAR[254];
+	TCHAR szText2[MAX_PATH];
+
+	LVCOLUMN lvc; LVITEM lvi;
 
 	int res = 0;
 	int i = 0;
 
+
+
 	switch (message)
 	{
+	case WM_CREATE:
+		break;
 
 	case WM_INITDIALOG:
 
+		hWndListHist = GetDlgItem(hDlg, IDC_LISTHIST);
 
 		info = ObterInfoServidor(servHandler, jogo);
 
@@ -267,10 +287,48 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			return (INT_PTR)FALSE;
 		}
 
+
+		ZeroMemory(&lvc, sizeof(lvc));
+
+
+		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+		lvc.iSubItem = 0;swprintf(szText, 50, TEXT("hist"));lvc.pszText = szText;lvc.cx = 5;lvc.fmt = LVCFMT_LEFT;
+		SendMessage(hWndListHist, LVM_INSERTCOLUMN, 0, (LPARAM)&lvc);
+
+
+		lvc.iSubItem = 1; swprintf(szText, 10, TEXT("Jogador")); lvc.pszText = szText; lvc.cx = 100; lvc.fmt = LVCFMT_LEFT;
+		SendMessage(hWndListHist, LVM_INSERTCOLUMN, 1, (LPARAM)&lvc);
+
+		lvc.iSubItem = 1; swprintf(szText, 10, TEXT("Vit.")); lvc.pszText = szText; lvc.cx = 40; lvc.fmt = LVCFMT_RIGHT;
+		SendMessage(hWndListHist, LVM_INSERTCOLUMN, 2, (LPARAM)&lvc);
+
+		lvc.iSubItem = 2; swprintf(szText, 10, TEXT("Derr.")); lvc.pszText = szText; lvc.cx = 40; lvc.fmt = LVCFMT_LEFT;
+		SendMessage(hWndListHist, LVM_INSERTCOLUMN, 3, (LPARAM)&lvc);
+
+		lvc.iSubItem = 3; swprintf(szText, 10, TEXT("Des.")); lvc.pszText = szText; lvc.cx = 40; lvc.fmt = LVCFMT_RIGHT;
+		SendMessage(hWndListHist, LVM_INSERTCOLUMN, 4, (LPARAM)&lvc);
+
+		SendMessage(hWndListHist, LVM_DELETECOLUMN, 0, 0);
+
+		SendMessage(hWndListHist, LVM_DELETEALLITEMS, 0, 0);
+
+		for (int i = 0; i < 5; i++)
+		{
+			ZeroMemory(&lvi, sizeof(lvi));
+			lvi.mask = LVIF_TEXT;
+			lvi.iItem = i;
+			lvi.iSubItem = 0;
+			swprintf(szText, 100, info->hist.registo[i].nome); 
+			lvi.pszText = szText;
+
+			SendMessage(hWndListHist, LVM_INSERTITEMW, i, (LPARAM)&lvi);
+
+		}
+
 		if (info->jogadoresOnline > 0)
 		{
-			hWndList = GetDlgItem(hDlg, IDC_LISTJOGADORES2);
 
+			hWndList = GetDlgItem(hDlg, IDC_LISTJOGADORES2);
 			btjuntar = GetDlgItem(hDlg, IDC_BTJUNTAR);
 
 			EnableWindow(btjuntar, TRUE);
@@ -279,9 +337,6 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			for (int i = 0; i < info->jogadoresOnline; i++)
 				SendMessage(hWndList, LB_ADDSTRING, 0, (LPARAM)info->jogadores[i].nome);
 
-			SendMessage(hWndListHist, LB_RESETCONTENT, 0, 0);
-			for (int i = 0; i < 5; i++)
-				SendMessage(hWndListHist, LB_ADDSTRING, 0, (LPARAM)info->hist.registo[i].nome);
 
 		}
 		else
@@ -294,8 +349,6 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			selmp = GetDlgItem(hDlg, IDC_SCPD);
 			EnableWindow(selmp, TRUE);
-
-
 
 		}
 
@@ -326,10 +379,6 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_PEDENOME), hWnd, PedeNomeDLG);
 
-			/*if (!_tcscmp(achValue, _T("NDSPATH"))
-			{
-				jogo->jogador.nome
-			}*/
 
 			if (_tcsclen(jogo->jogador.nome) <= 5) {
 
