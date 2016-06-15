@@ -181,9 +181,10 @@ INT_PTR CALLBACK LigaServidorDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 				//MessageBox(NULL, _T("Hello server!"), _T("Dungeon RPG"), MB_OK);
 
-				EndDialog(hDlg, 0);
-
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_SERVIDORINFO), hWnd, ServidorInfoDLG);
+
+					EndDialog(hDlg, 0);
+
 
 			}
 			else {
@@ -219,8 +220,10 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	HWND btcriar;
 	HWND btjuntar;
 	HWND bthist;
-	HWND listm;
 
+	HWND selmp;
+	HWND selma;
+	
 	ServidorInfo *info;
 	LPTSTR szText = new TCHAR[254];
 
@@ -256,9 +259,21 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		}
 		else
 		{
-			btjuntar = GetDlgItem(hDlg, IDC_BTCRIAR);
+			btcriar = GetDlgItem(hDlg, IDC_BTCRIAR);
 			EnableWindow(btcriar, TRUE);
+
+			selma = GetDlgItem(hDlg, IDC_SCMP);
+			EnableWindow(selma, TRUE);
+
+			selmp = GetDlgItem(hDlg, IDC_SCPD);
+			EnableWindow(selmp, TRUE);
+
+			//SendMessage(listm, CB_ADDSTRING, 0, (LPARAM)_T("Aleatorio"));
+			//SendMessage(listm, CB_ADDSTRING, 0, (LPARAM)_T("Predefinido"));
+			//SendMessage(listm, CB_SETCURSEL, 0, 0);
 		}
+
+		//DialogBox(hInst, MAKEINTRESOURCE(IDD_LIGASERVIDOR), hWnd, LigaServidorDLG);
 
 
 

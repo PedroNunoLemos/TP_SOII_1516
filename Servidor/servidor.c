@@ -204,11 +204,16 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	int id = (int)param;
 
 
-	HANDLE cliente = jogo->clientes[id].ligacao;
+	HANDLE cliente;
 	HANDLE lnt_thr;
 
 	DWORD n;
 	int tn = 0;
+
+	WaitForSingleObject(servidorMutex, INFINITE);
+	cliente = jogo->clientes[id].ligacao;
+	ReleaseMutex(servidorMutex);
+
 	ServidorInfo serv;
 
 	Historico *hist;
@@ -672,8 +677,11 @@ void desligaJogador(int id) {
 
 				if (jogo->jogadoresLigados >= 1) {
 
-					CloseHandle(jogo->clientes_atualizar[i]);
-					CloseHandle(jogo->clientes[i].ligacao);
+					if (jogo->clientes_atualizar[i] != INVALID_HANDLE_VALUE)
+						CloseHandle(jogo->clientes_atualizar[i]);
+
+					if (jogo->clientes[i].ligacao != INVALID_HANDLE_VALUE)
+						CloseHandle(jogo->clientes[i].ligacao);
 
 
 					jogo->clientes[i].jogo.id = -1;
@@ -690,7 +698,7 @@ void desligaJogador(int id) {
 	ReleaseMutex(servidorMutex);
 
 
-	if (desligados == jogo->jogadoresLigados)
+	if (desligados == jogo->jogadoresLigados && jogo->jogadoresLigados > 0)
 	{
 		WaitForSingleObject(servidorMutex, INFINITE);
 
