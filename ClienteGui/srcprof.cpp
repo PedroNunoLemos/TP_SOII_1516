@@ -304,7 +304,7 @@ void CreateAndSelectAllDC(HDC orig) {
 	}
 }
 
-int	WINAPI	_tAWinMain(HINSTANCE  hThisInst, HINSTANCE hPrevInst, TCHAR *lpszCmdLine, int nwinMode) {
+int	WINAPI	_tBWinMain(HINSTANCE  hThisInst, HINSTANCE hPrevInst, TCHAR *lpszCmdLine, int nwinMode) {
 
 	UNREFERENCED_PARAMETER(hPrevInst);
 	UNREFERENCED_PARAMETER(lpszCmdLine);

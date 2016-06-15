@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include "resource.h"
+#include "helper.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -128,11 +129,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hWnd = CreateWindowW(
 		szWindowClass,
 		TEXT("DUNGEON RPG"),
-		WS_OVERLAPPEDWINDOW,
+		WS_BORDER,
 		CW_USEDEFAULT,
-		0,
 		CW_USEDEFAULT,
-		0,
+		800,
+		600,
 		NULL,
 		NULL,
 		hInstance,
@@ -165,11 +166,18 @@ INT_PTR CALLBACK LigaServidorDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 	switch (message)
 	{
+	case WM_CREATE:
+
+		break;
 
 	case WM_INITDIALOG:
 
+
 		swprintf(szText, 50, TEXT("127.0.0.1"));
 		SetDlgItemText(hDlg, IDC_IPSERVIDOR, szText);
+
+
+		CenterWindow(hDlg);
 
 		break;
 	case WM_COMMAND:
@@ -179,18 +187,18 @@ INT_PTR CALLBACK LigaServidorDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			if ((servHandler = ligarServidor(szText)) != INVALID_HANDLE_VALUE) {
 
-				//MessageBox(NULL, _T("Hello server!"), _T("Dungeon RPG"), MB_OK);
+				EndDialog(hDlg, 0);
 
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_SERVIDORINFO), hWnd, ServidorInfoDLG);
 
-					EndDialog(hDlg, 0);
+
 
 
 			}
 			else {
 
 				MessageBox(NULL, _T("Não me Consegui Ligar ao servidor!"), _T("Dungeon RPG"), MB_OK);
-				EndDialog(hDlg, 0);
+				//EndDialog(hDlg, 0);
 			}
 		}
 
@@ -223,7 +231,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 	HWND selmp;
 	HWND selma;
-	
+
 	ServidorInfo *info;
 	LPTSTR szText = new TCHAR[254];
 
@@ -235,15 +243,14 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 	case WM_INITDIALOG:
 
-		//swprintf(szText, 254, TEXT("%s"), servidor);
-		
+		CenterWindow(hDlg);
+
 		info = ObterInfoServidor(servHandler, jogo);
 
 		if (info == NULL) {
 
 			MessageBox(NULL, _T("Não Consegui obter Info do servidor!"), _T("Dungeon RPG"), MB_OK);
-			EndDialog(hDlg, 0);
-
+			return (INT_PTR)FALSE;
 		}
 
 		if (info->jogadoresOnline > 0)
@@ -251,11 +258,13 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			hWndList = GetDlgItem(hDlg, IDC_LISTJOGADORES2);
 
 			btjuntar = GetDlgItem(hDlg, IDC_BTJUNTAR);
+
 			EnableWindow(btjuntar, TRUE);
 
+			SendMessage(hWndList, LB_RESETCONTENT, 0, 0);
 			for (int i = 0; i < info->jogadoresOnline; i++)
 				SendMessage(hWndList, LB_ADDSTRING, 0, (LPARAM)info->jogadores[i].nome);
-		
+
 		}
 		else
 		{
@@ -268,9 +277,8 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			selmp = GetDlgItem(hDlg, IDC_SCPD);
 			EnableWindow(selmp, TRUE);
 
-			//SendMessage(listm, CB_ADDSTRING, 0, (LPARAM)_T("Aleatorio"));
-			//SendMessage(listm, CB_ADDSTRING, 0, (LPARAM)_T("Predefinido"));
-			//SendMessage(listm, CB_SETCURSEL, 0, 0);
+
+
 		}
 
 		//DialogBox(hInst, MAKEINTRESOURCE(IDD_LIGASERVIDOR), hWnd, LigaServidorDLG);
@@ -279,10 +287,21 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		break;
 	case WM_COMMAND:
-		//if (LOWORD(wParam) == IDC_BTLIGAR) {
 
+		if (LOWORD(wParam) == IDC_BTCRIAR) {
 
-		//}
+			if (IsDlgButtonChecked(hDlg, IDC_SCMP)){
+
+			} else if (IsDlgButtonChecked(hDlg, IDC_SCPD)) {
+			
+			}
+			else
+			{
+				MessageBox(NULL, _T("Escolha um tipo de Mapa!"), _T("Dungeon RPG"), MB_OK);
+				return (INT_PTR)FALSE;
+			}
+
+		}
 
 		break;
 
@@ -290,6 +309,10 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	case WM_CLOSE:
 		EndDialog(hDlg, 0);
 		break;
+
+
+
+
 	}
 
 	//EndDialog(hDlg, 0);
@@ -307,21 +330,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	TCHAR buf[256];
 	DWORD n;
-
+		
+	RECT rc;
+	int xPos=0;
+	int yPos=0;
+	
 	switch (message)
 	{
 
 	case WM_CREATE:
-		maxX = GetSystemMetrics(SM_CXSCREEN);// Screen Max Size
-		maxY = GetSystemMetrics(SM_CYSCREEN);
 
-		SetWindowPos(hWnd, HWND_TOP, 0, 0, maxX, maxY, SWP_SHOWWINDOW);
+		//SetWindowPos(hWnd, HWND_TOP, 0, 0, 800, 600, SWP_SHOWWINDOW);
 
-		initialImage = (HBITMAP)LoadImage(NULL, TEXT("wallpaper.bmp"), IMAGE_BITMAP, maxX, maxY, LR_LOADFROMFILE);
+
+
+		GetWindowRect(hWnd, &rc);
+
+		 xPos = (GetSystemMetrics(SM_CXSCREEN) - rc.right) / 2;
+		 yPos = (GetSystemMetrics(SM_CYSCREEN) - rc.bottom) / 2;
+
+		SetWindowPos(hWnd, HWND_TOP, xPos, yPos, 800, 600, SWP_SHOWWINDOW);
+	
+		initialImage = (HBITMAP)LoadImage(NULL, TEXT("wallpaper.bmp"), IMAGE_BITMAP, 800, 600, LR_LOADFROMFILE);
 
 		if (initialImage == NULL) {
 			exit(1);
 		}
+
+		break;
+
+	case WM_INITDIALOG:
+
 
 		break;
 
@@ -350,17 +389,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 
-		maxX = GetSystemMetrics(SM_CXSCREEN);// Screen Max Size
-		maxY = GetSystemMetrics(SM_CYSCREEN);
-
 		hdc = GetDC(hWnd);
 
-		memdc = CreateCompatibleDC(hdc);// Criar janela virtual
-										//initialImage = CreateCompatibleBitmap(hdc, maxX, maxY);// Criar janela virtual
+		memdc = CreateCompatibleDC(hdc);
+		// Criar janela virtual
+		//initialImage = CreateCompatibleBitmap(hdc, maxX, maxY);// Criar janela virtual
 
 		SelectObject(memdc, initialImage);
 
-		BitBlt(hdc, 0, 0, maxX, maxY, memdc, 0, 0, SRCCOPY);
+		BitBlt(hdc, 0, 0, 800, 600, memdc, 0, 0, SRCCOPY);
 
 
 
@@ -368,6 +405,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 		EndPaint(hWnd, &ps);
+
 	}
 	break;
 
@@ -396,6 +434,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
+		break;
+
+	case WM_LBUTTONUP:
+
 		break;
 
 	default:
