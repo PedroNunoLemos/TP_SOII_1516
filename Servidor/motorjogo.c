@@ -537,6 +537,7 @@ void criaJogador(JogoServidor *jogo, JogoCliente *clt) {
 
 
 	clt->jogador.qtdPedras = 0;
+	clt->registado = 1;
 
 
 	clt->jogador.saude = SAUDE_JOG_INI;

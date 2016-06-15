@@ -372,6 +372,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 				criaJogador(jogo, jog);
 
+
+
 				jogo->clientes[id].jogo = *jog;
 
 				CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)BonusCafeina, (LPVOID)id, 0, NULL);
@@ -434,10 +436,8 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			//free(hist);
 
-		}
-
-
-		escrevePipeJogoCliente(cliente, jog);
+		} else 
+			escrevePipeJogoCliente(cliente, jog);
 
 
 
@@ -496,16 +496,18 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	desligaJogador(id);
 
-	UtilizadorHist ut;
+	if (jog->registado == 1) {
 
-	swprintf(ut.nome, 50, jog->jogador.nome);
+		UtilizadorHist ut;
 
-	ut.derrota = (JogadoresOnline(jogo) == 1) ? 0 : 1;
-	ut.vitoria = !ut.derrota;
-	ut.desistencia = (jog->jogador.saude == 0) ? 0 : 1;
+		swprintf(ut.nome, 50, jog->jogador.nome);
 
-	AdicionaHist(hist, ut);
+		ut.derrota = (JogadoresOnline(jogo) == 1) ? 0 : 1;
+		ut.vitoria = !ut.derrota;
+		ut.desistencia = (jog->jogador.saude == 0) ? 0 : 1;
 
+		AdicionaHist(hist, ut);
+	}
 
 
 	ReleaseMutex(servidorMutex);

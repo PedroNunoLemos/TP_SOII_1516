@@ -35,6 +35,7 @@ typedef struct DLL_IMP_API _jogoCliente
 	int moveuDirecao;
 	int usarPedra;
 	int labDefeito;
+	int registado;
 
 	Celula mapa[15][15];
 
