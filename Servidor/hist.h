@@ -3,5 +3,5 @@
 #include <Windows.h>
 #include "..\Controlador\servidorinfo.h"
 
-int AdicionaHist(UtilizadorHist util);
+int AdicionaHist(Historico *hist, UtilizadorHist util);
 Historico *AtualizaHistorico();

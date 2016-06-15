@@ -16,30 +16,71 @@
 
 
 
-int AdicionaHist(UtilizadorHist util)
+int AdicionaHist(Historico *hist, UtilizadorHist util)
 {
 
 	FILE *fp;
 	TCHAR Buffer[256];
 	TCHAR file[256];
 	DWORD dwRet;
+	Historico *aux;
 
 	dwRet = GetCurrentDirectory(256, Buffer);
 
 	swprintf(file, 256, TEXT("%s\\hist.dat"), Buffer);
 
-	fp = _tfopen(file, TEXT("wb"));
+	aux = AtualizaHistorico();
 
-	if (fp == NULL)
+	if (aux == NULL) {
+
+		fp = _tfopen(file, TEXT("wb"));
+
+		if (fp == NULL)
+		{
+			return 0;
+		}
+
+		hist->registo[0] = util;
+
+		for (int i = 1; i < 5; i++)
+		{
+			hist->registo[i].derrota = 0;
+			hist->registo[i].vitoria = 0;
+			hist->registo[i].desistencia = 0;
+			swprintf(hist->registo[i].nome, 256, TEXT(""));
+		}
+
+		fwrite(hist, sizeof(Historico), 1, fp);
+		hist->totReg++;
+
+		fclose(fp);
+
+
+	}
+	else
 	{
-		return 0;
+
+
+		fp = _tfopen(file, TEXT("wb"));
+
+		if (fp == NULL)
+		{
+			return 0;
+		}
+
+			aux->registo[aux->totReg] = util;
+			aux->totReg++;
+
+			fwrite(aux, sizeof(Historico), 1, fp);
+
+		
+			hist = aux;
+
+		fclose(fp);
 	}
 
 
-	fwrite(&util, sizeof(UtilizadorHist), 1, fp);
 
-
-	fclose(fp);
 
 	return 1;
 
@@ -71,25 +112,10 @@ Historico *AtualizaHistorico()
 	}
 
 
+	while (fread(ut, sizeof(Historico), 1, fp) == 1);
 
-
-	while (fread(&ht, sizeof(UtilizadorHist), 1, fp) == 1)
-	{
-
-		ut->registo[i] = ht;
-
-		if (i < 5)i++;
-	}
-
-	for (int j = i; j < 5; j++)
-	{
-		ut->registo[j].derrota = 0;
-		swprintf(ut->registo[j].nome, 50, TEXT(""));
-
-		ut->registo[j].vitoria = 0;
-		ut->registo[j].desistencia = 0;
-	}
+	fclose(fp);
 
 	return  ut;
-	
+
 }

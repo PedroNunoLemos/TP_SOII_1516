@@ -218,6 +218,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	Historico *hist;
 	hist = malloc(sizeof(Historico));
+	hist->totReg = 0;
 
 
 	JogoCliente *jog;
@@ -431,7 +432,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 			WriteFile(cliente, &serv, sizeof(ServidorInfo), &n, NULL);
 
-			free(hist);
+			//free(hist);
 
 		}
 
@@ -493,9 +494,6 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 	WaitForSingleObject(servidorMutex, INFINITE);
 
-
-
-
 	desligaJogador(id);
 
 	UtilizadorHist ut;
@@ -506,7 +504,7 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	ut.vitoria = !ut.derrota;
 	ut.desistencia = (jog->jogador.saude == 0) ? 0 : 1;
 
-	AdicionaHist(ut);
+	AdicionaHist(hist, ut);
 
 
 

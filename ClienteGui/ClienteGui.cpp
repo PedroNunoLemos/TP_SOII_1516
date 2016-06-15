@@ -43,6 +43,9 @@ HWND hWnd;
 HWND actualhWnd;
 
 JogoCliente *jogo;
+ServidorInfo *info;
+
+
 HANDLE pipeAtualizaCliente;
 HANDLE hPipe = INVALID_HANDLE_VALUE;
 DWORD tot;
@@ -213,12 +216,10 @@ INT_PTR CALLBACK LigaServidorDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			if ((servHandler = ligarServidor(szText)) != INVALID_HANDLE_VALUE) {
 
+
 				EndDialog(hDlg, 0);
 
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_SERVIDORINFO), hWnd, ServidorInfoDLG);
-
-
-
 
 			}
 			else {
@@ -259,7 +260,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	HWND selmp;
 	HWND selma;
 
-	ServidorInfo *info;
+
 	LPTSTR szText = new TCHAR[254];
 	TCHAR szText2[MAX_PATH];
 
@@ -268,89 +269,127 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	int res = 0;
 	int i = 0;
 
+	info = NULL;
 
 
 	switch (message)
 	{
 	case WM_CREATE:
+
 		break;
 
 	case WM_INITDIALOG:
 
-		hWndListHist = GetDlgItem(hDlg, IDC_LISTHIST);
+
 
 		info = ObterInfoServidor(servHandler, jogo);
 
+		hWndListHist = GetDlgItem(hDlg, IDC_LISTHIST);
+
 		if (info == NULL) {
 
-			MessageBox(NULL, _T("Não Consegui obter Info do servidor!"), _T("Dungeon RPG"), MB_OK);
-			return (INT_PTR)FALSE;
-		}
-
-
-		ZeroMemory(&lvc, sizeof(lvc));
-
-
-		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-		lvc.iSubItem = 0;swprintf(szText, 50, TEXT("hist"));lvc.pszText = szText;lvc.cx = 5;lvc.fmt = LVCFMT_LEFT;
-		SendMessage(hWndListHist, LVM_INSERTCOLUMN, 0, (LPARAM)&lvc);
-
-
-		lvc.iSubItem = 1; swprintf(szText, 10, TEXT("Jogador")); lvc.pszText = szText; lvc.cx = 100; lvc.fmt = LVCFMT_LEFT;
-		SendMessage(hWndListHist, LVM_INSERTCOLUMN, 1, (LPARAM)&lvc);
-
-		lvc.iSubItem = 1; swprintf(szText, 10, TEXT("Vit.")); lvc.pszText = szText; lvc.cx = 40; lvc.fmt = LVCFMT_RIGHT;
-		SendMessage(hWndListHist, LVM_INSERTCOLUMN, 2, (LPARAM)&lvc);
-
-		lvc.iSubItem = 2; swprintf(szText, 10, TEXT("Derr.")); lvc.pszText = szText; lvc.cx = 40; lvc.fmt = LVCFMT_LEFT;
-		SendMessage(hWndListHist, LVM_INSERTCOLUMN, 3, (LPARAM)&lvc);
-
-		lvc.iSubItem = 3; swprintf(szText, 10, TEXT("Des.")); lvc.pszText = szText; lvc.cx = 40; lvc.fmt = LVCFMT_RIGHT;
-		SendMessage(hWndListHist, LVM_INSERTCOLUMN, 4, (LPARAM)&lvc);
-
-		SendMessage(hWndListHist, LVM_DELETECOLUMN, 0, 0);
-
-		SendMessage(hWndListHist, LVM_DELETEALLITEMS, 0, 0);
-
-		for (int i = 0; i < 5; i++)
-		{
-			ZeroMemory(&lvi, sizeof(lvi));
-			lvi.mask = LVIF_TEXT;
-			lvi.iItem = i;
-			lvi.iSubItem = 0;
-			swprintf(szText, 100, info->hist.registo[i].nome); 
-			lvi.pszText = szText;
-
-			SendMessage(hWndListHist, LVM_INSERTITEMW, i, (LPARAM)&lvi);
-
-		}
-
-		if (info->jogadoresOnline > 0)
-		{
-
-			hWndList = GetDlgItem(hDlg, IDC_LISTJOGADORES2);
-			btjuntar = GetDlgItem(hDlg, IDC_BTJUNTAR);
-
-			EnableWindow(btjuntar, TRUE);
-
-			SendMessage(hWndList, LB_RESETCONTENT, 0, 0);
-			for (int i = 0; i < info->jogadoresOnline; i++)
-				SendMessage(hWndList, LB_ADDSTRING, 0, (LPARAM)info->jogadores[i].nome);
-
-
+			MessageBox(NULL, _T("Não Consegui obter histórico do servidor!"), _T("Dungeon RPG"), MB_OK);
+			//EndDialog(hDlg, 0);
+			//return (INT_PTR)FALSE;
 		}
 		else
 		{
-			btcriar = GetDlgItem(hDlg, IDC_BTCRIAR);
-			EnableWindow(btcriar, TRUE);
+			ZeroMemory(&lvc, sizeof(lvc));
 
-			selma = GetDlgItem(hDlg, IDC_SCMP);
-			EnableWindow(selma, TRUE);
 
-			selmp = GetDlgItem(hDlg, IDC_SCPD);
-			EnableWindow(selmp, TRUE);
+			lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+			lvc.iSubItem = 0; swprintf(szText, 50, TEXT("hist")); lvc.pszText = szText; lvc.cx = 5; lvc.fmt = LVCFMT_LEFT;
+			SendMessage(hWndListHist, LVM_INSERTCOLUMN, 0, (LPARAM)&lvc);
 
+
+			lvc.iSubItem = 1; swprintf(szText, 10, TEXT("Jogador")); lvc.pszText = szText; lvc.cx = 100; lvc.fmt = LVCFMT_LEFT;
+			SendMessage(hWndListHist, LVM_INSERTCOLUMN, 1, (LPARAM)&lvc);
+
+			lvc.iSubItem = 1; swprintf(szText, 10, TEXT("Vit.")); lvc.pszText = szText; lvc.cx = 40; lvc.fmt = LVCFMT_RIGHT;
+			SendMessage(hWndListHist, LVM_INSERTCOLUMN, 2, (LPARAM)&lvc);
+
+			lvc.iSubItem = 2; swprintf(szText, 10, TEXT("Derr.")); lvc.pszText = szText; lvc.cx = 40; lvc.fmt = LVCFMT_LEFT;
+			SendMessage(hWndListHist, LVM_INSERTCOLUMN, 3, (LPARAM)&lvc);
+
+			lvc.iSubItem = 3; swprintf(szText, 10, TEXT("Des.")); lvc.pszText = szText; lvc.cx = 40; lvc.fmt = LVCFMT_RIGHT;
+			SendMessage(hWndListHist, LVM_INSERTCOLUMN, 4, (LPARAM)&lvc);
+
+			SendMessage(hWndListHist, LVM_DELETECOLUMN, 0, 0);
+
+			SendMessage(hWndListHist, LVM_DELETEALLITEMS, 0, 0);
+
+
+			for (int i = 0; i < 5; i++)
+			{
+				ZeroMemory(&lvi, sizeof(lvi));
+				lvi.mask = LVIF_TEXT;
+				lvi.iItem = 0;
+				lvi.iSubItem = i;
+				swprintf(szText, 100, info->hist.registo[i].nome);
+				lvi.pszText = szText;
+				SendMessage(hWndListHist, LVM_INSERTITEMW, i, (LPARAM)&lvi);
+				/*
+				ZeroMemory(&lvi, sizeof(lvi));
+				lvi.mask = LVIF_TEXT;
+				lvi.iItem = 0;
+				lvi.iSubItem = 1;
+				swprintf(szText, 10,TEXT("%d"), info->hist.registo[i].vitoria);
+				lvi.pszText = szText;
+				SendMessage(hWndListHist, LVM_INSERTITEMW, 1, (LPARAM)&lvi);
+
+				ZeroMemory(&lvi, sizeof(lvi));
+				lvi.mask = LVIF_TEXT;
+				lvi.iItem = i;
+				lvi.iSubItem = 0;
+				swprintf(szText, 10, TEXT("%d"), info->hist.registo[i].derrota);
+				lvi.pszText = szText;
+				SendMessage(hWndListHist, LVM_INSERTITEMW, 2, (LPARAM)&lvi);
+
+				ZeroMemory(&lvi, sizeof(lvi));
+				lvi.mask = LVIF_TEXT;
+				lvi.iItem = i;
+				lvi.iSubItem = 0;
+				swprintf(szText, 10, TEXT("%d"), info->hist.registo[i].desistencia);
+				lvi.pszText = szText;
+				SendMessage(hWndListHist, LVM_INSERTITEMW, 3, (LPARAM)&lvi);
+				*/
+
+			}
 		}
+
+
+		if (info==NULL)
+		{ }
+		else {
+
+			if (info->jogadoresOnline > 0)
+			{
+
+				hWndList = GetDlgItem(hDlg, IDC_LISTJOGADORES2);
+				btjuntar = GetDlgItem(hDlg, IDC_BTJUNTAR);
+
+				EnableWindow(btjuntar, TRUE);
+
+				SendMessage(hWndList, LB_RESETCONTENT, 0, 0);
+				for (int i = 0; i < info->jogadoresOnline; i++)
+					SendMessage(hWndList, LB_ADDSTRING, 0, (LPARAM)info->jogadores[i].nome);
+
+
+			}
+			else
+			{
+				btcriar = GetDlgItem(hDlg, IDC_BTCRIAR);
+				EnableWindow(btcriar, TRUE);
+
+				selma = GetDlgItem(hDlg, IDC_SCMP);
+				EnableWindow(selma, TRUE);
+
+				selmp = GetDlgItem(hDlg, IDC_SCPD);
+				EnableWindow(selmp, TRUE);
+
+			}
+		}
+
 
 		CenterWindow(hDlg);
 
