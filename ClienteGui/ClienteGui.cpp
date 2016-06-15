@@ -312,15 +312,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	RECT rc;
 	int xPos=0;
 	int yPos=0;
+
+	PAINTSTRUCT ps;
+	HDC hdc;
+	RECT area;
+
+	int i, tam, raio;
 	
 	switch (message)
 	{
 
 	case WM_CREATE:
 
-		//SetWindowPos(hWnd, HWND_TOP, 0, 0, 800, 600, SWP_SHOWWINDOW);
-
-
+		hdc = GetDC(hWnd);
 
 		GetWindowRect(hWnd, &rc);
 
@@ -334,6 +338,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (initialImage == NULL) {
 			exit(1);
 		}
+
+		DBuf = NULL;
 
 		break;
 
@@ -364,14 +370,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_PAINT:
 	{
-		PAINTSTRUCT ps;
-		HDC hdc = BeginPaint(hWnd, &ps);
 
-		hdc = GetDC(hWnd);
+		hdc = BeginPaint(hWnd, &ps);
+
+		//if (DBuf == NULL) {
+
+		//	DBuf = CreateCompatibleDC(hdc);
+		//	hbitmap = CreateCompatibleBitmap(hdc, area.right, area.right);
+		//	SelectObject(DBuffer, hbitmap);
+
+		//}
+
+
+		//if (andar == 1)
+		//	FillRect(DBuf, &area, hbAndar);
+		//else
+		//	FillRect(DBuf, &area, hbParado);
+
+
+
+		//for (i = MAXELEM - 1; i >= 0; i--) {
+
+		//	tam = tipos[elementos[i].tipo].tam;
+		//	raio = tam / 2;
+		//	BitBlt(DBuf,
+		//		elementos[i].posx - raio,
+		//		elementos[i].posy - raio, tam,
+		//		tam,
+		//		ElemMemDC[elementos[i].tipo],
+		//		0, 0,
+		//		SRCAND);
+		//}
+
+		//BitBlt(hdc, 0, 0, area.right, area.bottom, DBuf, 0, 0, SRCCOPY);
+
+		//EndPaint(hWnd, &ps);
+
+
 
 		memdc = CreateCompatibleDC(hdc);
-		// Criar janela virtual
-		//initialImage = CreateCompatibleBitmap(hdc, maxX, maxY);// Criar janela virtual
 
 		SelectObject(memdc, initialImage);
 
