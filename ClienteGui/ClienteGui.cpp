@@ -127,6 +127,42 @@ ATOM	RegistaClasse(HINSTANCE hThisInst, TCHAR	* szWinName) {
 
 
 
+INT_PTR CALLBACK PedeNomeDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+
+	UNREFERENCED_PARAMETER(lParam);
+
+	DWORD dwAddr;
+
+	LPTSTR szText = new TCHAR[256];
+
+
+	switch (message)
+	{
+	case WM_CREATE:
+
+		break;
+
+	case WM_INITDIALOG:
+
+
+		swprintf(szText, 10, TEXT("Jogador "));
+		SetDlgItemText(hDlg, IDC_ENOME, szText);
+
+		CenterWindow(hDlg);
+
+		break;
+
+	case WM_CLOSE:
+
+		GetDlgItemText(hDlg, IDC_IPSERVIDOR, jogo->jogador.nome, 50);
+		EndDialog(hDlg, 0);
+
+		break;
+	}
+	//EndDialog(hDlg, 0);
+	return (INT_PTR)FALSE;
+
+}
 
 INT_PTR CALLBACK LigaServidorDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 
@@ -202,6 +238,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 	DWORD dwAddr;
 	HWND hWndList;
+	HWND hWndListHist;
 
 	HWND btcriar;
 	HWND btjuntar;
@@ -213,7 +250,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	ServidorInfo *info;
 	LPTSTR szText = new TCHAR[254];
 
-
+	int res = 0;
 	int i = 0;
 
 	switch (message)
@@ -221,7 +258,6 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 	case WM_INITDIALOG:
 
-		CenterWindow(hDlg);
 
 		info = ObterInfoServidor(servHandler, jogo);
 
@@ -243,6 +279,10 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			for (int i = 0; i < info->jogadoresOnline; i++)
 				SendMessage(hWndList, LB_ADDSTRING, 0, (LPARAM)info->jogadores[i].nome);
 
+			SendMessage(hWndListHist, LB_RESETCONTENT, 0, 0);
+			for (int i = 0; i < 5; i++)
+				SendMessage(hWndListHist, LB_ADDSTRING, 0, (LPARAM)info->hist.registo[i].nome);
+
 		}
 		else
 		{
@@ -259,24 +299,47 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		}
 
-		//DialogBox(hInst, MAKEINTRESOURCE(IDD_LIGASERVIDOR), hWnd, LigaServidorDLG);
-
-
+		CenterWindow(hDlg);
 
 		break;
 	case WM_COMMAND:
 
 		if (LOWORD(wParam) == IDC_BTCRIAR) {
 
-			if (IsDlgButtonChecked(hDlg, IDC_SCMP)){
+			if (IsDlgButtonChecked(hDlg, IDC_SCMP)) {
 
-			} else if (IsDlgButtonChecked(hDlg, IDC_SCPD)) {
-			
+				jogo->labDefeito = 1;
+
+			}
+			else if (IsDlgButtonChecked(hDlg, IDC_SCPD)) {
+
+				jogo->labDefeito = 0;
 			}
 			else
 			{
 				MessageBox(NULL, _T("Escolha um tipo de Mapa!"), _T("Dungeon RPG"), MB_OK);
 				return (INT_PTR)FALSE;
+			}
+
+
+			swprintf(jogo->jogador.nome, 256, TEXT(""));
+
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_PEDENOME), hWnd, PedeNomeDLG);
+
+			/*if (!_tcscmp(achValue, _T("NDSPATH"))
+			{
+				jogo->jogador.nome
+			}*/
+
+			if (_tcsclen(jogo->jogador.nome) <= 5) {
+
+				MessageBox(NULL, _T("Nome Incorreto!"), _T("Dungeon RPG"), MB_OK);
+				return (INT_PTR)FALSE;
+
+			}
+			else
+			{
+
 			}
 
 		}
@@ -308,17 +371,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	TCHAR buf[256];
 	DWORD n;
-		
+
 	RECT rc;
-	int xPos=0;
-	int yPos=0;
+	int xPos = 0;
+	int yPos = 0;
 
 	PAINTSTRUCT ps;
 	HDC hdc;
 	RECT area;
 
 	int i, tam, raio;
-	
+
 	switch (message)
 	{
 
@@ -328,11 +391,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		GetWindowRect(hWnd, &rc);
 
-		 xPos = (GetSystemMetrics(SM_CXSCREEN) - rc.right) / 2;
-		 yPos = (GetSystemMetrics(SM_CYSCREEN) - rc.bottom) / 2;
+		xPos = (GetSystemMetrics(SM_CXSCREEN) - rc.right) / 2;
+		yPos = (GetSystemMetrics(SM_CYSCREEN) - rc.bottom) / 2;
 
 		SetWindowPos(hWnd, HWND_TOP, xPos, yPos, 800, 600, SWP_SHOWWINDOW);
-	
+
 		initialImage = (HBITMAP)LoadImage(NULL, TEXT("wallpaper.bmp"), IMAGE_BITMAP, 800, 600, LR_LOADFROMFILE);
 
 		if (initialImage == NULL) {
