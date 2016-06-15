@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "ClienteGui.h"
 #include <windows.h>
+#include <CommCtrl.h>
 #include <tchar.h>
 #include <io.h>
 #include <fcntl.h>
@@ -264,7 +265,9 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 
 	LPTSTR szText = new TCHAR[254];
-	
+	TCHAR szText2[MAX_PATH];
+
+	LVCOLUMN lvc; LVITEM lvi;
 
 	int res = 0;
 	int i = 0;
@@ -280,7 +283,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 	case WM_INITDIALOG:
 
-	
+		//hWndListHist = GetDlgItem(hDlg, IDC_HIST);
 
 		swprintf(jogo->jogador.nome, 10, TEXT("Jogador ---"));
 
@@ -294,25 +297,40 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		}
 		else
 		{
-			hWndListHist = GetDlgItem(hDlg, IDC_HIST);
-			
-			
 
+			swprintf(jogo->jogador.nome, 10, TEXT("Jogador ---"));
 
-			for (int i = 0; i < info->hist.totReg; i++)
+			info = ObterInfoServidor(servHandler, jogo);
+
+			if (info == NULL) {
+
+				MessageBox(NULL, _T("Não Consegui obter histórico do servidor!"), _T("Dungeon RPG"), MB_OK);
+				//EndDialog(hDlg, 0);
+				//return (INT_PTR)FALSE;
+			}
+			else
 			{
-				swprintf(szText, 80, TEXT("%s vit: %d der: %d des:%d "),
-					info->hist.registo[i].nome, info->hist.registo[i].vitoria
-					, info->hist.registo[i].derrota, info->hist.registo[i].desistencia
-					);
-				
-				SendMessage(hWndListHist, WM_SETTEXT, 0, (LPARAM)szText);
+			
+				hWndListHist = GetDlgItem(hDlg, IDC_LISTHIST);
+
+
+
+				SendMessage(hWndListHist, LB_RESETCONTENT, 0, 0);
+
+				for (int i = 0; i < info->hist.totReg; i++)
+				{
+					swprintf(szText, 80, TEXT("%s vit: %d der: %d des:%d "),
+						info->hist.registo[i].nome, info->hist.registo[i].vitoria
+						, info->hist.registo[i].derrota, info->hist.registo[i].desistencia
+						);
+
+					SendMessage(hWndListHist ,LB_ADDSTRING, 0, (LPARAM)szText);
+				}
+
+
 			}
 
-
-		}
-
-			if (info->jogadoresOnline > 0)
+			if (info->jogoIniciado)
 			{
 
 				hWndList = GetDlgItem(hDlg, IDC_LISTJOGADORES2);
@@ -339,11 +357,49 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			}
 
-		
+		}
+
+
 		CenterWindow(hDlg);
 
 		break;
+
 	case WM_COMMAND:
+
+		if (LOWORD(wParam) == IDC_BTJUNTAR) {
+		
+			swprintf(jogo->jogador.nome, 256, TEXT(""));
+
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_PEDENOME), hWnd, PedeNomeDLG);
+
+
+			if (_tcsclen(jogo->jogador.nome) <= 5) {
+
+				MessageBox(NULL, _T("Nome Incorreto!"), _T("Dungeon RPG"), MB_OK);
+				return (INT_PTR)FALSE;
+
+			}
+			else
+			{
+				info = ObterInfoServidor(servHandler, jogo);
+
+				if (info->jogoIniciado) {
+
+					if (juntarJogo(servHandler, jogo)) {
+
+						EndDialog(hDlg, 0);
+						notificaVista(vista);
+
+					}
+					else {
+
+						MessageBox(NULL, _T("Não consegui juntar me ao jogo!"), _T("Dungeon RPG"), MB_OK);
+						return (INT_PTR)FALSE;
+					}
+				}
+			}
+		
+		}
 
 		if (LOWORD(wParam) == IDC_BTCRIAR) {
 
@@ -376,7 +432,21 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			}
 			else
 			{
+				info = ObterInfoServidor(servHandler, jogo);
+
+				if (info->jogoIniciado) {
+				
+				
+					MessageBox(NULL, _T("Outro utilizador já criou o jogo! volte a entrar"),
+						_T("Dungeon RPG"), MB_OK);
+
+					return (INT_PTR)FALSE;
+				}
+
 				if (criaIniciaJogo(servHandler, jogo)) {
+
+
+					EndDialog(hDlg, 0);
 
 					notificaVista(vista);
 				}	
