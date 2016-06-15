@@ -9,11 +9,11 @@
 
 LRESULT CALLBACK WindowFunc(HWND, UINT, WPARAM, LPARAM);
 
-ATOM  RegistaClasse(HINSTANCE  hThislnst, TCHAR 	*  szWinName);
+ATOM  RegistaClasses(HINSTANCE  hThislnst, TCHAR 	*  szWinName);
 
 HWND CriarJanela(HINSTANCE hThisInst, TCHAR	*  szWinName);
 
-void notificaVistas();
+void notificavistaDemos();
 
 
 #define GLOBALSPEED	3	// velocidade global	(quantos pontos anda de  cada vez)
@@ -223,7 +223,7 @@ void moveTudo() {
 	}
 
 	verificaEncontros();
-	if (alter > 0) notificaVistas();
+	if (alter > 0) notificavistaDemos();
 
 }
 
@@ -255,18 +255,18 @@ TCHAR	*  ElemImagens[MAXTIPOS] = {
 	TEXT("elem5.bmp")
 };
 
-HDC DBuf;
+HDC DBuffer;
 HBITMAP hbitmap;
 HBITMAP hOrigDBBmp;
 
-HWND vista;
+HWND vistaDemo;
 
 HBRUSH hbAndar = (HBRUSH)GetStockObject(WHITE_BRUSH);   //fundo jogo a decorrer
 HBRUSH hbParado = (HBRUSH)GetStockObject(DKGRAY_BRUSH);	 // fundo jogo parou
 
 
-void notificaVistas() {
-	InvalidateRect(vista, NULL, FALSE);
+void notificavistaDemos() {
+	InvalidateRect(vistaDemo, NULL, FALSE);
 }
 
 
@@ -320,13 +320,13 @@ int	WINAPI	_tBWinMain(HINSTANCE  hThisInst, HINSTANCE hPrevInst, TCHAR *lpszCmdL
 	loadAllBitmaps();
 
 
-	if (!RegistaClasse(hThisInst, JanelaPrinc))
+	if (!RegistaClasses(hThisInst, JanelaPrinc))
 		return	0;
 
-	vista = CriarJanela(hThisInst, JanelaPrinc);
+	vistaDemo = CriarJanela(hThisInst, JanelaPrinc);
 
-	ShowWindow(vista, nwinMode);
-	UpdateWindow(vista);
+	ShowWindow(vistaDemo, nwinMode);
+	UpdateWindow(vistaDemo);
 
 	//tratar movimentos thread
 
@@ -361,8 +361,8 @@ int	WINAPI	_tBWinMain(HINSTANCE  hThisInst, HINSTANCE hPrevInst, TCHAR *lpszCmdL
 	}
 
 
-	SelectObject(DBuf, hOrigDBBmp);	//  repoe conteudo original
-	DeleteObject(DBuf);
+	SelectObject(DBuffer, hOrigDBBmp);	//  repoe conteudo original
+	DeleteObject(DBuffer);
 	return msg.wParam;
 
 }
@@ -370,7 +370,7 @@ int	WINAPI	_tBWinMain(HINSTANCE  hThisInst, HINSTANCE hPrevInst, TCHAR *lpszCmdL
 
 
 
-ATOM	RegistaClasse(HINSTANCE hThisInst, TCHAR	* szWinName) {
+ATOM	RegistaClasses(HINSTANCE hThisInst, TCHAR	* szWinName) {
 
 	WNDCLASSEX wcl;
 
@@ -425,7 +425,7 @@ LRESULT CALLBACK WindowFunc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 		hdc = GetDC(hwnd);
 		CreateAndSelectAllDC(hdc);
 		ReleaseDC(hwnd, hdc);
-		DBuf = NULL;
+		DBuffer = NULL;
 
 		break;
 
@@ -440,19 +440,19 @@ LRESULT CALLBACK WindowFunc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 		// prepara dbbuf
 		GetClientRect(hwnd, &area); 	// pq.  area nao definida em WM_CREATE
 
-		if (DBuf == NULL) {
+		if (DBuffer == NULL) {
 
-			DBuf = CreateCompatibleDC(hdc);
+			DBuffer = CreateCompatibleDC(hdc);
 			hbitmap = CreateCompatibleBitmap(hdc, area.right, area.right);
-			SelectObject(DBuf, hbitmap);
+			SelectObject(DBuffer, hbitmap);
 
 		}
 
 
 		if (andar == 1)
-			FillRect(DBuf, &area, hbAndar);
+			FillRect(DBuffer, &area, hbAndar);
 		else
-			FillRect(DBuf, &area, hbParado);
+			FillRect(DBuffer, &area, hbParado);
 
 
 
@@ -460,7 +460,7 @@ LRESULT CALLBACK WindowFunc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 
 			tam = tipos[elementos[i].tipo].tam;
 			raio = tam / 2;
-			BitBlt(DBuf,
+			BitBlt(DBuffer,
 				elementos[i].posx - raio,
 				elementos[i].posy - raio, tam,
 				tam,
@@ -469,7 +469,7 @@ LRESULT CALLBACK WindowFunc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 				SRCAND);
 		}
 
-		BitBlt(hdc, 0, 0, area.right, area.bottom, DBuf, 0, 0, SRCCOPY);
+		BitBlt(hdc, 0, 0, area.right, area.bottom, DBuffer, 0, 0, SRCCOPY);
 
 		EndPaint(hwnd, &ps);
 

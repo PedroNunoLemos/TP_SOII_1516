@@ -9,7 +9,8 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include "resource.h"
-#include "helper.h"
+#include "gui.h"
+#include "mvc.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -31,14 +32,14 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
 HANDLE servHandler;
 
+HDC DBuf;
+HWND vista;
+
 HBITMAP initialImage;
 HDC memdc;
 HBITMAP hbit;
 HWND hWnd;
 HWND actualhWnd;
-
-//DWORD WINAPI enviaServidor(LPVOID param);
-//DWORD WINAPI LeServidor(LPVOID param);
 
 JogoCliente *jogo;
 HANDLE pipeAtualizaCliente;
@@ -46,6 +47,7 @@ HANDLE hPipe = INVALID_HANDLE_VALUE;
 DWORD tot;
 HANDLE hMutex;
 
+HBITMAP hOrigVista;
 
 int WINAPI _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -71,13 +73,13 @@ int WINAPI _tWinMain(_In_ HINSTANCE hInstance,
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadStringW(hInstance, IDC_CLIENTEGUI, szWindowClass, MAX_LOADSTRING);
 
-	MyRegisterClass(hInstance);
+	if (!RegistaClasse(hInstance, TEXT("Dungeon RPG")))
+		return	0;
 
-	// Perform application initialization:
-	if (!InitInstance(hInstance, nCmdShow))
-	{
-		return FALSE;
-	}
+	vista = CriarVista(hInstance, TEXT("Dungeon RPG"));
+
+	ShowWindow(vista, nCmdShow);
+	UpdateWindow(vista);
 
 	HACCEL hAccelTable = LoadAccelerators(hInstance,
 		MAKEINTRESOURCE(IDC_CLIENTEGUI)); //this is for accelerator keys
@@ -94,61 +96,37 @@ int WINAPI _tWinMain(_In_ HINSTANCE hInstance,
 		}
 	}
 
+	SelectObject(DBuf, hOrigVista);	//  repoe conteudo original
+	DeleteObject(DBuf);
+
 	return (int)msg.wParam;
 }
 
 
+ATOM	RegistaClasse(HINSTANCE hThisInst, TCHAR	* szWinName) {
 
-// regista classe
-ATOM MyRegisterClass(HINSTANCE hInstance)
-{
-	WNDCLASSEXW wcex;
+	WNDCLASSEX wcl;
 
-	wcex.cbSize = sizeof(WNDCLASSEX);
+	wcl.cbSize = sizeof(WNDCLASSEX);
+	wcl.hInstance = hThisInst;
+	wcl.lpszClassName = szWinName;
+	wcl.lpfnWndProc = WndProc;
+	wcl.style = CS_HREDRAW;
+	wcl.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wcl.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
+	wcl.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcl.lpszMenuName = MAKEINTRESOURCEW(IDC_CLIENTEGUI);
+	wcl.cbClsExtra = 0;
+	wcl.cbWndExtra = 0;
+	wcl.hbrBackground = NULL;
 
-	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = WndProc;
-	wcex.cbClsExtra = 0;
-	wcex.cbWndExtra = 0;
-	wcex.hInstance = hInstance;
-	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENTEGUI));
-	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_CLIENTEGUI);
-	wcex.lpszClassName = szWindowClass;
-	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	return RegisterClassEx(&wcl);
 
-	return RegisterClassExW(&wcex);
 }
 
-//inicia instancia
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
-	hInst = hInstance; // Store instance handle in our global variable
 
-	hWnd = CreateWindowW(
-		szWindowClass,
-		TEXT("DUNGEON RPG"),
-		WS_BORDER,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
-		800,
-		600,
-		NULL,
-		NULL,
-		hInstance,
-		NULL);
 
-	if (!hWnd)
-	{
-		return FALSE;
-	}
 
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
-
-	return TRUE;
-}
 
 INT_PTR CALLBACK LigaServidorDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 

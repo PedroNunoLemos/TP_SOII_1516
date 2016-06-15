@@ -146,14 +146,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClienteGui.h" />
-    <ClInclude Include="helper.h" />
+    <ClInclude Include="gui.h" />
+    <ClInclude Include="mvc.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClienteGui.cpp" />
-    <ClCompile Include="helper.cpp" />
+    <ClCompile Include="gui.cpp" />
+    <ClCompile Include="mvc.cpp" />
     <ClCompile Include="srcprof.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

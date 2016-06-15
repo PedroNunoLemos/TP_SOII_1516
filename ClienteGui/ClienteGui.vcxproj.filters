@@ -30,7 +30,10 @@
     <ClInclude Include="ClienteGui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="helper.h">
+    <ClInclude Include="gui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mvc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,10 +44,13 @@
     <ClCompile Include="ClienteGui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="srcprof.cpp">
+    <ClCompile Include="gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="helper.cpp">
+    <ClCompile Include="mvc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="srcprof.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

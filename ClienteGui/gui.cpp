@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <Windows.h>
-#include "helper.h"
+#include "gui.h"
 
 BOOL CenterWindow(HWND hwndWindow)
 {
@@ -35,3 +35,17 @@ BOOL CenterWindow(HWND hwndWindow)
 
 	return FALSE;
 }
+
+HBITMAP LerImagemDisco(TCHAR	*nome) {
+
+	HBITMAP aux;
+
+	aux = (HBITMAP)LoadImage(NULL, nome,
+		IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+
+	if (aux == NULL) {
+	}
+
+	return aux;
+}
+
