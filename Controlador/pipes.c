@@ -203,6 +203,7 @@ ServidorInfo *ObterInfoServidor(HANDLE hPipe, JogoCliente *jogo) {
 	DWORD nlidos;
 
 	ServidorInfo *srv;
+	srv = malloc(sizeof(ServidorInfo));
 
 	jogo->comando = 66;
 

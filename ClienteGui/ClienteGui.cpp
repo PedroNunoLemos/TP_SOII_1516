@@ -17,6 +17,7 @@
 #include "..\Controlador\constantes.h"
 #include "..\Controlador\jogo.h"
 #include "..\Controlador\pipes.h"
+#include "..\Controlador\servidorinfo.h"
 
 #define MAX_LOADSTRING 100
 
@@ -215,6 +216,15 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	DWORD dwAddr;
 	HWND hWndList;
 
+	HWND btcriar;
+	HWND btjuntar;
+	HWND bthist;
+	HWND listm;
+
+	ServidorInfo *info;
+	LPTSTR szText = new TCHAR[254];
+
+
 	int i = 0;
 
 	switch (message)
@@ -222,10 +232,35 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 	case WM_INITDIALOG:
 
-		hWndList = GetDlgItem(hDlg, IDC_LISTJOGADORES2);
+		//swprintf(szText, 254, TEXT("%s"), servidor);
 		
+		info = ObterInfoServidor(servHandler, jogo);
+
+		if (info == NULL) {
+
+			MessageBox(NULL, _T("Não Consegui obter Info do servidor!"), _T("Dungeon RPG"), MB_OK);
+			EndDialog(hDlg, 0);
+
+		}
+
+		if (info->jogadoresOnline > 0)
+		{
+			hWndList = GetDlgItem(hDlg, IDC_LISTJOGADORES2);
+
+			btjuntar = GetDlgItem(hDlg, IDC_BTJUNTAR);
+			EnableWindow(btjuntar, TRUE);
+
+			for (int i = 0; i < info->jogadoresOnline; i++)
+				SendMessage(hWndList, LB_ADDSTRING, 0, (LPARAM)info->jogadores[i].nome);
 		
-		SendMessage(hWndList, LB_ADDSTRING, 0, (LPARAM)TEXT("Jogador"));
+		}
+		else
+		{
+			btjuntar = GetDlgItem(hDlg, IDC_BTCRIAR);
+			EnableWindow(btcriar, TRUE);
+		}
+
+
 
 		break;
 	case WM_COMMAND:
@@ -241,7 +276,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		EndDialog(hDlg, 0);
 		break;
 	}
-	
+
 	//EndDialog(hDlg, 0);
 	return (INT_PTR)FALSE;
 }

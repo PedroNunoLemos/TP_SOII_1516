@@ -207,6 +207,13 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 	HANDLE cliente = jogo->clientes[id].ligacao;
 	HANDLE lnt_thr;
 
+	DWORD n;
+	int tn = 0;
+	ServidorInfo serv;
+
+	Historico *hist;
+	hist = malloc(sizeof(Historico));
+
 
 	JogoCliente *jog;
 	jog = malloc(sizeof(JogoCliente));
@@ -400,24 +407,29 @@ DWORD WINAPI AtendeCliente(LPVOID param) {
 
 		if (jog->comando == 66) {
 
-			DWORD n;
 
-			ServidorInfo serv;
-
-			Historico *hist;
 			AtualizaHistorico(hist);
 
 			serv.hist = *hist;
 
+			tn = 0;
+
 			for (int k = 0; k < jogo->jogadoresLigados; k++)
-				if (jogo->clientes[i].jogo.id >= 0)
-					serv.jogadores[i] = jogo->clientes[i].jogo.jogador;
+				if (jogo->clientes[k].jogo.id >= 0)
+				{
+					serv.jogadores[k] = jogo->clientes[k].jogo.jogador;
+					tn++;
+				}
 
 			serv.jogoIniciado = (int)JOGO_ONLINE;
+			serv.jogadoresOnline = tn;
 
 			WriteFile(cliente, &serv, sizeof(ServidorInfo), &n, NULL);
 
+			free(hist);
+
 		}
+
 
 		escrevePipeJogoCliente(cliente, jog);
 
