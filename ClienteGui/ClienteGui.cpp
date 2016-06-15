@@ -37,6 +37,27 @@ HDC DBuf;
 HWND vista;
 
 HBITMAP initialImage;
+
+HBITMAP ElemBMP[9];
+HDC ElemMemDC[9];
+HBITMAP OrigDCBMP[9];
+
+TCHAR	*imagens[11] = {
+	TEXT("pedra.bmp"),
+	TEXT("vitamina.bmp"),
+	TEXT("orange.bmp"),
+	TEXT("cafeina.bmp"),
+	TEXT("jog.bmp"),
+	TEXT("ini.bmp"),
+	TEXT("bully.bmp"),
+	TEXT("dist.bmp"),
+	TEXT("vazio.bmp"),
+	TEXT("chao.bmp"),
+	TEXT("parede.bmp")
+};
+
+
+
 HDC memdc;
 HBITMAP hbit;
 HWND hWnd;
@@ -52,7 +73,28 @@ HANDLE hPipe = INVALID_HANDLE_VALUE;
 DWORD tot;
 HANDLE hMutex;
 
-HBITMAP hOrigVista;
+
+void  lerbits() {
+
+	int i;
+
+	for (i = 0; i < 11; i++)
+		ElemBMP[i] = LerImagemDisco(imagens[i]);
+}
+
+
+void CreateAndSelectAllDC(HDC orig) {
+
+	int i;
+
+	for (i = 0; i < 11; i++) {
+
+		ElemMemDC[i] = CreateCompatibleDC(orig);
+
+		OrigDCBMP[i] = (HBITMAP)SelectObject(ElemMemDC[i], ElemBMP[i]);
+
+	}
+}
 
 int WINAPI _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -69,6 +111,7 @@ int WINAPI _tWinMain(_In_ HINSTANCE hInstance,
 	BOOL ret;
 	DWORD n, dwMode;
 
+	lerbits();
 
 	jogo = (JogoCliente*)malloc(sizeof(JogoCliente));
 	jogo->pidCliente = GetCurrentProcessId();
@@ -100,7 +143,22 @@ int WINAPI _tWinMain(_In_ HINSTANCE hInstance,
 		}
 	}
 
-	SelectObject(DBuf, hOrigVista);	//  repoe conteudo original
+
+	for (i = 0; i < 9; i++) {
+
+		if (ElemMemDC[i] != NULL)
+			SelectObject(ElemMemDC[i], OrigDCBMP[i]);
+
+		DeleteDC(ElemMemDC[i]);
+
+		if (ElemBMP[i] != NULL)
+			DeleteObject(ElemBMP[i]);
+
+	}
+
+
+
+	SelectObject(DBuf, vista);	//  repoe conteudo original
 	DeleteObject(DBuf);
 
 	return (int)msg.wParam;
@@ -267,8 +325,6 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	LPTSTR szText = new TCHAR[254];
 	TCHAR szText2[MAX_PATH];
 
-	LVCOLUMN lvc; LVITEM lvi;
-
 	int res = 0;
 	int i = 0;
 
@@ -310,7 +366,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			}
 			else
 			{
-			
+
 				hWndListHist = GetDlgItem(hDlg, IDC_LISTHIST);
 
 
@@ -324,7 +380,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 						, info->hist.registo[i].derrota, info->hist.registo[i].desistencia
 						);
 
-					SendMessage(hWndListHist ,LB_ADDSTRING, 0, (LPARAM)szText);
+					SendMessage(hWndListHist, LB_ADDSTRING, 0, (LPARAM)szText);
 				}
 
 
@@ -367,7 +423,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	case WM_COMMAND:
 
 		if (LOWORD(wParam) == IDC_BTJUNTAR) {
-		
+
 			swprintf(jogo->jogador.nome, 256, TEXT(""));
 
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_PEDENOME), hWnd, PedeNomeDLG);
@@ -390,6 +446,8 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 						EndDialog(hDlg, 0);
 						notificaVista(vista);
 
+						CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
+
 					}
 					else {
 
@@ -398,7 +456,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 					}
 				}
 			}
-		
+
 		}
 
 		if (LOWORD(wParam) == IDC_BTCRIAR) {
@@ -435,8 +493,8 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 				info = ObterInfoServidor(servHandler, jogo);
 
 				if (info->jogoIniciado) {
-				
-				
+
+
 					MessageBox(NULL, _T("Outro utilizador já criou o jogo! volte a entrar"),
 						_T("Dungeon RPG"), MB_OK);
 
@@ -447,9 +505,9 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 
 					EndDialog(hDlg, 0);
-
+					CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 					notificaVista(vista);
-				}	
+				}
 				else {
 
 					MessageBox(NULL, _T("Não consegui criar o jogo!"), _T("Dungeon RPG"), MB_OK);
@@ -475,9 +533,6 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	return (INT_PTR)FALSE;
 }
 
-
-
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int maxX, maxY;
@@ -494,8 +549,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 	RECT area;
+	HBITMAP hbitmap;
 
 	int i, tam, raio;
+
+	int ix = 0;
+	int iy = 0;
+
+	int k = 0;
+	char c = ' ';
+
 
 	switch (message)
 	{
@@ -522,6 +585,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 		DBuf = NULL;
+
+		CreateAndSelectAllDC(hdc);
+		ReleaseDC(hWnd, hdc);
+
 
 		break;
 
@@ -556,51 +623,190 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		hdc = BeginPaint(hWnd, &ps);
 
-		//if (DBuf == NULL) {
+		GetClientRect(hWnd, &area);
 
-		//	DBuf = CreateCompatibleDC(hdc);
-		//	hbitmap = CreateCompatibleBitmap(hdc, area.right, area.right);
-		//	SelectObject(DBuffer, hbitmap);
+		if (DBuf == NULL) {
 
-		//}
+			DBuf = CreateCompatibleDC(hdc);
+			hbitmap = CreateCompatibleBitmap(hdc, area.right, area.right);
+			SelectObject(DBuf, hbitmap);
 
+		}
 
-		//if (andar == 1)
-		//	FillRect(DBuf, &area, hbAndar);
-		//else
-		//	FillRect(DBuf, &area, hbParado);
+		info = ObterInfoServidor(servHandler, jogo);
 
+		if (info == NULL) {
 
+			memdc = CreateCompatibleDC(hdc);
 
-		//for (i = MAXELEM - 1; i >= 0; i--) {
+			SelectObject(memdc, initialImage);
 
-		//	tam = tipos[elementos[i].tipo].tam;
-		//	raio = tam / 2;
-		//	BitBlt(DBuf,
-		//		elementos[i].posx - raio,
-		//		elementos[i].posy - raio, tam,
-		//		tam,
-		//		ElemMemDC[elementos[i].tipo],
-		//		0, 0,
-		//		SRCAND);
-		//}
+			BitBlt(hdc, 0, 0, 800, 600, memdc, 0, 0, SRCCOPY);
 
-		//BitBlt(hdc, 0, 0, area.right, area.bottom, DBuf, 0, 0, SRCCOPY);
-
-		//EndPaint(hWnd, &ps);
+		}
+		else {
 
 
+			if (info->jogoIniciado == 1)
+			{
 
-		memdc = CreateCompatibleDC(hdc);
-
-		SelectObject(memdc, initialImage);
-
-		BitBlt(hdc, 0, 0, 800, 600, memdc, 0, 0, SRCCOPY);
+				for (ix = 0; ix < MAXVISX; ix++)
+				{
+					for (iy = 0; iy < MAXVISY; iy++) {
 
 
+						switch (jogo->mapa[ix][iy].tipo)
+						{
 
-		ReleaseDC(hWnd, hdc);
+						case TipoCelula_PORTA:
+						case TipoCelula_CHAO:
 
+							BitBlt(DBuf, ix * 32 + 1, iy * 32 + 1,
+								32, 32,ElemMemDC[9], 0, 0, SRCAND);
+
+				/*			switch (jogo->mapa[ix][iy].objeto)
+							{
+							case Tipo_Pedra:
+
+								memdc = CreateCompatibleDC(hdc);
+								SelectObject(memdc, pedra);
+
+								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
+									32, 32, memdc, 0, 0, SRCAND);
+
+								break;
+
+							case Tipo_SacoPedra:
+
+
+								memdc = CreateCompatibleDC(hdc);
+								SelectObject(memdc, pedra);
+
+								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
+									32, 32, memdc, 0, 0, SRCAND);
+
+
+								break;
+
+							case Tipo_Pocao:
+
+
+								memdc = CreateCompatibleDC(hdc);
+								SelectObject(memdc, vitamina);
+
+								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
+									32, 32, memdc, 0, 0, SRCAND);
+
+
+								break;
+
+							case Tipo_Vitamina:
+
+
+								memdc = CreateCompatibleDC(hdc);
+								SelectObject(memdc, vitamina);
+
+								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
+									32, 32, memdc, 0, 0, SRCAND);
+
+
+								break;
+
+							case Tipo_Cafeina:
+
+								memdc = CreateCompatibleDC(hdc);
+								SelectObject(memdc, cafeina);
+
+								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
+									32, 32, memdc, 0, 0, SRCAND);
+
+								break;
+
+							case Tipo_OrangeBull:
+
+								memdc = CreateCompatibleDC(hdc);
+								SelectObject(memdc, orange);
+
+								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
+									32, 32, memdc, 0, 0, SRCAND);
+
+								break;
+
+
+							default:
+								break;
+
+							}
+
+							if (jogo->mapa[ix][iy].jogador != 0 &&
+								jogo->mapa[ix][iy].jogador != jogo->jogador.pidJogador)
+							{
+
+								memdc = CreateCompatibleDC(hdc);
+								SelectObject(memdc, ini);
+
+								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
+									32, 32, memdc, 0, 0, SRCAND);
+
+							}
+
+
+							if (jogo->mapa[ix][iy].monstro != -1 &&
+								jogo->mapa[ix][iy].monstro >= 0
+								)
+							{
+
+								memdc = CreateCompatibleDC(hdc);
+
+								if (jogo->mapa[ix][iy].tipoMonstro == 0)
+									SelectObject(memdc, dist);
+								else
+									SelectObject(memdc, bully);
+
+								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
+									32, 32, memdc, 0, 0, SRCAND);
+
+							}
+*/
+							break;
+
+						case TipoCelula_PAREDE:
+							BitBlt(DBuf, ix * 32 + 1, iy * 32 + 1,
+								32, 32, ElemMemDC[3], 0, 0, SRCAND);
+							break;
+						default:
+							//memdc = CreateCompatibleDC(hdc);
+							//SelectObject(memdc, vazio);
+
+							//BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
+							//	32, 32, memdc, 0, 0, SRCAND);
+							break;
+
+						}
+
+
+					}
+				}
+
+
+				//GoToXY(x + (MAXVISX / 2), y + (MAXVISY / 2));
+				//setForeGroundAndBackGroundColor(Color_Blue, 6);
+				//_tprintf(TEXT("@"));
+
+				BitBlt(hdc, 0, 0, area.right, area.bottom, DBuf, 0, 0, SRCCOPY);
+				//BitBlt(hdc, 0, 0, 800, 600, memdc, 0, 0, SRCCOPY);
+
+			}
+			else
+			{
+				memdc = CreateCompatibleDC(hdc);
+
+				SelectObject(memdc, initialImage);
+
+				BitBlt(hdc, 0, 0, 800, 600, memdc, 0, 0, SRCCOPY);
+
+			}
+		}
 
 		EndPaint(hWnd, &ps);
 
@@ -611,19 +817,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		switch ((char)wParam) {
 		case VK_DOWN:				// Seta para baixo
-
-			InvalidateRect(hWnd, NULL, 1);
+			moverJogador(servHandler, jogo, 1);
+			InvalidateRect(vista, NULL, FALSE);
 			break;
 		case VK_LEFT:				// Seta esquerda
-
+			moverJogador(servHandler, jogo, 3);
 			InvalidateRect(hWnd, NULL, 1);
 			break;
 		case VK_RIGHT:				// Seta direita
-
+			moverJogador(servHandler, jogo, 4);
 			InvalidateRect(hWnd, NULL, 1);
 			break;
 		case VK_UP:				// Seta cima
-
+			moverJogador(servHandler, jogo, 2);
 			InvalidateRect(hWnd, NULL, 1);
 			break;
 		default:
@@ -641,5 +847,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
+	return 0;
+}
+
+
+
+DWORD WINAPI AtualizaCliente(LPVOID param) {
+
+
+	JogoCliente *m;
+	BOOL ret = FALSE;
+
+	m = (JogoCliente*)malloc(sizeof(JogoCliente));
+
+	while (1) {
+
+
+
+		ret = lePipeJogoClienteComRetVal(pipeAtualizaCliente, m);
+
+		if (ret == 1)
+			break;
+
+
+		if (m->pidCliente == jogo->pidCliente)
+		{
+			jogo = m;
+			notificaVista(vista);
+		}
+	}
+
 	return 0;
 }
