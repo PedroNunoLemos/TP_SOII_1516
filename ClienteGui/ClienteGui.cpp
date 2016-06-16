@@ -1,6 +1,3 @@
-// ClienteGui.cpp : Defines the entry point for the application.
-//
-
 #include "stdafx.h"
 #include "ClienteGui.h"
 #include <windows.h>
@@ -11,7 +8,6 @@
 #include <stdio.h>
 #include "resource.h"
 #include "gui.h"
-#include "mvc.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -24,23 +20,11 @@
 
 #define MAX_LOADSTRING 100
 
-// Global Variables:
-HINSTANCE hInst;
-int logado = 0;
 
-WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
-WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+#include	<math.h>
+#include <iostream>
 
 HANDLE servHandler;
-
-HDC DBuf;
-HWND vista;
-
-HBITMAP initialImage;
-
-HBITMAP ElemBMP[9];
-HDC ElemMemDC[9];
-HBITMAP OrigDCBMP[9];
 
 TCHAR	*imagens[11] = {
 	TEXT("pedra.bmp"),
@@ -58,36 +42,88 @@ TCHAR	*imagens[11] = {
 
 
 
-HDC memdc;
-HBITMAP hbit;
-HWND hWnd;
-HWND actualhWnd;
+
+
+
+#define GLOBALSPEED	3	
+#define MAXTIPOS 11
+
 int conetado = 0;
 
 JogoCliente *jogo;
 ServidorInfo *info;
 
-
+HWND actualhWnd;
 HANDLE pipeAtualizaCliente;
 HANDLE hPipe = INVALID_HANDLE_VALUE;
 DWORD tot;
 HANDLE hMutex;
+HINSTANCE hInst;
+HWND hWnd;
+HDC memdc;
+HBITMAP initialImage;
 
 
-void  lerbits() {
+#define MAXELEM	11
+
+
+#define MAXX	600
+#define MAXY	600
+
+#define CIMA	1
+#define BAIXO	2
+#define ESQ	3
+#define DIR	4
+
+int TeclaJog = 0;
+int andar = 1;
+int MContinua = 1;
+
+HBITMAP ElemBMP[MAXTIPOS];
+HDC ElemMemDC[MAXTIPOS];
+HBITMAP OrigDCBMP[MAXTIPOS];
+
+HDC DBuffer;
+HBITMAP hbitmap;
+HBITMAP hOrigDBBmp;
+
+HWND vista;
+
+HBRUSH hbAndar = (HBRUSH)GetStockObject(WHITE_BRUSH);   //fundo jogo a decorrer
+HBRUSH hbParado = (HBRUSH)GetStockObject(DKGRAY_BRUSH);	 // fundo jogo parou
+
+
+void notificaVista() {
+	InvalidateRect(vista, NULL, FALSE);
+}
+
+
+HBITMAP LoadImagemDisco(TCHAR	* nome) {
+
+	HBITMAP aux;
+
+	aux = (HBITMAP)LoadImage(NULL, nome,
+		IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+
+	if (aux == NULL) {
+	}
+
+	return aux;
+}
+
+void  loadAllBitmaps() {
 
 	int i;
 
-	for (i = 0; i < 11; i++)
-		ElemBMP[i] = LerImagemDisco(imagens[i]);
+	for (i = 0; i < MAXTIPOS; i++)
+		ElemBMP[i] = LoadImagemDisco(imagens[i]);
 }
-
 
 void CreateAndSelectAllDC(HDC orig) {
 
 	int i;
 
-	for (i = 0; i < 11; i++) {
+	for (i = 0; i < MAXTIPOS; i++) {
 
 		ElemMemDC[i] = CreateCompatibleDC(orig);
 
@@ -96,55 +132,44 @@ void CreateAndSelectAllDC(HDC orig) {
 	}
 }
 
-int WINAPI _tWinMain(_In_ HINSTANCE hInstance,
-	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPWSTR    lpCmdLine,
-	_In_ int       nCmdShow)
-{
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
+int	WINAPI	_tWinMain(HINSTANCE  hThisInst, HINSTANCE hPrevInst, TCHAR *lpszCmdLine, int nwinMode) {
 
-	WNDCLASSEX wcApp;	// Estrutura que define a classe da janela
+	UNREFERENCED_PARAMETER(hPrevInst);
+	UNREFERENCED_PARAMETER(lpszCmdLine);
 
-	TCHAR buf[256];
-	int i = 0;
-	BOOL ret;
-	DWORD n, dwMode;
+	TCHAR 	JanelaPrinc[] = TEXT("DUNGEON RPG");
 
-	lerbits();
+	MSG msg;
+	HANDLE hThread;
+	DWORD dwThreadId;
+
+	int i;
 
 	jogo = (JogoCliente*)malloc(sizeof(JogoCliente));
 	jogo->pidCliente = GetCurrentProcessId();
 
-	// Initialize global strings
-	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadStringW(hInstance, IDC_CLIENTEGUI, szWindowClass, MAX_LOADSTRING);
 
-	if (!RegistaClasse(hInstance, TEXT("Dungeon RPG")))
+	loadAllBitmaps();
+
+
+	if (!RegistaClasses(hThisInst, JanelaPrinc))
 		return	0;
 
-	vista = CriarVista(hInstance, TEXT("Dungeon RPG"));
+	vista = CriarJanela(hThisInst, JanelaPrinc);
 
-	ShowWindow(vista, nCmdShow);
+	ShowWindow(vista, nwinMode);
 	UpdateWindow(vista);
 
-	HACCEL hAccelTable = LoadAccelerators(hInstance,
-		MAKEINTRESOURCE(IDC_CLIENTEGUI)); //this is for accelerator keys
+	while (GetMessage(&msg, NULL, 0, 0)) {
 
-	MSG msg;
+		TranslateMessage(&msg);	/* trad cod.  teclado esp	*/
+		DispatchMessage(&msg);	/* reencaminha para janela alvo*/
 
-	// Main message loop:
-	while (GetMessage(&msg, NULL, 0, 0))
-	{
-		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
 	}
 
+	MContinua = 0;
 
-	for (i = 0; i < 9; i++) {
+	for (i = 0; i < MAXTIPOS; i++) {
 
 		if (ElemMemDC[i] != NULL)
 			SelectObject(ElemMemDC[i], OrigDCBMP[i]);
@@ -157,27 +182,28 @@ int WINAPI _tWinMain(_In_ HINSTANCE hInstance,
 	}
 
 
+	SelectObject(DBuffer, hOrigDBBmp);	//  repoe conteudo original
+	DeleteObject(DBuffer);
+	return msg.wParam;
 
-	SelectObject(DBuf, vista);	//  repoe conteudo original
-	DeleteObject(DBuf);
-
-	return (int)msg.wParam;
 }
 
 
-ATOM	RegistaClasse(HINSTANCE hThisInst, TCHAR	* szWinName) {
+
+
+ATOM	RegistaClasses(HINSTANCE hThisInst, TCHAR	* szWinName) {
 
 	WNDCLASSEX wcl;
 
 	wcl.cbSize = sizeof(WNDCLASSEX);
 	wcl.hInstance = hThisInst;
 	wcl.lpszClassName = szWinName;
-	wcl.lpfnWndProc = WndProc;
+	wcl.lpfnWndProc = WindowFunc;
 	wcl.style = CS_HREDRAW;
 	wcl.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wcl.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
 	wcl.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wcl.lpszMenuName = MAKEINTRESOURCEW(IDC_CLIENTEGUI);
+	wcl.lpszMenuName = wcl.lpszMenuName = MAKEINTRESOURCEW(IDC_CLIENTEGUI);
 	wcl.cbClsExtra = 0;
 	wcl.cbWndExtra = 0;
 	wcl.hbrBackground = NULL;
@@ -186,6 +212,23 @@ ATOM	RegistaClasse(HINSTANCE hThisInst, TCHAR	* szWinName) {
 
 }
 
+HWND CriarJanela(HINSTANCE hThisInst, TCHAR	*  szWinName) {
+
+	return CreateWindow(
+		szWinName,
+		TEXT("Dungeon RPG"),	// titulo
+		WS_BORDER,	// WS_OVERLAPPEDWINDOW,	// estilo da janela	= normal
+		CW_USEDEFAULT,	//  coordenada x	= escolhida  pelo windows
+		CW_USEDEFAULT,	//  coordenada y	= escolhida  pelo windows
+		MAXX + 16,	//  center com a borda e o titulo
+		MAXY + 32,	//
+		HWND_DESKTOP,	// sem janela pai
+		NULL,	// sem menu
+		hThisInst,	//  handle para esta instancia do programa
+		NULL	// sem argumentos	(informacao)  adicional
+		);
+
+}
 
 
 
@@ -444,7 +487,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 					if (juntarJogo(servHandler, jogo)) {
 
 						EndDialog(hDlg, 0);
-						notificaVista(vista);
+						notificaVista();
 
 						CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
 
@@ -506,7 +549,7 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 					EndDialog(hDlg, 0);
 					CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AtualizaCliente, 0, 0, NULL);
-					notificaVista(vista);
+					notificaVista();
 				}
 				else {
 
@@ -533,26 +576,15 @@ INT_PTR CALLBACK ServidorInfoDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	return (INT_PTR)FALSE;
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	int maxX, maxY;
-	int wmId;
-	actualhWnd = hWnd;
 
-	TCHAR buf[256];
-	DWORD n;
 
-	RECT rc;
-	int xPos = 0;
-	int yPos = 0;
+LRESULT CALLBACK WindowFunc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
 
 	PAINTSTRUCT ps;
 	HDC hdc;
-	RECT area;
-	HBITMAP hbitmap;
+	int wmId;
 
-	int i, tam, raio;
-
+	int i, tam, raio;	// tamd2;
 	int ix = 0;
 	int iy = 0;
 
@@ -560,23 +592,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	char c = ' ';
 
 
-	switch (message)
-	{
+	RECT area;
 
-	case WM_CLOSE:
-		CloseHandle(servHandler);
-		break;
+	switch (message) {
 
-	case WM_CREATE:
+	case	WM_CREATE:
 
-		hdc = GetDC(hWnd);
-
-		GetWindowRect(hWnd, &rc);
-
-		xPos = (GetSystemMetrics(SM_CXSCREEN) - rc.right) / 2;
-		yPos = (GetSystemMetrics(SM_CYSCREEN) - rc.bottom) / 2;
-
-		SetWindowPos(hWnd, HWND_TOP, xPos, yPos, 800, 600, SWP_SHOWWINDOW);
 
 		initialImage = (HBITMAP)LoadImage(NULL, TEXT("wallpaper.bmp"), IMAGE_BITMAP, 800, 600, LR_LOADFROMFILE);
 
@@ -584,16 +605,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			exit(1);
 		}
 
-		DBuf = NULL;
 
+		hdc = GetDC(hwnd);
 		CreateAndSelectAllDC(hdc);
-		ReleaseDC(hWnd, hdc);
-
-
-		break;
-
-	case WM_INITDIALOG:
-
+		ReleaseDC(hwnd, hdc);
+		DBuffer = NULL;
 
 		break;
 
@@ -618,35 +634,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 	}
 	break;
-	case WM_PAINT:
-	{
 
-		hdc = BeginPaint(hWnd, &ps);
 
-		GetClientRect(hWnd, &area);
+	case	WM_DESTROY:	// Encerra a janela
+		PostQuitMessage(0);	//	0 é a exit-code
+		break;
 
-		if (DBuf == NULL) {
+	case	WM_PAINT:
 
-			DBuf = CreateCompatibleDC(hdc);
+		hdc = BeginPaint(hwnd, &ps);
+
+		// prepara dbbuf
+		GetClientRect(hwnd, &area); 	// pq.  area nao definida em WM_CREATE
+
+		if (DBuffer == NULL) {
+
+			DBuffer = CreateCompatibleDC(hdc);
 			hbitmap = CreateCompatibleBitmap(hdc, area.right, area.right);
-			SelectObject(DBuf, hbitmap);
+			SelectObject(DBuffer, hbitmap);
 
 		}
+
 
 		info = ObterInfoServidor(servHandler, jogo);
 
 		if (info == NULL) {
 
+
 			memdc = CreateCompatibleDC(hdc);
-
 			SelectObject(memdc, initialImage);
-
 			BitBlt(hdc, 0, 0, 800, 600, memdc, 0, 0, SRCCOPY);
 
 		}
 		else {
-
-
 			if (info->jogoIniciado == 1)
 			{
 
@@ -661,74 +681,53 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						case TipoCelula_PORTA:
 						case TipoCelula_CHAO:
 
-							BitBlt(DBuf, ix * 32 + 1, iy * 32 + 1,
-								32, 32,ElemMemDC[9], 0, 0, SRCAND);
+							BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+								32, 32, ElemMemDC[IM_chao], 0, 0, SRCAND);
 
-				/*			switch (jogo->mapa[ix][iy].objeto)
+							switch (jogo->mapa[ix][iy].objeto)
 							{
 							case Tipo_Pedra:
 
-								memdc = CreateCompatibleDC(hdc);
-								SelectObject(memdc, pedra);
-
-								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
-									32, 32, memdc, 0, 0, SRCAND);
+								BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+									32, 32, ElemMemDC[IM_pedra], 0, 0, SRCAND);
 
 								break;
 
 							case Tipo_SacoPedra:
 
 
-								memdc = CreateCompatibleDC(hdc);
-								SelectObject(memdc, pedra);
-
-								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
-									32, 32, memdc, 0, 0, SRCAND);
-
+								BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+									32, 32, ElemMemDC[IM_pedra], 0, 0, SRCAND);
 
 								break;
 
 							case Tipo_Pocao:
 
 
-								memdc = CreateCompatibleDC(hdc);
-								SelectObject(memdc, vitamina);
-
-								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
-									32, 32, memdc, 0, 0, SRCAND);
-
+								BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+									32, 32, ElemMemDC[IM_vitamina], 0, 0, SRCAND);
 
 								break;
 
 							case Tipo_Vitamina:
 
 
-								memdc = CreateCompatibleDC(hdc);
-								SelectObject(memdc, vitamina);
-
-								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
-									32, 32, memdc, 0, 0, SRCAND);
-
+								BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+									32, 32, ElemMemDC[IM_vitamina], 0, 0, SRCAND);
 
 								break;
 
 							case Tipo_Cafeina:
 
-								memdc = CreateCompatibleDC(hdc);
-								SelectObject(memdc, cafeina);
-
-								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
-									32, 32, memdc, 0, 0, SRCAND);
+								BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+									32, 32, ElemMemDC[IM_cafeina], 0, 0, SRCAND);
 
 								break;
 
 							case Tipo_OrangeBull:
 
-								memdc = CreateCompatibleDC(hdc);
-								SelectObject(memdc, orange);
-
-								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
-									32, 32, memdc, 0, 0, SRCAND);
+								BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+									32, 32, ElemMemDC[IM_orange], 0, 0, SRCAND);
 
 								break;
 
@@ -738,15 +737,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 							}
 
+
 							if (jogo->mapa[ix][iy].jogador != 0 &&
 								jogo->mapa[ix][iy].jogador != jogo->jogador.pidJogador)
 							{
-
-								memdc = CreateCompatibleDC(hdc);
-								SelectObject(memdc, ini);
-
-								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
-									32, 32, memdc, 0, 0, SRCAND);
+								BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+									32, 32, ElemMemDC[IM_ini], 0, 0, SRCAND);
 
 							}
 
@@ -759,27 +755,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								memdc = CreateCompatibleDC(hdc);
 
 								if (jogo->mapa[ix][iy].tipoMonstro == 0)
-									SelectObject(memdc, dist);
+									BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+										32, 32, ElemMemDC[IM_dist], 0, 0, SRCAND);
 								else
-									SelectObject(memdc, bully);
+									BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+										32, 32, ElemMemDC[IM_bully], 0, 0, SRCAND);
 
-								BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
-									32, 32, memdc, 0, 0, SRCAND);
+
 
 							}
-*/
+
 							break;
 
 						case TipoCelula_PAREDE:
-							BitBlt(DBuf, ix * 32 + 1, iy * 32 + 1,
-								32, 32, ElemMemDC[3], 0, 0, SRCAND);
+							BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+								32, 32, ElemMemDC[IM_parede], 0, 0, SRCAND);
 							break;
 						default:
-							//memdc = CreateCompatibleDC(hdc);
-							//SelectObject(memdc, vazio);
+							BitBlt(DBuffer, ix * 32 + 1, iy * 32 + 1,
+								32, 32, ElemMemDC[IM_vazio], 0, 0, SRCAND);
 
-							//BitBlt(hdc, ix * 32 + 1, iy * 32 + 1,
-							//	32, 32, memdc, 0, 0, SRCAND);
 							break;
 
 						}
@@ -789,67 +784,85 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 
-				//GoToXY(x + (MAXVISX / 2), y + (MAXVISY / 2));
-				//setForeGroundAndBackGroundColor(Color_Blue, 6);
-				//_tprintf(TEXT("@"));
+				BitBlt(DBuffer, 100 * 32 * 7 + 1, 100 * 32 + 1* 7,
+					32, 32, ElemMemDC[IM_jog], 0, 0, SRCAND);
 
-				BitBlt(hdc, 0, 0, area.right, area.bottom, DBuf, 0, 0, SRCCOPY);
-				//BitBlt(hdc, 0, 0, 800, 600, memdc, 0, 0, SRCCOPY);
 
-			}
-			else
-			{
-				memdc = CreateCompatibleDC(hdc);
 
-				SelectObject(memdc, initialImage);
+				BitBlt(hdc, 0, 0, area.right, area.bottom, DBuffer, 0, 0, SRCCOPY);
 
-				BitBlt(hdc, 0, 0, 800, 600, memdc, 0, 0, SRCCOPY);
 
 			}
 		}
 
-		EndPaint(hWnd, &ps);
 
-	}
-	break;
+		//if (andar == 1)
+		FillRect(DBuffer, &area, hbAndar);
+		/*else
+			FillRect(DBuffer, &area, hbParado);*/
 
-	case WM_KEYDOWN:
 
-		switch ((char)wParam) {
-		case VK_DOWN:				// Seta para baixo
-			moverJogador(servHandler, jogo, 1);
-			InvalidateRect(vista, NULL, FALSE);
-			break;
-		case VK_LEFT:				// Seta esquerda
+		EndPaint(hwnd, &ps);
+
+		break;
+
+	case WM_ERASEBKGND:
+		break;
+
+
+
+	case	WM_KEYDOWN:
+		switch (wParam) {
+
+
+		case VK_LEFT:
 			moverJogador(servHandler, jogo, 3);
-			InvalidateRect(hWnd, NULL, 1);
+			notificaVista();
 			break;
-		case VK_RIGHT:				// Seta direita
+
+		case VK_RIGHT:
 			moverJogador(servHandler, jogo, 4);
-			InvalidateRect(hWnd, NULL, 1);
+			notificaVista();
 			break;
-		case VK_UP:				// Seta cima
+
+		case VK_UP:
+
 			moverJogador(servHandler, jogo, 2);
-			InvalidateRect(hWnd, NULL, 1);
+			notificaVista();
 			break;
+
+		case VK_DOWN:
+			moverJogador(servHandler, jogo, 1);
+			notificaVista();
+			break;
+
+		case VK_ESCAPE:
+			PostQuitMessage(0);
+			break;
+
 		default:
 			break;
 		}
+
 		break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
+	case	WM_KEYUP:
 		break;
 
-	case WM_LBUTTONUP:
+	case	WM_CHAR:
+
+		if (wParam == ' ') TeclaJog = 0;
+
+		if (wParam == '5') andar = 1;
 
 		break;
 
 	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
-	}
-	return 0;
-}
+		return DefWindowProc(hwnd, message, wParam, lParam);
 
+		return	0;
+
+	}
+}
 
 
 DWORD WINAPI AtualizaCliente(LPVOID param) {
@@ -873,7 +886,7 @@ DWORD WINAPI AtualizaCliente(LPVOID param) {
 		if (m->pidCliente == jogo->pidCliente)
 		{
 			jogo = m;
-			notificaVista(vista);
+			notificaVista();
 		}
 	}
 
